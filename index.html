@@ -715,572 +715,8 @@
             gap: 12px;
         }
 
-        .schedule-edit-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: all 0.2s ease;
-        }
-
-        .light .schedule-edit-btn {
-            color: #666;
-        }
-
-        .dark .schedule-edit-btn {
-            color: #aaa;
-        }
-
-        .schedule-edit-btn:hover {
-            background-color: rgba(0, 0, 0, 0.05);
-            color: currentColor;
-        }
-
-        .dark .schedule-edit-btn:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .schedule-edit-btn:active {
-            transform: scale(0.95);
-        }
-
-        .schedule-edit-btn svg {
-            width: 18px;
-            height: 18px;
-            display: block;
-        }
 
         /* テーマスケジュール設定スタイル */
-        .theme-schedule-dial-wrap {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 18px;
-        }
-
-        .theme-schedule-dial {
-            width: min(76vw, 360px);
-            height: min(76vw, 360px);
-            touch-action: none;
-            user-select: none;
-        }
-
-        .theme-schedule-ring-base {
-            fill: none;
-            stroke-width: 56;
-        }
-
-        .light .theme-schedule-ring-base {
-            stroke: #111111;
-        }
-
-        .dark .theme-schedule-ring-base {
-            stroke: #050505;
-        }
-
-        .theme-schedule-dial-core {
-            stroke: rgba(255, 255, 255, 0.08);
-            stroke-width: 2;
-        }
-
-        .light .theme-schedule-dial-core {
-            fill: #f3f5f8;
-        }
-
-        .dark .theme-schedule-dial-core {
-            fill: #2b2d34;
-        }
-
-        .theme-schedule-tick {
-            stroke: rgba(255, 255, 255, 0.25);
-            stroke-width: 2;
-            stroke-linecap: round;
-        }
-
-        .theme-schedule-tick.major {
-            stroke: rgba(255, 255, 255, 0.5);
-            stroke-width: 2.4;
-        }
-
-        .light .theme-schedule-tick {
-            stroke: rgba(30, 30, 30, 0.25);
-        }
-
-        .light .theme-schedule-tick.major {
-            stroke: rgba(30, 30, 30, 0.45);
-        }
-
-        .theme-schedule-label {
-            font-size: 9px;
-            font-weight: 600;
-            text-anchor: middle;
-            dominant-baseline: middle;
-            letter-spacing: 0.3px;
-        }
-
-        .light .theme-schedule-label {
-            fill: rgba(30, 30, 30, 0.75);
-        }
-
-        .dark .theme-schedule-label {
-            fill: rgba(255, 255, 255, 0.72);
-        }
-
-        .theme-schedule-segment {
-            fill: none;
-            stroke: var(--primary-color);
-            stroke-width: 28;
-            stroke-linecap: round;
-            cursor: pointer;
-            transition: stroke-width 0.18s ease, filter 0.18s ease;
-        }
-
-        .theme-schedule-segment.selected {
-            stroke-width: 30;
-        }
-
-        .theme-schedule-handle {
-            fill: var(--primary-color);
-            stroke: #1f1f1f;
-            stroke-width: 2;
-            cursor: grab;
-        }
-
-        .theme-schedule-handle:active {
-            cursor: grabbing;
-        }
-
-        .theme-schedule-icon {
-            fill: #ffcf00;
-        }
-
-        .theme-schedule-icon-night {
-            fill: #6f83ff;
-        }
-
-        .theme-schedule-editor {
-            border-radius: 16px;
-            padding: 14px;
-            margin-bottom: 14px;
-            text-align: left;
-        }
-
-        .light .theme-schedule-editor {
-            background: rgba(255, 255, 255, 0.78);
-            border: 1px solid rgba(0, 0, 0, 0.08);
-        }
-
-        .dark .theme-schedule-editor {
-            background: rgba(255, 255, 255, 0.07);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-        }
-
-        .theme-schedule-editor h4 {
-            margin: 0 0 10px;
-            font-size: 0.95rem;
-            letter-spacing: 0.2px;
-        }
-
-        .theme-schedule-time-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        .theme-schedule-time-row input[type="time"] {
-            width: 100%;
-            border-radius: 12px;
-            border: 1px solid rgba(0, 0, 0, 0.12);
-            padding: 10px;
-            font-size: 0.92rem;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .dark .theme-schedule-time-row input[type="time"] {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 255, 255, 0.15);
-            color: #efefef;
-        }
-
-        .theme-schedule-mode-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        .theme-schedule-mode-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            border-radius: 12px;
-            border: 1px solid transparent;
-            padding: 10px 8px;
-            cursor: pointer;
-            background: transparent;
-            color: inherit;
-            font-size: 0.9rem;
-        }
-
-        .theme-schedule-mode-btn.active {
-            border-color: var(--primary-color);
-        }
-
-        .theme-schedule-delete {
-            width: 100%;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 80, 80, 0.35);
-            color: #ff5f5f;
-            background: transparent;
-            padding: 10px;
-            cursor: pointer;
-            font-size: 0.88rem;
-        }
-
-        /* Theme Schedule Dialog - Modern iOS-like Design */
-        .theme-schedule-dialog {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: min(90vw, 600px);
-            max-height: 85vh;
-            border-radius: 28px;
-            padding: 28px;
-            z-index: 10000;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            animation: slideUpCentered 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .light .theme-schedule-dialog {
-            background: linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-        }
-
-        .dark .theme-schedule-dialog {
-            background: linear-gradient(135deg, #1a1a1a 0%, #242424 100%);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-        }
-
-        .theme-schedule-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-
-        .theme-schedule-title {
-            margin: 0;
-            font-size: 1.4rem;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-        }
-
-        .theme-schedule-close-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: all 0.2s ease;
-            color: inherit;
-        }
-
-        .light .theme-schedule-close-btn {
-            color: #666;
-        }
-
-        .dark .theme-schedule-close-btn {
-            color: #aaa;
-        }
-
-        .theme-schedule-close-btn:hover {
-            background-color: rgba(0, 0, 0, 0.05);
-        }
-
-        .dark .theme-schedule-close-btn:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .theme-schedule-subtitle {
-            font-size: 0.95rem;
-            opacity: 0.7;
-            margin-bottom: 12px;
-            line-height: 1.5;
-        }
-
-        .theme-schedule-add-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 14px 20px;
-            border: 2px solid currentColor;
-            border-radius: 16px;
-            background: none;
-            cursor: pointer;
-            font-size: 0.95rem;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            margin-bottom: 20px;
-        }
-
-        .light .theme-schedule-add-btn {
-            color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-
-        .dark .theme-schedule-add-btn {
-            color: var(--primary-color-dark);
-            border-color: var(--primary-color-dark);
-        }
-
-        .theme-schedule-add-btn:hover {
-            background-color: rgba(0, 0, 0, 0.05);
-        }
-
-        .dark .theme-schedule-add-btn:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .theme-schedule-add-btn:active {
-            transform: scale(0.98);
-        }
-
-        .theme-schedule-buttons {
-            display: flex;
-            gap: 12px;
-        }
-
-        .theme-schedule-buttons button {
-            flex: 1;
-            padding: 14px 20px;
-            border: none;
-            border-radius: 16px;
-            font-size: 0.95rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .light .theme-schedule-buttons .secondary {
-            background-color: var(--panel-light);
-            color: #323232;
-        }
-
-        .dark .theme-schedule-buttons .secondary {
-            background-color: var(--panel-dark);
-            color: #e8e8e8;
-        }
-
-        .theme-schedule-buttons .secondary:hover {
-            opacity: 0.8;
-        }
-
-        .light .theme-schedule-buttons .primary {
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        .dark .theme-schedule-buttons .primary {
-            background-color: var(--primary-color-dark);
-            color: white;
-        }
-
-        .theme-schedule-buttons .primary:hover {
-            opacity: 0.9;
-            transform: translateY(-2px);
-        }
-
-        .theme-schedule-buttons .primary:active {
-            transform: translateY(0);
-        }
-
-        @media (max-width: 768px) {
-            .theme-schedule-dialog {
-                width: min(95vw, 550px);
-                max-height: 90vh;
-                padding: 20px;
-                border-radius: 24px;
-            }
-
-            .theme-schedule-title {
-                font-size: 1.2rem;
-            }
-
-            .theme-schedule-subtitle {
-                font-size: 0.9rem;
-                margin-bottom: 16px;
-            }
-
-            .theme-schedule-dial {
-                width: min(80vw, 320px);
-                height: min(80vw, 320px);
-            }
-
-            .theme-schedule-time-row {
-                grid-template-columns: 1fr;
-                gap: 10px;
-            }
-
-            .theme-schedule-time-row input[type="time"] {
-                padding: 12px;
-                font-size: 1rem;
-            }
-
-            .theme-schedule-mode-row {
-                grid-template-columns: 1fr;
-                gap: 10px;
-                margin-bottom: 12px;
-            }
-
-            .theme-schedule-mode-btn {
-                padding: 12px 10px;
-                font-size: 0.95rem;
-            }
-
-            .theme-schedule-mode-btn svg {
-                width: 18px;
-                height: 18px;
-            }
-
-            .theme-schedule-delete {
-                padding: 12px;
-                font-size: 0.95rem;
-            }
-
-            .theme-schedule-add-btn {
-                padding: 12px 16px;
-                font-size: 0.9rem;
-            }
-
-            .theme-schedule-buttons {
-                gap: 10px;
-            }
-
-            .theme-schedule-buttons button {
-                padding: 12px 16px;
-                font-size: 0.9rem;
-            }
-        }
-
-        @media (max-width: 520px) {
-            .theme-schedule-dialog {
-                width: min(98vw, 500px);
-                max-height: 92vh;
-                padding: 16px;
-                border-radius: 20px;
-            }
-
-            .theme-schedule-header {
-                margin-bottom: 12px;
-            }
-
-            .theme-schedule-title {
-                font-size: 1.1rem;
-            }
-
-            .theme-schedule-subtitle {
-                font-size: 0.85rem;
-                margin-bottom: 12px;
-            }
-
-            .theme-schedule-dial-wrap {
-                margin-bottom: 16px;
-            }
-
-            .theme-schedule-dial {
-                width: min(75vw, 280px);
-                height: min(75vw, 280px);
-            }
-
-            .theme-schedule-editor {
-                padding: 12px;
-                margin-bottom: 12px;
-                border-radius: 12px;
-            }
-
-            .theme-schedule-editor h4 {
-                margin: 0 0 8px;
-                font-size: 0.9rem;
-            }
-
-            .theme-schedule-time-row {
-                grid-template-columns: 1fr;
-                gap: 8px;
-                margin-bottom: 10px;
-            }
-
-            .theme-schedule-time-row input[type="time"] {
-                padding: 10px;
-                font-size: 16px;
-                border-radius: 10px;
-            }
-
-            .theme-schedule-mode-row {
-                grid-template-columns: 1fr;
-                gap: 8px;
-                margin-bottom: 10px;
-            }
-
-            .theme-schedule-mode-btn {
-                padding: 10px 8px;
-                font-size: 0.85rem;
-                border-radius: 10px;
-                gap: 6px;
-            }
-
-            .theme-schedule-mode-btn svg {
-                width: 14px;
-                height: 14px;
-                min-width: 14px;
-            }
-
-            .theme-schedule-mode-btn span {
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-            }
-
-            .theme-schedule-delete {
-                padding: 10px;
-                font-size: 0.85rem;
-                border-radius: 10px;
-            }
-
-            .theme-schedule-add-btn {
-                padding: 10px 14px;
-                font-size: 0.85rem;
-                margin-bottom: 16px;
-                border-radius: 12px;
-            }
-
-            .theme-schedule-add-btn svg {
-                width: 18px;
-                height: 18px;
-            }
-
-            .theme-schedule-buttons {
-                gap: 8px;
-            }
-
-            .theme-schedule-buttons button {
-                padding: 10px 12px;
-                font-size: 0.85rem;
-                border-radius: 12px;
-            }
-        }
 
         .toggle-switch.active {
             background-color: var(--primary-color);
@@ -2323,7 +1759,7 @@
             --primary-color-dark: #7a95ab;
             --primary-hover-dark: #6a859b;
             --bg-light: #f8f9fb;
-            --bg-dark: #2d3142;
+            --bg-dark: #17181d;
             /* Panel colors - soft/pale defaults */
             --panel-dark: #474654;
             --panel-dark-2: #3d4454;
@@ -2341,7 +1777,7 @@
             --primary-color-dark: #88ab88;
             --primary-hover-dark: #789b78;
             --bg-light: #f7faf7;
-            --bg-dark: #2d3a30;
+            --bg-dark: #141815;
             --panel-dark: #242e28;
             --panel-dark-2: #3a4740;
             --panel-light: #eff5ef;
@@ -2354,8 +1790,8 @@
             --primary-color-dark: #9a88ab;
             --primary-hover-dark: #9f8ff2;
             --bg-light: #faf7fb;
-            --bg-dark: #332d3a;
-            --panel-dark: #2c2430;
+            --bg-dark: #201e27;
+            --panel-dark: #353144;
             --panel-dark-2: #443a4a;
             --panel-light: #f5eff7;
             --panel-light-2: #f5eff7;
@@ -2367,7 +1803,7 @@
             --primary-color-dark: #b99480;
             --primary-hover-dark: #a98470;
             --bg-light: #faf6f3;
-            --bg-dark: #3a312d;
+            --bg-dark: #161310;
             --panel-dark: #2e2621;
             --panel-dark-2: #4a3f38;
             --panel-light: #f5f0ed;
@@ -2380,7 +1816,7 @@
             --primary-color-dark: #b98896;
             --primary-hover-dark: #a97886;
             --bg-light: #faf7f8;
-            --bg-dark: #3a2d30;
+            --bg-dark: #1b1516;
             --panel-dark: #2e2426;
             --panel-dark-2: #4a3a3e;
             --panel-light: #f5eff1;
@@ -2393,7 +1829,7 @@
             --primary-color-dark: #80abab;
             --primary-hover-dark: #709b9b;
             --bg-light: #f7fafa;
-            --bg-dark: #2d3a3a;
+            --bg-dark: #141b1b;
             --panel-dark: #243030;
             --panel-dark-2: #3a4848;
             --panel-light: #eff5f5;
@@ -3194,22 +2630,47 @@
         .playlist-manager-item {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px 10px;
-            border-radius: 24px;
-            background: rgba(0, 0, 0, 0.03);
+            gap: 10px;
+            padding: 12px 14px;
+            border-radius: 100px;
+            background: rgba(0, 0, 0, 0.02);
+            transition: all 0.2s;
+            cursor: pointer;
+            position: relative;
         }
 
         .dark .playlist-manager-item {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.03);
         }
 
-        .playlist-manager-item.active {
-            outline: 2px solid rgba(0, 0, 0, 0.15);
+        .playlist-manager-item:hover {
+            background: rgba(0, 0, 0, 0.04);
         }
 
-        .dark .playlist-manager-item.active {
-            outline: 2px solid rgba(255, 255, 255, 0.18);
+        .dark .playlist-manager-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .playlist-manager-item.playing {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            outline: none;
+        }
+
+        .dark .playlist-manager-item.playing {
+            background: var(--primary-color-dark);
+            color: white;
+            border: none;
+            outline: none;
+        }
+
+        .playlist-manager-item.playing .playlist-manager-item-name {
+            color: white;
+        }
+
+        .playlist-manager-item.playing .playlist-manager-item-count {
+            color: rgba(255, 255, 255, 0.8) !important;
         }
 
         .playlist-manager-item-name {
@@ -3218,21 +2679,33 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
         }
 
         .playlist-manager-item-actions {
             display: flex;
             gap: 6px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .playlist-manager-item:hover .playlist-manager-item-actions,
+        .playlist-manager-item.playing .playlist-manager-item-actions {
+            opacity: 1;
         }
 
         .playlist-manager-item-actions .secondary,
         .playlist-manager-item-actions .delete-btn {
-            padding: 5px 10px !important;
-            font-size: 0.74rem !important;
-            line-height: 1.2;
+            padding: 6px 12px !important;
+            font-size: 0.8rem !important;
+            line-height: normal;
             min-height: auto;
+            border-radius: 24px;
+        }
+
+        .playlist-manager-item.playing .playlist-manager-item-actions button:not(:hover) {
+            background-color: rgba(255, 255, 255, 0.2) !important;
+            color: white !important;
         }
 
         .playlist-item.drag-over-top::before {
@@ -4322,40 +3795,6 @@
     <div class="date-picker-overlay" id="datePickerOverlay" onclick="closeAllDatePickers()"></div>
     <div class="date-picker-dropdown" id="commonDatePicker"></div>
 
-    <!-- テーマスケジュール管理ポップアップ -->
-    <div class="custom-confirm-overlay" id="themeScheduleOverlay">
-        <div class="theme-schedule-dialog">
-            <div class="theme-schedule-header">
-                <h3 class="theme-schedule-title" data-i18n="themeScheduleTitle">テーマスケジュール設定</h3>
-                <button class="theme-schedule-close-btn" onclick="closeThemeScheduleManager()" aria-label="閉じる">  
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                </button>
-            </div>
-            <div class="theme-schedule-subtitle" data-i18n="themeScheduleSubtitle">
-                時間帯ごとにダークモード/ライトモードを自動切り替え
-            </div>
-            <div class="theme-schedule-dial-wrap">
-                <svg id="themeScheduleDial" class="theme-schedule-dial" viewBox="0 0 360 360" aria-label="テーマスケジュールダイヤル"></svg>
-            </div>
-            <div id="themeScheduleEditor" class="theme-schedule-editor">
-                <!-- セグメント選択時の編集UIがここに挿入される -->
-            </div>
-            <button class="theme-schedule-add-btn" id="addThemeScheduleBtn" onclick="addThemeScheduleRow()">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="12" y1="5" x2="12" y2="19"></line>
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                </svg>
-                <span data-i18n="themeScheduleAdd">追加</span>
-            </button>
-            <div class="theme-schedule-buttons">
-                <button class="secondary" onclick="closeThemeScheduleManager()" data-i18n="cancelButton">キャンセル</button>
-                <button class="primary" onclick="saveThemeSchedule()" data-i18n="saveButton">保存する</button>
-            </div>
-        </div>
-    </div>
     <div class="calendar-day-dialog-overlay" id="calendarDayDialog">
         <div class="calendar-day-dialog">
             <div class="calendar-day-dialog-header">
@@ -4752,20 +4191,6 @@
                     <span data-i18n="musicResumeOnTapAfterReload">更新後に画面タップで音楽を自動再開</span>
                     <div class="toggle-switch" id="toggleMusicResumeOnTap" onclick="toggleMusicResumeOnTap()">
                         <div class="toggle-slider"></div>
-                    </div>
-                </div>
-                <div class="toggle-item">
-                    <span>時間によってテーマを変更</span>
-                    <div class="toggle-controls">
-                        <button class="schedule-edit-btn" id="themeScheduleEditBtn" style="display: none;" onclick="openThemeScheduleManager()" aria-label="テーマスケジュール編集">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                            </svg>
-                        </button>
-                        <div class="toggle-switch" id="toggleThemeSchedule" onclick="toggleThemeSchedule()">
-                            <div class="toggle-slider"></div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -6115,13 +5540,6 @@
                     }
                 });
 
-                // テーマスケジュール管理オーバーレイのイベントリスナー
-                document.getElementById('themeScheduleOverlay')?.addEventListener('click', (e) => {
-                    if (e.target === e.currentTarget) {
-                        closeThemeScheduleManager();
-                    }
-                });
-
                 // About モーダル(最終確認風ポップアップ)表示/非表示
                 function showAboutModal() {
                     const overlay = document.getElementById('aboutOverlay');
@@ -6644,451 +6062,6 @@
                         // タイマー動作中なら次の updateTimer で更新されるのでここでは何もしない、または強制更新
                         updateTimer();
                     }
-                }
-
-                // テーマスケジュール関連の関数
-                let themeScheduleData = [];
-                let selectedThemeScheduleIndex = -1;
-                let themeScheduleDragState = null;
-                let themeScheduleCheckInterval = null;
-
-                function themeTimeToMinutes(timeStr) {
-                    const parts = String(timeStr || '').split(':');
-                    const h = Math.max(0, Math.min(23, parseInt(parts[0], 10) || 0));
-                    const m = Math.max(0, Math.min(59, parseInt(parts[1], 10) || 0));
-                    return h * 60 + m;
-                }
-
-                function themeMinutesToTime(minutes) {
-                    const normalized = ((Math.round(minutes) % 1440) + 1440) % 1440;
-                    const h = Math.floor(normalized / 60);
-                    const m = normalized % 60;
-                    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
-                }
-
-                function normalizeThemeScheduleEntry(raw) {
-                    const from = themeMinutesToTime(themeTimeToMinutes(raw?.timeFrom || '22:00'));
-                    let to = themeMinutesToTime(themeTimeToMinutes(raw?.timeTo || '07:00'));
-                    if (from === to) {
-                        to = themeMinutesToTime(themeTimeToMinutes(to) + 60);
-                    }
-                    const mode = raw?.mode === 'dark' ? 'dark' : 'light';
-                    return { timeFrom: from, timeTo: to, mode };
-                }
-
-                function loadThemeSchedule() {
-                    try {
-                        const data = getData('theme_schedule');
-                        const parsed = data ? JSON.parse(data) : [];
-                        if (Array.isArray(parsed)) {
-                            themeScheduleData = parsed.map(normalizeThemeScheduleEntry);
-                        } else {
-                            themeScheduleData = [];
-                        }
-                    } catch (e) {
-                        console.error('Failed to load theme schedule:', e);
-                        themeScheduleData = [];
-                    }
-                    if (selectedThemeScheduleIndex >= themeScheduleData.length) {
-                        selectedThemeScheduleIndex = themeScheduleData.length - 1;
-                    }
-                }
-
-                function saveThemeScheduleToStorage() {
-                    try {
-                        saveData('theme_schedule', JSON.stringify(themeScheduleData.map(normalizeThemeScheduleEntry)));
-                    } catch (e) {
-                        console.error('Failed to save theme schedule:', e);
-                    }
-                }
-
-                function toggleThemeSchedule() {
-                    const toggle = document.getElementById('toggleThemeSchedule');
-                    const editBtn = document.getElementById('themeScheduleEditBtn');
-                    const isActive = toggle.classList.contains('active');
-
-                    if (isActive) {
-                        toggle.classList.remove('active');
-                        editBtn.style.display = 'none';
-                        saveData('theme_schedule_enabled', 'false');
-                        stopThemeScheduleCheck();
-                    } else {
-                        toggle.classList.add('active');
-                        editBtn.style.display = 'inline-flex';
-                        saveData('theme_schedule_enabled', 'true');
-                        startThemeScheduleCheck();
-                    }
-                }
-
-                function openThemeScheduleManager() {
-                    loadThemeSchedule();
-                    if (themeScheduleData.length === 0) {
-                        themeScheduleData.push({ timeFrom: '22:00', timeTo: '07:00', mode: 'dark' });
-                        selectedThemeScheduleIndex = 0;
-                    } else if (selectedThemeScheduleIndex < 0) {
-                        selectedThemeScheduleIndex = 0;
-                    }
-
-                    renderThemeScheduleDial();
-                    renderThemeScheduleEditor();
-
-                    const overlay = document.getElementById('themeScheduleOverlay');
-                    if (overlay) {
-                        overlay.classList.add('show');
-                        overlay.setAttribute('aria-hidden', 'false');
-                    }
-                }
-
-                function closeThemeScheduleManager() {
-                    stopThemeScheduleDrag();
-                    const overlay = document.getElementById('themeScheduleOverlay');
-                    if (overlay) {
-                        overlay.classList.remove('show');
-                        overlay.setAttribute('aria-hidden', 'true');
-                    }
-                }
-
-                function themeMinutesToAngle(minutes) {
-                    return ((minutes / 1440) * 360) - 90;
-                }
-
-                function themePolarPoint(cx, cy, r, angleDeg) {
-                    const rad = (angleDeg * Math.PI) / 180;
-                    return {
-                        x: cx + r * Math.cos(rad),
-                        y: cy + r * Math.sin(rad)
-                    };
-                }
-
-                function themeArcPath(cx, cy, r, startMinutes, endMinutes) {
-                    let start = ((startMinutes % 1440) + 1440) % 1440;
-                    let end = ((endMinutes % 1440) + 1440) % 1440;
-                    if (end <= start) end += 1440;
-                    const span = end - start;
-                    if (span >= 1439) {
-                        return '';
-                    }
-
-                    const startAngle = themeMinutesToAngle(start);
-                    const endAngle = themeMinutesToAngle(end);
-                    const p1 = themePolarPoint(cx, cy, r, startAngle);
-                    const p2 = themePolarPoint(cx, cy, r, endAngle);
-                    const largeArc = span > 720 ? 1 : 0;
-                    return `M ${p1.x.toFixed(2)} ${p1.y.toFixed(2)} A ${r} ${r} 0 ${largeArc} 1 ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`;
-                }
-
-                function themeSegmentParts(startMinutes, endMinutes) {
-                    const start = ((startMinutes % 1440) + 1440) % 1440;
-                    const end = ((endMinutes % 1440) + 1440) % 1440;
-                    if (start < end) return [[start, end]];
-                    if (start > end) return [[start, 1440], [0, end]];
-                    return [[start, start + 1439]];
-                }
-
-                function renderThemeScheduleDial() {
-                    const svg = document.getElementById('themeScheduleDial');
-                    if (!svg) return;
-
-                    const cx = 180;
-                    const cy = 180;
-                    const ringR = 132;
-                    const coreR = 102;
-
-                    let html = '';
-                    html += `<circle class="theme-schedule-ring-base" cx="${cx}" cy="${cy}" r="${ringR}"></circle>`;
-                    html += `<circle class="theme-schedule-dial-core" cx="${cx}" cy="${cy}" r="${coreR}"></circle>`;
-
-                    for (let i = 0; i < 96; i++) {
-                        const minutes = i * 15;
-                        const angle = themeMinutesToAngle(minutes);
-                        const isMajor = i % 8 === 0;
-                        const p1 = themePolarPoint(cx, cy, isMajor ? 118 : 121, angle);
-                        const p2 = themePolarPoint(cx, cy, isMajor ? 126 : 124, angle);
-                        html += `<line class="theme-schedule-tick${isMajor ? ' major' : ''}" x1="${p1.x.toFixed(2)}" y1="${p1.y.toFixed(2)}" x2="${p2.x.toFixed(2)}" y2="${p2.y.toFixed(2)}"></line>`;
-                    }
-
-                    for (let h = 0; h < 24; h += 2) {
-                        const angle = themeMinutesToAngle(h * 60);
-                        const lp = themePolarPoint(cx, cy, 92, angle);
-                        html += `<text class="theme-schedule-label" x="${lp.x.toFixed(2)}" y="${lp.y.toFixed(2)}">${h}</text>`;
-                    }
-
-                    html += `<circle class="theme-schedule-icon-night" cx="180" cy="130" r="10"></circle>`;
-                    html += `<circle cx="186" cy="125" r="9" fill="var(--panel-dark)"></circle>`;
-                    html += `<circle class="theme-schedule-icon" cx="180" cy="231" r="8"></circle>`;
-                    html += `<circle cx="180" cy="231" r="14" fill="none" stroke="rgba(255,207,0,0.32)" stroke-width="2"></circle>`;
-
-                    themeScheduleData.forEach((schedule, index) => {
-                        const isSelected = index === selectedThemeScheduleIndex;
-                        const startMinutes = themeTimeToMinutes(schedule.timeFrom);
-                        const endMinutes = themeTimeToMinutes(schedule.timeTo);
-                        const parts = themeSegmentParts(startMinutes, endMinutes);
-
-                        parts.forEach((part) => {
-                            const d = themeArcPath(cx, cy, ringR, part[0], part[1]);
-                            if (!d) {
-                                html += `<circle class="theme-schedule-segment ${isSelected ? 'selected' : ''}" cx="${cx}" cy="${cy}" r="${ringR}" data-index="${index}" onclick="selectThemeSchedule(${index})"></circle>`;
-                            } else {
-                                html += `<path class="theme-schedule-segment ${isSelected ? 'selected' : ''}" d="${d}" data-index="${index}" onclick="selectThemeSchedule(${index})"></path>`;
-                            }
-                        });
-
-                        const startPoint = themePolarPoint(cx, cy, ringR, themeMinutesToAngle(startMinutes));
-                        const endPoint = themePolarPoint(cx, cy, ringR, themeMinutesToAngle(endMinutes));
-
-                        html += `<circle class="theme-schedule-handle" cx="${startPoint.x.toFixed(2)}" cy="${startPoint.y.toFixed(2)}" r="${isSelected ? '7' : '5'}" onpointerdown="startThemeScheduleHandleDrag(event, ${index}, 'start')"></circle>`;
-                        html += `<circle class="theme-schedule-handle" cx="${endPoint.x.toFixed(2)}" cy="${endPoint.y.toFixed(2)}" r="${isSelected ? '7' : '5'}" onpointerdown="startThemeScheduleHandleDrag(event, ${index}, 'end')"></circle>`;
-                    });
-
-                    svg.innerHTML = html;
-                    updateThemeScheduleShadow();
-                }
-
-                function renderThemeScheduleEditor() {
-                    const box = document.getElementById('themeScheduleEditor');
-                    if (!box) return;
-
-                    if (selectedThemeScheduleIndex < 0 || !themeScheduleData[selectedThemeScheduleIndex]) {
-                        const selectSegmentText = translations[currentLanguage]['selectSegment'] || 'セグメントを選択すると編集できます';
-                        box.innerHTML = `<h4>${selectSegmentText}</h4>`;
-                        return;
-                    }
-
-                    const schedule = themeScheduleData[selectedThemeScheduleIndex];
-                    const selectTimeText = translations[currentLanguage]['themeScheduleSelectTime'] || '選択中の時間帯';
-                    const darkModeText = translations[currentLanguage]['darkMode'] || 'ダークモード';
-                    const lightModeText = translations[currentLanguage]['lightMode'] || 'ライトモード';
-                    const deleteText = translations[currentLanguage]['deleteTimeRange'] || 'この時間帯を削除';
-
-                    box.innerHTML = `
-                        <h4>${selectTimeText}</h4>
-                        <div class="theme-schedule-time-row">
-                            <input type="time" value="${schedule.timeFrom}" onchange="updateSelectedThemeSchedule('timeFrom', this.value)">
-                            <input type="time" value="${schedule.timeTo}" onchange="updateSelectedThemeSchedule('timeTo', this.value)">
-                        </div>
-                        <div class="theme-schedule-mode-row">
-                            <button class="theme-schedule-mode-btn ${schedule.mode === 'dark' ? 'active' : ''}" onclick="setSelectedThemeScheduleMode('dark')">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-                                <span>${darkModeText}</span>
-                            </button>
-                            <button class="theme-schedule-mode-btn ${schedule.mode === 'light' ? 'active' : ''}" onclick="setSelectedThemeScheduleMode('light')">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"></circle><line x1="12" y1="2" x2="12" y2="5"></line><line x1="12" y1="19" x2="12" y2="22"></line><line x1="2" y1="12" x2="5" y2="12"></line><line x1="19" y1="12" x2="22" y2="12"></line></svg>
-                                <span>${lightModeText}</span>
-                            </button>
-                        </div>
-                        <button class="theme-schedule-delete" onclick="removeThemeSchedule(${selectedThemeScheduleIndex})">${deleteText}</button>
-                    `;
-
-                    // Update mode button box-shadow with current primary color
-                    setTimeout(() => {
-                        const primaryColor = getComputedStyle(document.documentElement)
-                            .getPropertyValue('--primary-color')
-                            .trim();
-                        const modeButtons = document.querySelectorAll('.theme-schedule-mode-btn.active');
-                        modeButtons.forEach(btn => {
-                            btn.style.boxShadow = `inset 0 0 0 1px ${primaryColor}59`;
-                        });
-                    }, 0);
-                }
-
-                function selectThemeSchedule(index) {
-                    selectedThemeScheduleIndex = index;
-                    renderThemeScheduleDial();
-                    renderThemeScheduleEditor();
-                    updateThemeScheduleShadow();
-                }
-
-                function updateThemeScheduleShadow() {
-                    // 現在のテーマカラーを取得
-                    const primaryColor = getComputedStyle(document.documentElement)
-                        .getPropertyValue('--primary-color')
-                        .trim();
-                    
-                    // すべてのセグメント要素を取得
-                    const segments = document.querySelectorAll('.theme-schedule-segment');
-                    segments.forEach((seg, index) => {
-                        if (index === selectedThemeScheduleIndex) {
-                            // 選択中のセグメントはシャドウを更新
-                            seg.style.filter = `drop-shadow(0 0 8px ${primaryColor}40)`;
-                        } else {
-                            // 非選択は元に戻す
-                            seg.style.filter = 'none';
-                        }
-                    });
-                }
-
-                function addThemeScheduleRow() {
-                    const baseStart = (themeScheduleData.length * 180) % 1440;
-                    const start = themeMinutesToTime(baseStart);
-                    const end = themeMinutesToTime(baseStart + 240);
-                    themeScheduleData.push({ timeFrom: start, timeTo: end, mode: 'light' });
-                    selectedThemeScheduleIndex = themeScheduleData.length - 1;
-                    renderThemeScheduleDial();
-                    renderThemeScheduleEditor();
-                }
-
-                function updateSelectedThemeSchedule(field, value) {
-                    if (selectedThemeScheduleIndex < 0 || !themeScheduleData[selectedThemeScheduleIndex]) return;
-                    if (field === 'timeFrom' || field === 'timeTo') {
-                        themeScheduleData[selectedThemeScheduleIndex][field] = themeMinutesToTime(themeTimeToMinutes(value));
-                        const item = themeScheduleData[selectedThemeScheduleIndex];
-                        if (item.timeFrom === item.timeTo) {
-                            item.timeTo = themeMinutesToTime(themeTimeToMinutes(item.timeTo) + 60);
-                        }
-                    }
-                    renderThemeScheduleDial();
-                    renderThemeScheduleEditor();
-                }
-
-                function setSelectedThemeScheduleMode(mode) {
-                    if (selectedThemeScheduleIndex < 0 || !themeScheduleData[selectedThemeScheduleIndex]) return;
-                    themeScheduleData[selectedThemeScheduleIndex].mode = mode === 'dark' ? 'dark' : 'light';
-                    renderThemeScheduleEditor();
-                }
-
-                function removeThemeSchedule(index) {
-                    if (index < 0 || index >= themeScheduleData.length) return;
-                    themeScheduleData.splice(index, 1);
-                    if (themeScheduleData.length === 0) {
-                        selectedThemeScheduleIndex = -1;
-                    } else {
-                        selectedThemeScheduleIndex = Math.min(index, themeScheduleData.length - 1);
-                    }
-                    renderThemeScheduleDial();
-                    renderThemeScheduleEditor();
-                }
-
-                function themeDialPointerToMinutes(clientX, clientY) {
-                    const svg = document.getElementById('themeScheduleDial');
-                    if (!svg) return 0;
-                    const rect = svg.getBoundingClientRect();
-                    const x = clientX - rect.left;
-                    const y = clientY - rect.top;
-                    const cx = rect.width / 2;
-                    const cy = rect.height / 2;
-                    let angle = Math.atan2(y - cy, x - cx) * (180 / Math.PI);
-                    angle = (angle + 90 + 360) % 360;
-                    const minutes = Math.round((angle / 360) * 1440 / 5) * 5;
-                    return ((minutes % 1440) + 1440) % 1440;
-                }
-
-                function startThemeScheduleHandleDrag(event, index, handleType) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    selectedThemeScheduleIndex = index;
-                    themeScheduleDragState = { index, handleType };
-                    window.addEventListener('pointermove', onThemeScheduleHandleDrag);
-                    window.addEventListener('pointerup', stopThemeScheduleDrag);
-                    renderThemeScheduleDial();
-                    renderThemeScheduleEditor();
-                }
-
-                function onThemeScheduleHandleDrag(event) {
-                    if (!themeScheduleDragState) return;
-                    const item = themeScheduleData[themeScheduleDragState.index];
-                    if (!item) return;
-                    const newMinutes = themeDialPointerToMinutes(event.clientX, event.clientY);
-
-                    if (themeScheduleDragState.handleType === 'start') {
-                        item.timeFrom = themeMinutesToTime(newMinutes);
-                        if (item.timeFrom === item.timeTo) {
-                            item.timeFrom = themeMinutesToTime(newMinutes - 5);
-                        }
-                    } else {
-                        item.timeTo = themeMinutesToTime(newMinutes);
-                        if (item.timeFrom === item.timeTo) {
-                            item.timeTo = themeMinutesToTime(newMinutes + 5);
-                        }
-                    }
-
-                    renderThemeScheduleDial();
-                    renderThemeScheduleEditor();
-                }
-
-                function stopThemeScheduleDrag() {
-                    if (!themeScheduleDragState) return;
-                    themeScheduleDragState = null;
-                    window.removeEventListener('pointermove', onThemeScheduleHandleDrag);
-                    window.removeEventListener('pointerup', stopThemeScheduleDrag);
-                }
-
-                function saveThemeSchedule() {
-                    for (const schedule of themeScheduleData) {
-                        if (!schedule.timeFrom || !schedule.timeTo) {
-                            alert('時間帯を正しく設定してください。');
-                            return;
-                        }
-                    }
-
-                    saveThemeScheduleToStorage();
-                    closeThemeScheduleManager();
-
-                    if (getData('theme_schedule_enabled') === 'true') {
-                        startThemeScheduleCheck();
-                    }
-                }
-
-                function startThemeScheduleCheck() {
-                    if (themeScheduleCheckInterval) {
-                        clearInterval(themeScheduleCheckInterval);
-                    }
-                    applyThemeSchedule();
-                    themeScheduleCheckInterval = setInterval(applyThemeSchedule, 60000);
-                }
-
-                function stopThemeScheduleCheck() {
-                    if (themeScheduleCheckInterval) {
-                        clearInterval(themeScheduleCheckInterval);
-                        themeScheduleCheckInterval = null;
-                    }
-                }
-
-                function applyThemeSchedule() {
-                    if (getData('theme_schedule_enabled') !== 'true') return;
-
-                    loadThemeSchedule();
-                    if (themeScheduleData.length === 0) return;
-
-                    const now = new Date();
-                    const currentMinutes = now.getHours() * 60 + now.getMinutes();
-                    let matched = null;
-
-                    for (const schedule of themeScheduleData) {
-                        const fromMinutes = themeTimeToMinutes(schedule.timeFrom);
-                        const toMinutes = themeTimeToMinutes(schedule.timeTo);
-                        const inRange = fromMinutes <= toMinutes
-                            ? (currentMinutes >= fromMinutes && currentMinutes < toMinutes)
-                            : (currentMinutes >= fromMinutes || currentMinutes < toMinutes);
-
-                        if (inRange) {
-                            matched = normalizeThemeScheduleEntry(schedule);
-                            break;
-                        }
-                    }
-
-                    if (!matched) return;
-
-                    const body = document.body;
-                    const currentMode = body.classList.contains('light') ? 'light' : 'dark';
-                    if (currentMode !== matched.mode) {
-                        const themeIcon = document.getElementById('themeIcon');
-                        body.classList.remove('light', 'dark');
-                        body.classList.add(matched.mode);
-
-                        if (matched.mode === 'light') {
-                            themeIcon.src = 'moon.webp';
-                            themeIcon.alt = getText('toggleDarkMode');
-                        } else {
-                            themeIcon.src = 'sun.webp';
-                            themeIcon.alt = getText('toggleLightMode');
-                        }
-                        saveData('mode', matched.mode);
-                    }
-
-                    if (getData('graph_enabled') === 'true') {
-                        setTimeout(() => updateGraphs(), 100);
-                    }
-                    drawPiPCanvas();
                 }
 
                 function addMenuButton(feature) {
@@ -7860,13 +6833,12 @@
                     listEl.innerHTML = musicPlaylists.map((p, index) => {
                         const trackCount = Array.isArray(p.tracks) ? p.tracks.length : 0;
                         return `
-                            <div class="playlist-manager-item ${p.id === currentPlaylistId ? 'active' : ''}" data-pl-index="${index}" draggable="true">
+                            <div class="playlist-manager-item ${p.id === currentPlaylistId ? 'playing' : ''}" data-pl-index="${index}" data-pl-id="${p.id}" draggable="true">
                                 <div style="display:flex; align-items:center; gap:8px; min-width:0; flex:1;">
-                                    <img src="drag_handle.webp" class="drag-handle" alt="" data-i18n-aria="dragHandle" aria-label="${getText('dragHandle')}">
-                                    <button class="secondary" style="padding:6px 10px; white-space:nowrap;" data-action="switch" data-pl-id="${p.id}">${p.id === currentPlaylistId ? '●' : '○'}</button>
+                                    <img src="drag_handle.webp" class="drag-handle" alt="" data-i18n-aria="dragHandle" aria-label="${getText('dragHandle')}" style="cursor: grab; width: 24px; height: 24px;">
                                     <div style="display:flex; flex-direction:column; min-width:0;">
-                                        <span style="font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(p.name || getText('playlist'))}</span>
-                                        <span style="opacity:.65; font-size:.82rem;">${trackCount}</span>
+                                        <span class="playlist-manager-item-name">${escapeHtml(p.name || getText('playlist'))}</span>
+                                        <span class="playlist-manager-item-count" style="opacity:.65; font-size:.82rem;">${trackCount}曲</span>
                                     </div>
                                 </div>
                                 <div class="playlist-manager-item-actions">
@@ -7887,17 +6859,25 @@
 
                     listEl.onclick = async (e) => {
                         const btn = e.target.closest('button[data-action]');
-                        if (!btn) return;
-                        e.preventDefault();
-                        e.stopPropagation();
-                        const action = btn.getAttribute('data-action');
-                        const plId = btn.getAttribute('data-pl-id');
-                        if (action === 'switch') {
-                            await switchPlaylist(plId);
-                        } else if (action === 'rename') {
-                            renamePlaylistMeta(plId);
-                        } else if (action === 'delete') {
-                            await deletePlaylistMeta(plId);
+                        if (btn) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            const action = btn.getAttribute('data-action');
+                            const plId = btn.getAttribute('data-pl-id');
+                            if (action === 'rename') {
+                                renamePlaylistMeta(plId);
+                            } else if (action === 'delete') {
+                                await deletePlaylistMeta(plId);
+                            }
+                            return;
+                        }
+                        
+                        const item = e.target.closest('.playlist-manager-item');
+                        if (item && !e.target.closest('.drag-handle')) {
+                            const plId = item.getAttribute('data-pl-id');
+                            if (plId) {
+                                await switchPlaylist(plId);
+                            }
                         }
                     };
 
@@ -10430,21 +9410,6 @@
                     }
                     const musicEnabled = getData('feature_music') === 'true';
                     const todoEnabled = getData('feature_todo') === 'true';
-
-                    // Initialize Theme Schedule Settings
-                    const themeScheduleEnabled = getData('theme_schedule_enabled') === 'true';
-                    const themeScheduleToggle = document.getElementById('toggleThemeSchedule');
-                    const themeScheduleEditBtn = document.getElementById('themeScheduleEditBtn');
-                    
-                    if (themeScheduleEnabled) {
-                        if (themeScheduleToggle) themeScheduleToggle.classList.add('active');
-                        if (themeScheduleEditBtn) themeScheduleEditBtn.style.display = 'inline-flex';
-                        loadThemeSchedule();
-                        startThemeScheduleCheck();
-                    } else {
-                        if (themeScheduleToggle) themeScheduleToggle.classList.remove('active');
-                        if (themeScheduleEditBtn) themeScheduleEditBtn.style.display = 'none';
-                    }
 
                     // Initialize Focus Mode Settings
                     const focusInfoEnabled = getData('feature_focus_mode_display') !== 'false'; // Default to true

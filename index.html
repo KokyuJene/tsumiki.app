@@ -4433,7 +4433,7 @@
                 </button>
             </div>
 
-            <div class="copyright" data-i18n="copyright">© 高級ジェネ™ All rights reserved.</div>
+            <div class="copyright" data-i18n="copyright">© 2025-2026 ツミキ / Super Hiko14 / 高級ジェネ™ All Rights Reserved.</div>
 
             <div class="about-link">
                 <button class="about-button" onclick="showAboutModal()" aria-label="このサイトについて"
@@ -4605,6 +4605,7 @@
                 let pipDrawInterval = null;
                 let pipNeedsGestureUnlock = false;
                 let lastPiPEnterAt = 0;
+                let pipWindow = null;
 
                 // 多言語対応システム
                 let currentLanguage = 'ja'; // デフォルトは日本語
@@ -5772,7 +5773,10 @@
                 }
 
                 function isPiPSupported() {
-                    return !!(document.pictureInPictureEnabled && HTMLVideoElement.prototype.requestPictureInPicture && HTMLCanvasElement.prototype.captureStream);
+                    if ('documentPictureInPicture' in window) return true;
+                    const hasCanvasCapture = !!(HTMLCanvasElement.prototype.captureStream || HTMLCanvasElement.prototype.mozCaptureStream);
+                    const hasVideoPiP = !!(document.pictureInPictureEnabled && HTMLVideoElement.prototype.requestPictureInPicture) || !!HTMLVideoElement.prototype.webkitSetPresentationMode;
+                    return hasCanvasCapture && hasVideoPiP;
                 }
 
                 function isLikelyMobileBrowser() {
@@ -5964,24 +5968,105 @@
                         pipVideo.pause();
                         pipVideo.srcObject = null;
                     }
+                    if (pipWindow) {
+                        pipWindow.close();
+                        pipWindow = null;
+                    }
                 }
 
                 async function enterMiniModePiP() {
                     ensurePiPElements();
 
                     if (!isPiPSupported()) return false;
-                    if (isLikelyMobileBrowser()) return false;
 
                     try {
+                        if ('documentPictureInPicture' in window) {
+                            if (pipWindow) return true;
+                            
+                            pipWindow = await documentPictureInPicture.requestWindow({
+                                width: 300,
+                                height: 150
+                            });
+                            
+                            pipWindow.addEventListener("pagehide", () => {
+                                pipWindow = null;
+                            });
+
+                            const isDark = document.body.classList.contains('dark');
+                            const bg = isDark ? getCssVar('--panel-dark', '#2d3142') : getCssVar('--panel-light', '#f0f2f7');
+                            const color = isDark ? '#e8e8e8' : '#323232';
+                            const fontFamily = getComputedStyle(document.body).fontFamily || 'system-ui, sans-serif';
+
+                            const style = pipWindow.document.createElement('style');
+                            style.textContent = `
+                                body { margin: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; background: ${bg}; color: ${color}; font-family: ${fontFamily}; height: 100vh; overflow: hidden; }
+                                .timer { font-size: 4rem; font-weight: 500; font-variant-numeric: tabular-nums; }
+                                .song { font-size: 1.2rem; opacity: 0.8; margin-top: 15px; text-align: center; max-width: 90%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: ${isDark ? 'rgba(232,232,232,0.72)' : 'rgba(50,50,50,0.72)'} }
+                                .playing-text { font-size: 0.9rem; opacity: 0.6; margin-bottom: 5px; color: ${isDark ? 'rgba(232,232,232,0.72)' : 'rgba(50,50,50,0.72)'} }
+                                .divider { width: 80%; height: 2px; background: ${isDark ? getCssVar('--primary-color-dark', '#7a95ab') : getCssVar('--primary-color', '#9db4c8')}; margin: 20px 0; }
+                            `;
+                            pipWindow.document.head.appendChild(style);
+                            
+                            const container = pipWindow.document.createElement('div');
+                            container.style.cssText = 'display: flex; flex-direction: column; align-items: center; width: 100%;';
+                            container.innerHTML = `
+                                <div class="timer" id="pip-timer">${document.getElementById('timer').textContent}</div>
+                                <div class="divider"></div>
+                                <div class="playing-text">Now Playing</div>
+                                <div class="song" id="pip-song">${getActiveMusicTitle()}</div>
+                            `;
+                            pipWindow.document.body.appendChild(container);
+                            
+                            if (pipDrawInterval) clearInterval(pipDrawInterval);
+                            pipDrawInterval = setInterval(() => {
+                                if (pipWindow) {
+                                    const timerEl = pipWindow.document.getElementById('pip-timer');
+                                    const songEl = pipWindow.document.getElementById('pip-song');
+                                    if (timerEl) {
+                                        let currentTimer = '00:00:00';
+                                        const mainTimer = document.getElementById('timer');
+                                        if (mainTimer) currentTimer = mainTimer.textContent.trim();
+                                        timerEl.textContent = currentTimer;
+                                    }
+                                    if (songEl) songEl.textContent = getActiveMusicTitle();
+                                }
+                            }, 250);
+                            
+                            pipNeedsGestureUnlock = false;
+                            lastPiPEnterAt = Date.now();
+                            return true;
+                        }
+
                         if (document.pictureInPictureElement === pipVideo) return true;
 
                         drawPiPCanvas();
                         if (!pipStream) {
-                            pipStream = pipCanvas.captureStream(24);
+                            const captureMethod = pipCanvas.captureStream ? 'captureStream' : 'mozCaptureStream';
+                            pipStream = pipCanvas[captureMethod](24);
+
+                            try {
+                                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                                if (AudioCtx) {
+                                    const ctx = new AudioCtx();
+                                    const osc = ctx.createOscillator();
+                                    const dst = ctx.createMediaStreamDestination();
+                                    osc.connect(dst);
+                                    osc.start();
+                                    const audioTrack = dst.stream.getAudioTracks()[0];
+                                    if (audioTrack) pipStream.addTrack(audioTrack);
+                                }
+                            } catch (e) {}
+
                             pipVideo.srcObject = pipStream;
                         }
                         await pipVideo.play();
-                        await pipVideo.requestPictureInPicture();
+                        
+                        if (pipVideo.requestPictureInPicture) {
+                            await pipVideo.requestPictureInPicture();
+                        } else if (pipVideo.webkitSetPresentationMode) {
+                            pipVideo.webkitSetPresentationMode('picture-in-picture');
+                        }
+                        
                         pipNeedsGestureUnlock = false;
                         lastPiPEnterAt = Date.now();
 
@@ -5990,10 +6075,10 @@
                         return true;
                     } catch (err) {
                         const message = (err && err.message) ? String(err.message) : '';
-                        const blockedByGesture = err && (err.name === 'NotAllowedError' || /user activation|gesture/i.test(message));
+                        const blockedByGesture = err && (err.name === 'NotAllowedError' || /user activation|gesture|not supported/i.test(message));
                         if (blockedByGesture) {
                             pipNeedsGestureUnlock = true;
-                            console.warn('PiP blocked until user gesture is provided:', err);
+                            console.warn('PiP blocked until user gesture is provided or unsupported media:', err);
                         } else {
                             console.error('Failed to launch PiP:', err);
                         }
@@ -6027,10 +6112,15 @@
                 }
 
                 async function exitMiniModePiP() {
-                    if (document.pictureInPictureElement === pipVideo) {
+                    if ('documentPictureInPicture' in window && pipWindow) {
+                        pipWindow.close();
+                        pipWindow = null;
+                    } else if (document.pictureInPictureElement === pipVideo) {
                         try {
                             await document.exitPictureInPicture();
                         } catch (e) {}
+                    } else if (pipVideo && pipVideo.webkitSetPresentationMode) {
+                        pipVideo.webkitSetPresentationMode('inline');
                     }
                     cleanupPiPState();
                 }

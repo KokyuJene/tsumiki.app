@@ -1215,6 +1215,30 @@
             gap: 8px;
         }
 
+        .playlist-warning {
+            margin: 0 4px 10px;
+            padding: 8px 10px;
+            border-radius: 10px;
+            font-size: 0.82rem;
+            line-height: 1.5;
+        }
+
+        .playlist-warning.hidden {
+            display: none;
+        }
+
+        .light .playlist-warning {
+            background: rgba(214, 99, 0, 0.12);
+            color: #7a3a00;
+            border: 1px solid rgba(214, 99, 0, 0.28);
+        }
+
+        .dark .playlist-warning {
+            background: rgba(255, 184, 108, 0.13);
+            color: #ffd39a;
+            border: 1px solid rgba(255, 184, 108, 0.26);
+        }
+
         .playlist-select-toggle {
             padding: 6px 12px;
             font-size: 0.8rem;
@@ -4461,6 +4485,7 @@
                             <button id="playlistSelectModeBtn" class="secondary playlist-select-toggle" onclick="togglePlaylistSelectMode()" data-i18n="playlistSelectMode">選択</button>
                         </div>
                     </div>
+                    <div class="playlist-warning hidden" id="playlistWarning" role="status" aria-live="polite"></div>
                     <div class="playlist-batch-actions hidden" id="playlistBatchActions">
                         <span class="playlist-selected-count" id="playlistSelectedCount">0</span>
                         <button class="secondary" onclick="toggleSelectAllPlaylistItems()" data-i18n="selectAll">すべて選択</button>
@@ -5092,12 +5117,16 @@
                 let musicPlaylists = [];
                 let currentPlaylistId = 'default';
                 let _renamingPlaylistId = null;
+                let playlistWarningKey = '';
                 let playlistSelectMode = false;
                 let selectedMusicItems = new Set();
                 let _touchDragState = null;
                 let isLoop = false;
                 let isShuffle = false;
                 let _musicDB = null;
+                const NO_COOKIE_FALLBACK_KEYS = new Set([
+                    'music_playlists_v2'
+                ]);
                 let pipCanvas = null;
                 let pipCtx = null;
                 let pipVideo = null;
@@ -5220,6 +5249,9 @@
                         musicSelectPrompt: '楽曲を選択してください',
                         volume: '音量',
                         playlist: 'プレイリスト',
+                        playlistSaveFailedStorage: 'プレイリストの保存に失敗しました。ブラウザ容量不足、または保存制限の可能性があります。',
+                        playlistLoadCorrupted: 'プレイリストデータの読み込みに失敗したため、初期状態で表示しています。',
+                        playlistMissingFileData: '一部の曲データが見つからないため、表示できない曲があります。',
                         playlistSelectMode: '選択',
                         deleteButton: '削除',
                         renameButton: '名前変更',
@@ -5609,6 +5641,9 @@
                         musicSelectPrompt: 'Select a track',
                         volume: 'Volume',
                         playlist: 'Playlist',
+                        playlistSaveFailedStorage: 'Failed to save playlists. Storage quota may be exceeded or blocked.',
+                        playlistLoadCorrupted: 'Playlist data could not be parsed, so default state is shown.',
+                        playlistMissingFileData: 'Some track data is missing and cannot be shown.',
                         playlistSelectMode: 'Select',
                         deleteButton: 'Delete',
                         renameButton: 'Rename',
@@ -6029,6 +6064,9 @@
                     if (typeof updatePlaylistTitle === 'function') {
                         updatePlaylistTitle();
                     }
+                    if (typeof setPlaylistWarning === 'function') {
+                        setPlaylistWarning(playlistWarningKey);
+                    }
                 }
 
                 // カスタム確認ダイアログ
@@ -6247,9 +6285,14 @@
                         // 複数の path パターンで削除を試みる
                         document.cookie = `${key}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
                         document.cookie = `${key}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/tool/study/`;
+                        return true;
                     } catch (e) {
                         console.error('LocalStorage save failed:', e);
+                        if (NO_COOKIE_FALLBACK_KEYS.has(key)) {
+                            return false;
+                        }
                         setCookie(key, value);
+                        return true;
                     }
                 }
 
@@ -7263,6 +7306,19 @@
                     return `pl_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
                 }
 
+                function setPlaylistWarning(key = '') {
+                    playlistWarningKey = key || '';
+                    const warningEl = document.getElementById('playlistWarning');
+                    if (!warningEl) return;
+                    if (!playlistWarningKey) {
+                        warningEl.textContent = '';
+                        warningEl.classList.add('hidden');
+                        return;
+                    }
+                    warningEl.textContent = getText(playlistWarningKey);
+                    warningEl.classList.remove('hidden');
+                }
+
                 function getActivePlaylistMeta() {
                     return musicPlaylists.find(p => p.id === currentPlaylistId) || null;
                 }
@@ -7278,7 +7334,7 @@
 
                 function persistPlaylists() {
                     ensurePlaylistsState();
-                    saveData('music_playlists_v2', JSON.stringify({
+                    const ok = saveData('music_playlists_v2', JSON.stringify({
                         currentPlaylistId,
                         playlists: musicPlaylists.map(p => ({
                             id: p.id,
@@ -7286,6 +7342,12 @@
                             tracks: Array.isArray(p.tracks) ? p.tracks.map(t => ({ id: t.id, title: t.title })) : []
                         }))
                     }));
+                    if (!ok) {
+                        setPlaylistWarning('playlistSaveFailedStorage');
+                    } else if (playlistWarningKey === 'playlistSaveFailedStorage') {
+                        setPlaylistWarning('');
+                    }
+                    return ok;
                 }
 
                 function syncActivePlaylistTracksFromRuntime() {
@@ -7300,16 +7362,26 @@
                     const active = getActivePlaylistMeta();
                     musicFiles = [];
                     if (!active || !Array.isArray(active.tracks)) return;
+                    let missingCount = 0;
                     for (const item of active.tracks) {
                         if (!item || item.id == null) continue;
                         try {
                             const blob = await getFileBlobFromDB(item.id);
-                            if (!blob) continue;
+                            if (!blob) {
+                                missingCount += 1;
+                                continue;
+                            }
                             const url = URL.createObjectURL(blob);
                             musicFiles.push({ url, title: item.title || 'Unknown track', id: item.id });
                         } catch (e) {
                             console.warn('Error loading track blob', item, e);
+                            missingCount += 1;
                         }
+                    }
+                    if (missingCount > 0) {
+                        setPlaylistWarning('playlistMissingFileData');
+                    } else if (playlistWarningKey === 'playlistMissingFileData') {
+                        setPlaylistWarning('');
                     }
                 }
 
@@ -7855,6 +7927,7 @@
                         }
                     } catch (e) {
                         console.warn('Failed to parse music_playlists_v2', e);
+                        setPlaylistWarning('playlistLoadCorrupted');
                     }
 
                     if (!loadedV2) {

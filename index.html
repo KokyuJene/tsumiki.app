@@ -332,6 +332,87 @@
             font-weight: 400;
         }
 
+        .history-item-pause {
+            margin-top: 10px;
+            font-size: 0.82rem;
+            line-height: 1.55;
+            opacity: 0.78;
+            word-break: break-word;
+        }
+
+        .history-item-pause-title {
+            opacity: 0.9;
+        }
+
+        .history-timeline {
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px dashed rgba(0, 0, 0, 0.12);
+        }
+
+        .dark .history-timeline {
+            border-top-color: rgba(255, 255, 255, 0.14);
+        }
+
+        .history-timeline-scale {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.72rem;
+            opacity: 0.72;
+            margin-bottom: 6px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .history-timeline-track {
+            position: relative;
+            width: 100%;
+            height: 11px;
+            border-radius: 24px;
+            background: rgba(0, 0, 0, 0.09);
+            overflow: visible;
+        }
+
+        .dark .history-timeline-track {
+            background: rgba(255, 255, 255, 0.11);
+        }
+
+        .history-timeline-segment {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            border-radius: 24px;
+            background: var(--primary-color);
+            min-width: 1px;
+        }
+
+        .dark .history-timeline-segment {
+            background: var(--primary-color-dark);
+        }
+
+        .history-timeline-marker {
+            position: absolute;
+            top: -2px;
+            bottom: -2px;
+            width: 1px;
+            border-left: 1px dashed rgba(0, 0, 0, 0.35);
+            transform: translateX(-0.5px);
+            pointer-events: none;
+        }
+
+        .dark .history-timeline-marker {
+            border-left-color: rgba(255, 255, 255, 0.35);
+        }
+
+        .history-timeline-marker-label {
+            position: absolute;
+            top: -18px;
+            transform: translateX(-50%);
+            font-size: 0.68rem;
+            opacity: 0.78;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
         .light .history-item-duration {
             color: var(--primary-color);
         }
@@ -689,6 +770,15 @@
             padding: 15px;
             border-radius: 24px;
             margin-bottom: 10px;
+        }
+
+        .setting-note {
+            margin-top: -2px;
+            margin-left: 15px;
+            margin-right: 15px;
+            font-size: 0.78rem;
+            line-height: 1.45;
+            opacity: 0.65;
         }
 
         .light .toggle-item {
@@ -1758,6 +1848,9 @@
             --primary-hover: #8ba4b8;
             --primary-color-dark: #7a95ab;
             --primary-hover-dark: #6a859b;
+            --todo-priority-high: #e74c3c;
+            --todo-priority-normal: #3498db;
+            --todo-priority-low: #95a5a6;
             --bg-light: #f8f9fb;
             --bg-dark: #17181d;
             /* Panel colors - soft/pale defaults */
@@ -2051,6 +2144,130 @@
             border-radius: 24px;
         }
 
+        .group-management-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .group-management-controls input {
+            flex: 1;
+            min-width: 180px;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 24px;
+            font-size: 0.95rem;
+            font-family: inherit;
+        }
+
+        .light .group-management-controls input {
+            background-color: var(--panel-light);
+            color: #323232;
+        }
+
+        .dark .group-management-controls input {
+            background-color: var(--panel-dark);
+            color: #e8e8e8;
+        }
+
+        .group-manage-actions {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            padding: 10px;
+            border-radius: 24px;
+        }
+
+        .group-manage-actions button {
+            padding: 8px 14px;
+            font-size: 0.82rem;
+            border-radius: 24px;
+        }
+
+        .light .group-manage-actions {
+            background: rgba(0, 0, 0, 0.03);
+        }
+
+        .dark .group-manage-actions {
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .group-manage-list {
+            width: 100%;
+            min-height: 120px;
+            max-height: 260px;
+            overflow-y: auto;
+            border-radius: 24px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .light .group-manage-list {
+            background-color: var(--panel-light);
+            border-color: rgba(0, 0, 0, 0.06);
+        }
+
+        .dark .group-manage-list {
+            background-color: var(--panel-dark);
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .group-manage-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-radius: 24px;
+            padding: 10px 12px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.15s;
+        }
+
+        .light .group-manage-item:hover {
+            background-color: var(--panel-light-hover);
+        }
+
+        .dark .group-manage-item:hover {
+            background-color: var(--panel-dark-2);
+        }
+
+        .group-manage-item:hover {
+            transform: translateY(-1px);
+        }
+
+        .group-manage-item-name {
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-size: 0.92rem;
+        }
+
+        .group-manage-empty {
+            opacity: 0.7;
+            font-size: 0.9rem;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .group-management-section .setting-note {
+            margin-top: 12px;
+            padding: 10px 12px;
+            border-radius: 12px;
+        }
+
+        .light .group-management-section .setting-note {
+            background: rgba(0, 0, 0, 0.03);
+        }
+
+        .dark .group-management-section .setting-note {
+            background: rgba(255, 255, 255, 0.06);
+        }
+
         /* チュートリアル関連スタイル */
         .tutorial-overlay {
             display: none;
@@ -2331,15 +2548,225 @@
 
         /* Todo関連の追加スタイル */
         .todo-priority-high {
-            border-left: 4px solid #e74c3c;
+            border-left: 4px solid var(--todo-priority-high);
         }
 
         .todo-priority-normal {
-            border-left: 4px solid #3498db;
+            border-left: 4px solid var(--todo-priority-normal);
         }
 
         .todo-priority-low {
-            border-left: 4px solid #95a5a6;
+            border-left: 4px solid var(--todo-priority-low);
+        }
+
+        .priority-color-overlay {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 10025;
+        }
+
+        .priority-color-overlay.show {
+            display: flex;
+        }
+
+        .priority-color-dialog {
+            width: 100%;
+            max-width: 680px;
+            border-radius: 24px;
+            padding: 20px;
+            animation: slideUp .2s ease-out;
+        }
+
+        .light .priority-color-dialog {
+            background: var(--bg-light);
+        }
+
+        .dark .priority-color-dialog {
+            background: var(--panel-dark);
+        }
+
+        .priority-color-targets {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .priority-color-target {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            cursor: pointer;
+            padding: 8px 10px;
+            border-radius: 24px;
+        }
+
+        .light .priority-color-target {
+            background: var(--panel-light);
+        }
+
+        .dark .priority-color-target {
+            background: var(--panel-dark-2);
+        }
+
+        .priority-color-target.active {
+            outline: 2px solid var(--primary-color);
+            outline-offset: -2px;
+        }
+
+        .priority-color-target-swatch {
+            width: 26px;
+            height: 26px;
+            border-radius: 24px;
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            flex-shrink: 0;
+        }
+
+        .priority-color-target-name {
+            font-size: 0.86rem;
+            opacity: 0.9;
+        }
+
+        .light .priority-color-target-name {
+            color: #323232;
+        }
+
+        .dark .priority-color-target-name {
+            color: #e8e8e8;
+        }
+
+        .priority-color-picker-wrap {
+            display: grid;
+            grid-template-columns: 170px 1fr;
+            gap: 12px;
+            align-items: stretch;
+            margin-bottom: 10px;
+        }
+
+        .priority-color-preview {
+            min-height: 180px;
+            border-radius: 0;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+        }
+
+        .priority-color-board-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .priority-color-board {
+            position: relative;
+            width: 100%;
+            height: 180px;
+            border-radius: 0;
+            cursor: crosshair;
+            overflow: hidden;
+            background: red;
+        }
+
+        .priority-color-board::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to right, #ffffff 0%, rgba(255, 255, 255, 0) 100%);
+        }
+
+        .priority-color-board::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, #000000 0%, rgba(0, 0, 0, 0) 100%);
+        }
+
+        .priority-color-board-cursor {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.45);
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .priority-color-hue-wrap {
+            position: relative;
+            height: 18px;
+            border-radius: 24px;
+        }
+
+        .priority-color-hue {
+            width: 100%;
+            margin: 0;
+            accent-color: #fff;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 18px;
+            border-radius: 24px;
+            background: linear-gradient(to right, #ff0000 0%, #ffff00 16.66%, #00ff00 33.33%, #00ffff 50%, #0000ff 66.66%, #ff00ff 83.33%, #ff0000 100%);
+            cursor: pointer;
+        }
+
+        .priority-color-hue::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 24px;
+            border: 2px solid #fff;
+            background: transparent;
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.45);
+        }
+
+        .priority-color-hue::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 24px;
+            border: 2px solid #fff;
+            background: transparent;
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.45);
+        }
+
+        .priority-color-hex {
+            width: 100%;
+            border: none;
+            border-radius: 24px;
+            padding: 10px 12px;
+            text-transform: uppercase;
+            margin-top: 10px;
+        }
+
+        .light .priority-color-hex {
+            background: var(--panel-light);
+            color: #323232;
+        }
+
+        .dark .priority-color-hex {
+            background: var(--panel-dark-2);
+            color: #e8e8e8;
+        }
+
+        @media (max-width: 640px) {
+            .priority-color-picker-wrap {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .priority-color-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .priority-color-actions button {
+            flex: 1;
         }
 
         .todo-repeat-badge {
@@ -4164,6 +4591,16 @@
                     </div>
                 </div>
                 <div class="toggle-item">
+                    <span data-i18n="historyTimelineToggle">履歴カードのタイムラインバー表示</span>
+                    <div class="toggle-switch" id="toggleHistoryTimeline" onclick="toggleHistoryTimeline()">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <div class="setting-note" id="historyTimelineLegacyNote" data-i18n="historyTimelineLegacyNote"
+                    style="display: none;">
+                    4/22より前の記録は表示されません。
+                </div>
+                <div class="toggle-item">
                     <span data-i18n="lockSettingsDuringTimer">タイマー作動中は設定を無効化</span>
                     <div class="toggle-switch" id="toggleLockSettings" onclick="toggleLockSettingsDuringTimer()">
                         <div class="toggle-slider"></div>
@@ -4192,6 +4629,11 @@
                     <div class="toggle-switch" id="toggleMusicResumeOnTap" onclick="toggleMusicResumeOnTap()">
                         <div class="toggle-slider"></div>
                     </div>
+                </div>
+                <div style="margin-top: 14px;">
+                    <button class="secondary" style="width: 100%;" onclick="openTodoPriorityColorModal()" data-i18n="todoPriorityColorSettingsButton">
+                        ToDo優先度カラーを設定
+                    </button>
                 </div>
             </div>
 
@@ -4424,6 +4866,23 @@
                 </div>
             </div>
 
+            <div class="settings-section group-management-section">
+                <h2 data-i18n="groupManagement">グループ管理</h2>
+                <div class="group-manage-actions">
+                    <button class="secondary" onclick="selectAllManagedGroups()" data-i18n="groupSelectAll">すべて選択</button>
+                    <button class="secondary" onclick="clearManagedGroupSelection()" data-i18n="groupClearSelection">選択解除</button>
+                </div>
+                <div id="groupManageList" class="group-manage-list" role="group" aria-label="管理対象グループ" data-i18n-aria="groupManagementAria"></div>
+                <div class="group-management-controls">
+                    <input type="text" id="groupBulkRenameInput" placeholder="新しいグループ名" data-i18n="groupRenamePlaceholder">
+                    <button class="primary" onclick="bulkRenameGroups()" data-i18n="groupBulkRenameButton">選択を一括変更</button>
+                </div>
+                <div class="group-management-controls" style="margin-top: 8px;">
+                    <button class="secondary" onclick="bulkDeleteGroups()" data-i18n="groupBulkDeleteButton">選択を一括削除</button>
+                </div>
+                <div class="setting-note" data-i18n="groupManagementHint">複数選択して一括変更/削除できます。</div>
+            </div>
+
             <div class="settings-section">
                 <h2 data-i18n="helpSection">ヘルプ</h2>
                 <button class="secondary" onclick="restartTutorial()" style="width: 100%; padding: 12px 20px;">
@@ -4579,13 +5038,54 @@
                     </div>
                 </div>
             </div>
+            <div class="priority-color-overlay" id="priorityColorOverlay" aria-hidden="true">
+                <div class="priority-color-dialog" role="dialog" aria-modal="true" aria-label="ToDo優先度カラー設定">
+                    <h2 style="margin-bottom: 14px;" data-i18n="todoPriorityColorSettingsTitle">ToDo優先度カラー設定</h2>
+                    <div class="priority-color-targets">
+                        <button class="priority-color-target active" id="priorityTargetHigh" onclick="selectTodoPriorityColorTarget('high')">
+                            <span class="priority-color-target-swatch" id="priorityColorSampleHigh"></span>
+                            <span class="priority-color-target-name" data-i18n="priorityHigh">高</span>
+                        </button>
+                        <button class="priority-color-target" id="priorityTargetNormal" onclick="selectTodoPriorityColorTarget('normal')">
+                            <span class="priority-color-target-swatch" id="priorityColorSampleNormal"></span>
+                            <span class="priority-color-target-name" data-i18n="priorityNormal">通常</span>
+                        </button>
+                        <button class="priority-color-target" id="priorityTargetLow" onclick="selectTodoPriorityColorTarget('low')">
+                            <span class="priority-color-target-swatch" id="priorityColorSampleLow"></span>
+                            <span class="priority-color-target-name" data-i18n="priorityLow">低</span>
+                        </button>
+                    </div>
+                    <div class="priority-color-picker-wrap">
+                        <div class="priority-color-preview" id="priorityColorCurrentPreview"></div>
+                        <div class="priority-color-board-wrap">
+                            <div class="priority-color-board" id="priorityColorBoard">
+                                <div class="priority-color-board-cursor" id="priorityColorBoardCursor"></div>
+                            </div>
+                            <div class="priority-color-hue-wrap">
+                                <input type="range" min="0" max="360" value="0" class="priority-color-hue" id="priorityColorHue">
+                            </div>
+                        </div>
+                    </div>
+                    <input class="priority-color-hex" id="priorityColorHexInput" value="#E74C3C" maxlength="7">
+                    <div class="priority-color-actions">
+                        <button class="secondary" onclick="resetTodoPriorityColorSettings()" data-i18n="resetButton">初期値</button>
+                        <button class="secondary" onclick="closeTodoPriorityColorModal()" data-i18n="cancelButton">キャンセル</button>
+                        <button class="primary" onclick="saveTodoPriorityColorSettings()" data-i18n="saveButton">保存</button>
+                    </div>
+                </div>
+            </div>
 
             <script>
                 let startTime = null;
                 let pausedTime = 0;
+                let pauseHistory = [];
+                let currentPauseStartIso = null;
                 let timerInterval = null;
                 let isPaused = false;
+                const DAY_MS = 24 * 60 * 60 * 1000;
+                const HISTORY_TIMELINE_CUTOFF = new Date('2026-04-22T00:00:00');
                 let selectedItems = new Set();
+                let selectedManagedGroups = new Set();
                 let allHistoryItems = [];
                 let currentMusicIndex = -1;
                 let musicFiles = [];
@@ -4606,6 +5106,14 @@
                 let pipNeedsGestureUnlock = false;
                 let lastPiPEnterAt = 0;
                 let pipWindow = null;
+                const TODO_PRIORITY_COLOR_DEFAULTS = {
+                    high: '#E74C3C',
+                    normal: '#3498DB',
+                    low: '#95A5A6'
+                };
+                let editingPriorityKey = 'high';
+                let todoPriorityEditingColors = { ...TODO_PRIORITY_COLOR_DEFAULTS };
+                let todoPickerState = { h: 0, s: 100, v: 100 };
 
                 // 多言語対応システム
                 let currentLanguage = 'ja'; // デフォルトは日本語
@@ -4692,6 +5200,9 @@
                         clearHistory: 'すべての履歴をクリア',
                         noHistory: 'まだ履歴がありません',
                         hours: '時間',
+                        pauseLog: '一時停止',
+                        noPauseRecords: '記録なし',
+                        historyTimelineDayMarker: '{day} - 00:00~',
 
                         // 音楽プレイヤー
                         selectFile: 'ファイルを選択',
@@ -4750,6 +5261,9 @@
                         repeatWeekly: '毎週',
                         repeatMonthly: '毎月',
                         priority: '優先度',
+                        todoPriorityColorSettingsButton: 'ToDo優先度カラーを設定',
+                        todoPriorityColorSettingsTitle: 'ToDo優先度カラー設定',
+                        resetButton: '初期値',
                         priorityLow: '低',
                         priorityNormal: '通常',
                         priorityHigh: '高',
@@ -4778,6 +5292,8 @@
                         autoPiPUnavailable: 'このブラウザでは自動ミニモード（PiP）は利用できません',
                         stopMusicOnTimerEnd: 'タイマー終了時に音楽を一時停止',
                         musicResumeOnTapAfterReload: '更新後に画面タップで音楽を自動再開',
+                        historyTimelineToggle: '履歴カードのタイムラインバー表示',
+                        historyTimelineLegacyNote: '一時停止時間が未記録の履歴ではバーを表示しません。4/22より前の記録は表示されません。',
                         graphDisplay: 'グラフ表示',
                         studyGraph: '勉強時間のグラフ表示',
                         graphType: 'グラフの種類',
@@ -4796,6 +5312,17 @@
                         locationStats: '統計画面',
                         locationBoth: '両方',
                         dataManagement: 'データ管理',
+                        groupManagement: 'グループ管理',
+                        groupManagementAria: '管理対象グループ',
+                        groupRenamePlaceholder: '新しいグループ名',
+                        groupBulkRenameButton: '選択を一括変更',
+                        groupBulkDeleteButton: '選択を一括削除',
+                        groupSelectAll: 'すべて選択',
+                        groupClearSelection: '選択解除',
+                        groupManagementHint: '複数選択して一括変更/削除できます。',
+                        groupManagementNoGroups: 'グループがありません',
+                        groupRenameConfirm: '選択した{n}個のグループ名を「{name}」に変更しますか?',
+                        groupDeleteConfirm: '選択した{n}個のグループを未分類にしますか?',
                         exportData: 'データをエクスポート',
                         importData: 'データをインポート',
                         helpSection: 'ヘルプ',
@@ -5062,6 +5589,9 @@
                         clearHistory: 'Clear All History',
                         noHistory: 'No history yet',
                         hours: 'hours',
+                        pauseLog: 'Pause',
+                        noPauseRecords: 'No pause record',
+                        historyTimelineDayMarker: '{day} - 00:00~',
 
                         // Music Player
                         selectFile: 'Select File',
@@ -5095,6 +5625,9 @@
                         repeatWeekly: 'Weekly',
                         repeatMonthly: 'Monthly',
                         priority: 'Priority',
+                        todoPriorityColorSettingsButton: 'Set ToDo Priority Colors',
+                        todoPriorityColorSettingsTitle: 'ToDo Priority Color Settings',
+                        resetButton: 'Reset',
                         priorityLow: 'Low',
                         priorityNormal: 'Normal',
                         priorityHigh: 'High',
@@ -5123,6 +5656,8 @@
                         autoPiPUnavailable: 'Auto Mini Mode (PiP) is not available in this browser',
                         stopMusicOnTimerEnd: 'Pause music when timer ends',
                         musicResumeOnTapAfterReload: 'Resume music on tap after reload',
+                        historyTimelineToggle: 'Show timeline bar on history cards',
+                        historyTimelineLegacyNote: 'Timeline bars are hidden for records without pause data. Records before 4/22 are not shown in this bar feature.',
                         graphDisplay: 'Graph Display',
                         studyGraph: 'Show Study Time Graph',
                         graphType: 'Graph Type',
@@ -5142,6 +5677,17 @@
                         locationStats: 'Stats Screen',
                         locationBoth: 'Both',
                         dataManagement: 'Data Management',
+                        groupManagement: 'Group Management',
+                        groupManagementAria: 'Target groups for bulk action',
+                        groupRenamePlaceholder: 'New group name',
+                        groupBulkRenameButton: 'Bulk Rename Selected',
+                        groupBulkDeleteButton: 'Bulk Delete Selected',
+                        groupSelectAll: 'Select All',
+                        groupClearSelection: 'Clear Selection',
+                        groupManagementHint: 'Select multiple groups to bulk rename/delete.',
+                        groupManagementNoGroups: 'No groups available',
+                        groupRenameConfirm: 'Rename {n} selected groups to "{name}"?',
+                        groupDeleteConfirm: 'Move {n} selected groups to uncategorized?',
                         exportData: 'Export Data',
                         importData: 'Import Data',
                         helpSection: 'Help',
@@ -5412,6 +5958,7 @@
                     if (getData('graph_enabled') === 'true') {
                         updateGraphs();
                     }
+                    renderGroupManagement();
                     loadHistory();
                     loadStats();
                     loadPlaylist();
@@ -6154,6 +6701,22 @@
                     }
                 }
 
+                function toggleHistoryTimeline() {
+                    const toggle = document.getElementById('toggleHistoryTimeline');
+                    if (!toggle) return;
+                    const isActive = toggle.classList.contains('active');
+
+                    if (isActive) {
+                        toggle.classList.remove('active');
+                        saveData('feature_history_timeline', 'false');
+                    } else {
+                        toggle.classList.add('active');
+                        saveData('feature_history_timeline', 'true');
+                    }
+
+                    loadHistory();
+                }
+
                 function addMenuButton(feature) {
                     const menu = document.getElementById('mainMenu');
                     const btnText = feature === 'music' ? getText('menuMusic') : getText('menuTodo');
@@ -6372,6 +6935,102 @@
                     return `${year}${getText('year')}${month}${getText('month')}${day}${getText('day')}`;
                 }
 
+                function persistStudyPauseHistory() {
+                    saveData('studyPauseHistory', JSON.stringify(pauseHistory));
+                    if (currentPauseStartIso) {
+                        saveData('studyPauseStart', currentPauseStartIso);
+                    } else {
+                        localStorage.removeItem('studyPauseStart');
+                        setCookie('studyPauseStart', '', -1);
+                    }
+                }
+
+                function addCurrentPauseRange(endDate = new Date()) {
+                    if (!currentPauseStartIso) return;
+                    const pauseStart = new Date(currentPauseStartIso);
+                    const pauseEnd = endDate instanceof Date ? endDate : new Date(endDate);
+
+                    if (!isNaN(pauseStart.getTime()) && !isNaN(pauseEnd.getTime()) && pauseEnd > pauseStart) {
+                        pauseHistory.push({
+                            start: pauseStart.toISOString(),
+                            end: pauseEnd.toISOString()
+                        });
+                    }
+
+                    currentPauseStartIso = null;
+                    persistStudyPauseHistory();
+                }
+
+                function hasPauseMetadata(item) {
+                    return Array.isArray(item?.pauses);
+                }
+
+                function normalizeHistoryPauseRanges(item, sessionStart, sessionEnd) {
+                    if (!hasPauseMetadata(item)) return [];
+
+                    const sessionStartMs = sessionStart.getTime();
+                    const sessionEndMs = sessionEnd.getTime();
+                    if (!Number.isFinite(sessionStartMs) || !Number.isFinite(sessionEndMs) || sessionEndMs <= sessionStartMs) {
+                        return [];
+                    }
+
+                    const normalized = item.pauses.map((pause) => {
+                        const rawStart = new Date(pause?.start);
+                        const rawEnd = new Date(pause?.end);
+                        if (isNaN(rawStart.getTime()) || isNaN(rawEnd.getTime())) return null;
+
+                        const clampedStart = Math.max(rawStart.getTime(), sessionStartMs);
+                        const clampedEnd = Math.min(rawEnd.getTime(), sessionEndMs);
+                        if (clampedEnd <= clampedStart) return null;
+
+                        return { start: clampedStart, end: clampedEnd };
+                    }).filter(Boolean).sort((a, b) => a.start - b.start);
+
+                    const merged = [];
+                    for (const range of normalized) {
+                        const last = merged[merged.length - 1];
+                        if (!last || range.start > last.end) {
+                            merged.push({ ...range });
+                        } else if (range.end > last.end) {
+                            last.end = range.end;
+                        }
+                    }
+
+                    return merged;
+                }
+
+                function buildStudySegmentsFromPauses(sessionStart, sessionEnd, pauseRanges) {
+                    const segments = [];
+                    const sessionStartMs = sessionStart.getTime();
+                    const sessionEndMs = sessionEnd.getTime();
+                    if (!Number.isFinite(sessionStartMs) || !Number.isFinite(sessionEndMs) || sessionEndMs <= sessionStartMs) {
+                        return segments;
+                    }
+
+                    let cursor = sessionStartMs;
+                    for (const pause of pauseRanges) {
+                        if (pause.start > cursor) {
+                            segments.push({ start: cursor, end: pause.start });
+                        }
+                        if (pause.end > cursor) {
+                            cursor = pause.end;
+                        }
+                    }
+
+                    if (cursor < sessionEndMs) {
+                        segments.push({ start: cursor, end: sessionEndMs });
+                    }
+
+                    return segments;
+                }
+
+                function formatHistoryTimeRangeLabel(startDate, endDate) {
+                    if (formatDate(startDate) === formatDate(endDate)) {
+                        return `${formatDateTime(startDate)} - ${formatDateTime(endDate)}`;
+                    }
+                    return `${formatDateTimeLong(startDate)} - ${formatDateTimeLong(endDate)}`;
+                }
+
                 // Compute focus mode breakdown from wall elapsed (stateless — no circular dependency)
                 function computeFocusCycle(wallElapsed) {
                     wallElapsed = Math.max(0, wallElapsed);
@@ -6439,6 +7098,8 @@
                     startTime = Date.now();
                     pausedTime = 0;
                     isPaused = false;
+                    pauseHistory = [];
+                    currentPauseStartIso = null;
 
                     // Focus Mode Init
                     focusState = 'focus';
@@ -6447,6 +7108,7 @@
                     saveData('studyStartTime', startTimeStr);
                     saveData('studyPaused', 'false');
                     saveData('studyPausedAccum', '0');
+                    persistStudyPauseHistory();
                     document.getElementById('startBtn').classList.add('hidden');
                     document.getElementById('pauseBtn').classList.remove('hidden');
                     document.getElementById('endBtn').classList.remove('hidden');
@@ -6472,18 +7134,22 @@
                         // 一時停止
                         pausedTime += Date.now() - startTime;
                         isPaused = true;
+                        currentPauseStartIso = new Date().toISOString();
                         if (timerInterval) clearInterval(timerInterval);
                         document.getElementById('pauseBtn').textContent = getText('resumeButton');
                         saveData('studyPaused', 'true');
                         saveData('studyPausedAccum', String(pausedTime));
+                        persistStudyPauseHistory();
                         updateSettingsButtonState();
                     } else {
                         // 再開
+                        addCurrentPauseRange(new Date());
                         startTime = Date.now();
                         isPaused = false;
                         timerInterval = setInterval(updateTimer, 100);
                         document.getElementById('pauseBtn').textContent = getText('pauseButton');
                         saveData('studyPaused', 'false');
+                        saveData('studyPausedAccum', String(pausedTime));
                         updateSettingsButtonState();
                     }
                 }
@@ -6501,6 +7167,9 @@
                         }
                     }
                     const endTime = new Date();
+                    if (isPaused) {
+                        addCurrentPauseRange(endTime);
+                    }
                     const startCookie = getData('studyStartTime');
                     const groupInput = document.getElementById('groupInput');
                     const groupName = groupInput.value.trim() || '';
@@ -6519,7 +7188,16 @@
                             }
                             let history = getData('studyHistory');
                             history = history ? JSON.parse(history) : [];
-                            history.unshift({ start: start.toISOString(), end: endTime.toISOString(), duration: actualStudyTime, group: groupName });
+                            history.unshift({
+                                start: start.toISOString(),
+                                end: endTime.toISOString(),
+                                duration: actualStudyTime,
+                                group: groupName,
+                                pauses: pauseHistory.map((pause) => ({
+                                    start: pause.start,
+                                    end: pause.end
+                                }))
+                            });
                             saveData('studyHistory', JSON.stringify(history));
                             const startDisplay = formatDateTimeLong(start);
                             const endDisplay = formatDateTimeLong(endTime);
@@ -6530,9 +7208,13 @@
                     localStorage.removeItem('studyStartTime');
                     localStorage.removeItem('studyPaused');
                     localStorage.removeItem('studyPausedAccum');
+                    localStorage.removeItem('studyPauseHistory');
+                    localStorage.removeItem('studyPauseStart');
                     setCookie('studyStartTime', '', -1);
                     setCookie('studyPaused', '', -1);
                     setCookie('studyPausedAccum', '', -1);
+                    setCookie('studyPauseHistory', '', -1);
+                    setCookie('studyPauseStart', '', -1);
                     document.getElementById('startBtn').classList.remove('hidden');
                     document.getElementById('pauseBtn').classList.add('hidden');
                     document.getElementById('endBtn').classList.add('hidden');
@@ -6541,6 +7223,8 @@
                     startTime = null;
                     pausedTime = 0;
                     isPaused = false;
+                    pauseHistory = [];
+                    currentPauseStartIso = null;
                     updateSettingsButtonState();
                 }
 
@@ -7682,6 +8366,11 @@
 
                             if (shouldReset) {
                                 todo.completed = false;
+                                if (todo.completionStages) {
+                                    todo.completionStages.stage1 = false;
+                                    todo.completionStages.stage2 = false;
+                                    todo.completionStages.stage3 = false;
+                                }
                             }
                         }
                     });
@@ -8371,6 +9060,76 @@
                     }
                 }
 
+                function isHistoryTimelineEnabled() {
+                    return getData('feature_history_timeline') !== 'false';
+                }
+
+                function shouldShowLegacyNoticeForTimeline(item) {
+                    if (hasPauseMetadata(item)) return false;
+                    const start = new Date(item?.start);
+                    return !isNaN(start.getTime()) && start < HISTORY_TIMELINE_CUTOFF;
+                }
+
+                function updateHistoryTimelineLegacyNotice(historyItems) {
+                    const noteEl = document.getElementById('historyTimelineLegacyNote');
+                    if (!noteEl) return;
+                    const hasLegacyWithoutPause = Array.isArray(historyItems) && historyItems.some(shouldShowLegacyNoticeForTimeline);
+                    noteEl.style.display = hasLegacyWithoutPause ? 'block' : 'none';
+                }
+
+                function buildHistoryPauseInfoHtml(item, start, end) {
+                    if (!hasPauseMetadata(item)) return '';
+                    const pauseRanges = normalizeHistoryPauseRanges(item, start, end);
+                    if (pauseRanges.length === 0) {
+                        return `${getText('pauseLog')}: ${getText('noPauseRecords')}`;
+                    }
+
+                    const pauseLines = pauseRanges.map((range, index) => {
+                        const label = formatHistoryTimeRangeLabel(new Date(range.start), new Date(range.end));
+                        return index === 0
+                            ? `${getText('pauseLog')}: ${label}`
+                            : `${index + 1}. ${label}`;
+                    });
+
+                    return pauseLines.join('<br>');
+                }
+
+                function buildHistoryTimelineHtml(item, start, end) {
+                    if (!isHistoryTimelineEnabled() || !hasPauseMetadata(item)) return '';
+
+                    const timelineStart = new Date(start);
+                    timelineStart.setHours(0, 0, 0, 0);
+                    const timelineEnd = new Date(end);
+                    timelineEnd.setHours(0, 0, 0, 0);
+                    timelineEnd.setTime(timelineEnd.getTime() + DAY_MS);
+
+                    const timelineStartMs = timelineStart.getTime();
+                    const timelineEndMs = timelineEnd.getTime();
+                    const totalSpan = timelineEndMs - timelineStartMs;
+                    if (!Number.isFinite(totalSpan) || totalSpan <= 0) return '';
+
+                    const pauseRanges = normalizeHistoryPauseRanges(item, start, end);
+                    const studySegments = buildStudySegmentsFromPauses(start, end, pauseRanges);
+
+                    const segmentHtml = studySegments.map((segment) => {
+                        const left = ((segment.start - timelineStartMs) / totalSpan) * 100;
+                        const width = ((segment.end - segment.start) / totalSpan) * 100;
+                        return `<span class="history-timeline-segment" style="left:${left}%;width:${Math.max(width, 0.12)}%;"></span>`;
+                    }).join('');
+
+                    const markerHtml = [];
+                    for (let marker = timelineStartMs + DAY_MS; marker < timelineEndMs; marker += DAY_MS) {
+                        const left = ((marker - timelineStartMs) / totalSpan) * 100;
+                        const markerDate = new Date(marker);
+                        const dayText = String(markerDate.getDate()).padStart(2, '0');
+                        const label = getText('historyTimelineDayMarker').replace('{day}', dayText);
+                        markerHtml.push(`<span class="history-timeline-marker" style="left:${left}%;"></span>`);
+                        markerHtml.push(`<span class="history-timeline-marker-label" style="left:${left}%;">${label}</span>`);
+                    }
+
+                    return `<div class="history-timeline"><div class="history-timeline-scale"><span>0:00</span><span>0:00</span></div><div class="history-timeline-track">${segmentHtml}${markerHtml.join('')}</div></div>`;
+                }
+
                 function loadHistory() {
                     const historyList = document.getElementById('historyList');
                     const searchInput = document.getElementById('searchInput');
@@ -8380,6 +9139,7 @@
                     let history = getData('studyHistory');
                     history = history ? JSON.parse(history) : [];
                     allHistoryItems = [...history];
+                    updateHistoryTimelineLegacyNotice(allHistoryItems);
                     if (selectedGroup) history = history.filter(item => item.group === selectedGroup);
                     if (searchTerm) {
                         history = history.filter(item => {
@@ -8407,7 +9167,7 @@
                         return;
                     }
                     historyList.innerHTML = history.map((item, index) => {
-                        const actualIndex = allHistoryItems.findIndex(h => h.start === item.start && h.end === item.end && h.duration === item.duration);
+                        const actualIndex = allHistoryItems.indexOf(item);
                         const start = new Date(item.start);
                         const end = new Date(item.end);
                         const groupBadge = item.group ? `<div class="group-badge">${item.group}</div>` : '';
@@ -8415,7 +9175,10 @@
                         const dateDisplay = (formatDate(start) === formatDate(end)) ? formatDate(start) : `${formatDate(start)}<br><small>→ ${formatDate(end)}</small>`;
                         const startDisplay = formatDateTime(start);
                         const endDisplay = formatDateTime(end);
-                        return `<div class="history-item ${isSelected ? 'selected' : ''}" onclick="toggleSelection(event, ${actualIndex})"><input type="checkbox" class="history-item-checkbox" ${isSelected ? 'checked' : ''} onclick="toggleSelection(event, ${actualIndex})"><div class="history-item-date">${dateDisplay}</div><div class="history-item-time">${getText('start')}: ${startDisplay}<br>${getText('end')}: ${endDisplay}</div><div class="history-item-duration">${getText('studyTime')}: ${formatTime(item.duration)}</div>${groupBadge}</div>`;
+                        const pauseInfoHtml = buildHistoryPauseInfoHtml(item, start, end);
+                        const pauseInlineHtml = pauseInfoHtml ? `<br>${pauseInfoHtml}` : '';
+                        const timelineHtml = buildHistoryTimelineHtml(item, start, end);
+                        return `<div class="history-item ${isSelected ? 'selected' : ''}" onclick="toggleSelection(event, ${actualIndex})"><input type="checkbox" class="history-item-checkbox" ${isSelected ? 'checked' : ''} onclick="toggleSelection(event, ${actualIndex})"><div class="history-item-date">${dateDisplay}</div><div class="history-item-time">${getText('start')}: ${startDisplay}${pauseInlineHtml}<br>${getText('end')}: ${endDisplay}</div><div class="history-item-duration">${getText('studyTime')}: ${formatTime(item.duration)}</div>${timelineHtml}${groupBadge}</div>`;
                     }).join('');
                     updateActionButtons();
                 }
@@ -8456,7 +9219,7 @@
                             return dateStr.includes(searchTerm) || startTimeStr.includes(searchTerm) || endTimeStr.includes(searchTerm);
                         });
                     }
-                    const visibleIndices = history.map(item => allHistoryItems.findIndex(h => h.start === item.start && h.end === item.end && h.duration === item.duration));
+                    const visibleIndices = history.map(item => allHistoryItems.indexOf(item));
                     const allSelected = visibleIndices.every(i => selectedItems.has(i));
                     if (allSelected) visibleIndices.forEach(i => selectedItems.delete(i));
                     else visibleIndices.forEach(i => selectedItems.add(i));
@@ -8521,10 +9284,15 @@
                     history = history ? JSON.parse(history) : [];
                     const groups = [...new Set(history.map(item => item.group).filter(g => g))];
                     const groupFilter = document.getElementById('groupFilter');
+                    if (!groupFilter) return;
+                    const prevGroup = groupFilter.value;
                     groupFilter.innerHTML = `<option value="">${getText('allGroupsFilter')}</option>`;
                     groups.forEach(group => {
                         groupFilter.innerHTML += `<option value="${group}">${group}</option>`;
                     });
+                    if (prevGroup && groups.includes(prevGroup)) {
+                        groupFilter.value = prevGroup;
+                    }
                     // populate move target select as well
                     const moveSel = document.getElementById('moveGroupSelect');
                     if (moveSel) {
@@ -8535,6 +9303,276 @@
                         });
                         try { moveSel.value = prev; } catch (e) { }
                     }
+                    renderGroupManagement();
+                }
+
+                function getTodoPriorityColors() {
+                    const raw = getData('todo_priority_colors');
+                    if (!raw) return { ...TODO_PRIORITY_COLOR_DEFAULTS };
+                    try {
+                        const parsed = JSON.parse(raw);
+                        return {
+                            high: normalizeHexColor(parsed?.high) || TODO_PRIORITY_COLOR_DEFAULTS.high,
+                            normal: normalizeHexColor(parsed?.normal) || TODO_PRIORITY_COLOR_DEFAULTS.normal,
+                            low: normalizeHexColor(parsed?.low) || TODO_PRIORITY_COLOR_DEFAULTS.low
+                        };
+                    } catch (e) {
+                        return { ...TODO_PRIORITY_COLOR_DEFAULTS };
+                    }
+                }
+
+                function normalizeHexColor(value) {
+                    if (!value) return null;
+                    let color = String(value).trim().toUpperCase();
+                    if (/^[0-9A-F]{6}$/.test(color)) color = `#${color}`;
+                    return /^#[0-9A-F]{6}$/.test(color) ? color : null;
+                }
+
+                function applyTodoPriorityColors() {
+                    const colors = getTodoPriorityColors();
+                    document.documentElement.style.setProperty('--todo-priority-high', colors.high);
+                    document.documentElement.style.setProperty('--todo-priority-normal', colors.normal);
+                    document.documentElement.style.setProperty('--todo-priority-low', colors.low);
+                }
+
+                function hsvToRgb(h, s, v) {
+                    const sat = s / 100;
+                    const val = v / 100;
+                    const c = val * sat;
+                    const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+                    const m = val - c;
+                    let r = 0, g = 0, b = 0;
+                    if (h < 60) { r = c; g = x; b = 0; }
+                    else if (h < 120) { r = x; g = c; b = 0; }
+                    else if (h < 180) { r = 0; g = c; b = x; }
+                    else if (h < 240) { r = 0; g = x; b = c; }
+                    else if (h < 300) { r = x; g = 0; b = c; }
+                    else { r = c; g = 0; b = x; }
+                    return {
+                        r: Math.round((r + m) * 255),
+                        g: Math.round((g + m) * 255),
+                        b: Math.round((b + m) * 255)
+                    };
+                }
+
+                function rgbToHex(r, g, b) {
+                    return `#${[r, g, b].map(v => Math.max(0, Math.min(255, v)).toString(16).padStart(2, '0')).join('').toUpperCase()}`;
+                }
+
+                function hexToRgb(hex) {
+                    const normalized = normalizeHexColor(hex);
+                    if (!normalized) return null;
+                    return {
+                        r: parseInt(normalized.slice(1, 3), 16),
+                        g: parseInt(normalized.slice(3, 5), 16),
+                        b: parseInt(normalized.slice(5, 7), 16)
+                    };
+                }
+
+                function hexToHsv(hex) {
+                    const rgb = hexToRgb(hex);
+                    if (!rgb) return { h: 0, s: 100, v: 100 };
+                    const r = rgb.r / 255;
+                    const g = rgb.g / 255;
+                    const b = rgb.b / 255;
+                    const max = Math.max(r, g, b);
+                    const min = Math.min(r, g, b);
+                    const d = max - min;
+                    let h = 0;
+                    if (d !== 0) {
+                        if (max === r) h = 60 * (((g - b) / d + 6) % 6);
+                        else if (max === g) h = 60 * ((b - r) / d + 2);
+                        else h = 60 * ((r - g) / d + 4);
+                    }
+                    const s = max === 0 ? 0 : (d / max) * 100;
+                    const v = max * 100;
+                    return { h: Math.round(h), s: Math.round(s), v: Math.round(v) };
+                }
+
+                function refreshTodoPriorityColorTargets() {
+                    document.getElementById('priorityColorSampleHigh').style.backgroundColor = todoPriorityEditingColors.high;
+                    document.getElementById('priorityColorSampleNormal').style.backgroundColor = todoPriorityEditingColors.normal;
+                    document.getElementById('priorityColorSampleLow').style.backgroundColor = todoPriorityEditingColors.low;
+                    document.getElementById('priorityTargetHigh').classList.toggle('active', editingPriorityKey === 'high');
+                    document.getElementById('priorityTargetNormal').classList.toggle('active', editingPriorityKey === 'normal');
+                    document.getElementById('priorityTargetLow').classList.toggle('active', editingPriorityKey === 'low');
+                }
+
+                function updateTodoPickerUIFromState() {
+                    const board = document.getElementById('priorityColorBoard');
+                    const cursor = document.getElementById('priorityColorBoardCursor');
+                    const hueInput = document.getElementById('priorityColorHue');
+                    const hexInput = document.getElementById('priorityColorHexInput');
+                    const preview = document.getElementById('priorityColorCurrentPreview');
+                    if (!board || !cursor || !hueInput || !hexInput || !preview) return;
+
+                    const pureHue = hsvToRgb(todoPickerState.h, 100, 100);
+                    board.style.backgroundColor = rgbToHex(pureHue.r, pureHue.g, pureHue.b);
+                    hueInput.value = String(todoPickerState.h);
+
+                    const x = (todoPickerState.s / 100) * 100;
+                    const y = (1 - (todoPickerState.v / 100)) * 100;
+                    cursor.style.left = `${x}%`;
+                    cursor.style.top = `${y}%`;
+
+                    const currentRgb = hsvToRgb(todoPickerState.h, todoPickerState.s, todoPickerState.v);
+                    const currentHex = rgbToHex(currentRgb.r, currentRgb.g, currentRgb.b);
+                    hexInput.value = currentHex;
+                    preview.style.backgroundColor = currentHex;
+                    todoPriorityEditingColors[editingPriorityKey] = currentHex;
+                    refreshTodoPriorityColorTargets();
+                }
+
+                function selectTodoPriorityColorTarget(key) {
+                    editingPriorityKey = key;
+                    const hsv = hexToHsv(todoPriorityEditingColors[key]);
+                    todoPickerState = { h: hsv.h, s: hsv.s, v: hsv.v };
+                    updateTodoPickerUIFromState();
+                }
+
+                function updateTodoPickerByBoardEvent(clientX, clientY) {
+                    const board = document.getElementById('priorityColorBoard');
+                    if (!board) return;
+                    const rect = board.getBoundingClientRect();
+                    const x = Math.max(0, Math.min(rect.width, clientX - rect.left));
+                    const y = Math.max(0, Math.min(rect.height, clientY - rect.top));
+                    todoPickerState.s = Math.round((x / rect.width) * 100);
+                    todoPickerState.v = Math.round((1 - (y / rect.height)) * 100);
+                    updateTodoPickerUIFromState();
+                }
+
+                function openTodoPriorityColorModal() {
+                    const overlay = document.getElementById('priorityColorOverlay');
+                    if (!overlay) return;
+                    todoPriorityEditingColors = getTodoPriorityColors();
+                    editingPriorityKey = 'high';
+                    selectTodoPriorityColorTarget('high');
+                    overlay.classList.add('show');
+                    overlay.setAttribute('aria-hidden', 'false');
+                }
+
+                function closeTodoPriorityColorModal() {
+                    const overlay = document.getElementById('priorityColorOverlay');
+                    if (!overlay) return;
+                    overlay.classList.remove('show');
+                    overlay.setAttribute('aria-hidden', 'true');
+                }
+
+                function saveTodoPriorityColorSettings() {
+                    const high = normalizeHexColor(todoPriorityEditingColors.high) || TODO_PRIORITY_COLOR_DEFAULTS.high;
+                    const normal = normalizeHexColor(todoPriorityEditingColors.normal) || TODO_PRIORITY_COLOR_DEFAULTS.normal;
+                    const low = normalizeHexColor(todoPriorityEditingColors.low) || TODO_PRIORITY_COLOR_DEFAULTS.low;
+                    saveData('todo_priority_colors', JSON.stringify({ high, normal, low }));
+                    applyTodoPriorityColors();
+                    loadTodos();
+                    closeTodoPriorityColorModal();
+                }
+
+                function resetTodoPriorityColorSettings() {
+                    todoPriorityEditingColors = { ...TODO_PRIORITY_COLOR_DEFAULTS };
+                    selectTodoPriorityColorTarget(editingPriorityKey);
+                }
+
+                function renderGroupManagement() {
+                    const listEl = document.getElementById('groupManageList');
+                    if (!listEl) return;
+
+                    let history = getData('studyHistory');
+                    history = history ? JSON.parse(history) : [];
+                    const groups = [...new Set(history.map(item => item.group).filter(g => g))].sort((a, b) => a.localeCompare(b, 'ja'));
+                    selectedManagedGroups = new Set(Array.from(selectedManagedGroups).filter(group => groups.includes(group)));
+
+                    if (groups.length === 0) {
+                        listEl.innerHTML = `<div class="group-manage-empty">${getText('groupManagementNoGroups')}</div>`;
+                        return;
+                    }
+
+                    listEl.innerHTML = groups.map(group => {
+                        const checked = selectedManagedGroups.has(group) ? 'checked' : '';
+                        return `<label class="group-manage-item"><input type="checkbox" data-group="${escapeHtml(group)}" ${checked} onchange="toggleManagedGroupFromCheckbox(this)"><span class="group-manage-item-name">${escapeHtml(group)}</span></label>`;
+                    }).join('');
+                }
+
+                function getSelectedManagedGroups() {
+                    return Array.from(selectedManagedGroups);
+                }
+
+                function toggleManagedGroup(group, checked) {
+                    if (!group) return;
+                    if (checked) selectedManagedGroups.add(group);
+                    else selectedManagedGroups.delete(group);
+                }
+
+                function toggleManagedGroupFromCheckbox(checkbox) {
+                    if (!checkbox) return;
+                    const group = checkbox.getAttribute('data-group') || '';
+                    toggleManagedGroup(group, !!checkbox.checked);
+                }
+
+                function selectAllManagedGroups() {
+                    let history = getData('studyHistory');
+                    history = history ? JSON.parse(history) : [];
+                    const groups = [...new Set(history.map(item => item.group).filter(g => g))];
+                    selectedManagedGroups = new Set(groups);
+                    renderGroupManagement();
+                }
+
+                function clearManagedGroupSelection() {
+                    selectedManagedGroups.clear();
+                    renderGroupManagement();
+                }
+
+                async function bulkRenameGroups() {
+                    const groups = getSelectedManagedGroups();
+                    if (groups.length === 0) return;
+
+                    const inputEl = document.getElementById('groupBulkRenameInput');
+                    const newName = (inputEl?.value || '').trim();
+                    if (!newName) return;
+
+                    const confirmed = await customConfirm(
+                        getText('groupRenameConfirm').replace('{n}', String(groups.length)).replace('{name}', newName),
+                        getText('confirm'),
+                        'warning.webp'
+                    );
+                    if (!confirmed) return;
+
+                    let history = getData('studyHistory');
+                    history = history ? JSON.parse(history) : [];
+                    history.forEach(item => {
+                        if (groups.includes(item.group)) item.group = newName;
+                    });
+
+                    saveData('studyHistory', JSON.stringify(history));
+                    if (inputEl) inputEl.value = '';
+                    selectedManagedGroups.clear();
+                    updateGroupFilter();
+                    loadHistory();
+                    loadStats();
+                }
+
+                async function bulkDeleteGroups() {
+                    const groups = getSelectedManagedGroups();
+                    if (groups.length === 0) return;
+
+                    const confirmed = await customConfirm(
+                        getText('groupDeleteConfirm').replace('{n}', String(groups.length)),
+                        getText('confirm'),
+                        'warning.webp'
+                    );
+                    if (!confirmed) return;
+
+                    let history = getData('studyHistory');
+                    history = history ? JSON.parse(history) : [];
+                    history.forEach(item => {
+                        if (groups.includes(item.group)) item.group = '';
+                    });
+
+                    saveData('studyHistory', JSON.stringify(history));
+                    selectedManagedGroups.clear();
+                    updateGroupFilter();
+                    loadHistory();
+                    loadStats();
                 }
 
                 function calculateStreak() {
@@ -8584,6 +9622,7 @@
                     if (confirmed) {
                         saveData('studyHistory', JSON.stringify([]));
                         selectedItems.clear();
+                        updateGroupFilter();
                         loadHistory();
                     }
                 }
@@ -8599,6 +9638,7 @@
                     'feature_music',
                     'feature_todo',
                     'feature_title_time',
+                    'feature_history_timeline',
                     'feature_loading_anim',
                     'feature_auto_pip',
                     'feature_stop_music_on_timer_end',
@@ -8614,6 +9654,7 @@
                     'graph_location',
                     'todo_v2_enabled',
                     'todo_v2_prompt_shown',
+                    'todo_priority_colors',
                     'tutorial_completed',
                     'dev_mode_enabled'
                 ];
@@ -8622,6 +9663,7 @@
                     'feature_music',
                     'feature_todo',
                     'feature_title_time',
+                    'feature_history_timeline',
                     'feature_loading_anim',
                     'feature_auto_pip',
                     'feature_stop_music_on_timer_end',
@@ -8635,6 +9677,20 @@
                     'tutorial_completed',
                     'dev_mode_enabled'
                 ];
+
+                const EXPORT_SKIP_LOCALSTORAGE_KEYS = new Set([
+                    'studyHistory',
+                    'todos',
+                    'studyStartTime',
+                    'studyPaused',
+                    'studyPausedAccum',
+                    'studyPauseHistory',
+                    'studyPauseStart',
+                    'auto_pip_primed',
+                    'music_resume_pending',
+                    'music_resume_index',
+                    'music_resume_time'
+                ]);
 
                 function safeJsonParse(raw, fallback) {
                     if (typeof raw !== 'string') return fallback;
@@ -8671,6 +9727,20 @@
                             settings[key] = value;
                         }
                     }
+
+                    // Capture additional settings that may be added later without requiring code updates.
+                    try {
+                        for (let i = 0; i < localStorage.length; i++) {
+                            const key = localStorage.key(i);
+                            if (!key || EXPORT_SKIP_LOCALSTORAGE_KEYS.has(key)) continue;
+                            if (Object.prototype.hasOwnProperty.call(settings, key)) continue;
+                            const value = localStorage.getItem(key);
+                            if (value !== null && value !== undefined && value !== '') {
+                                settings[key] = value;
+                            }
+                        }
+                    } catch (e) { }
+
                     return settings;
                 }
 
@@ -8774,6 +9844,29 @@
                                 saveData('studyHistory', JSON.stringify(studyHistory));
                                 saveData('todos', JSON.stringify(todos));
 
+                                const explicitlyHandledKeys = new Set([
+                                    ...IMPORT_BOOLEAN_SETTING_KEYS,
+                                    'focus_duration',
+                                    'break_duration',
+                                    'graph_type',
+                                    'graph_period',
+                                    'graph_location',
+                                    'theme',
+                                    'last_valid_theme',
+                                    'mode',
+                                    'app_language',
+                                    'font_ja',
+                                    'font_en'
+                                ]);
+
+                                Object.entries(settings).forEach(([key, value]) => {
+                                    if (explicitlyHandledKeys.has(key)) return;
+                                    if (value === null || typeof value === 'undefined') return;
+                                    if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+                                        saveData(key, String(value));
+                                    }
+                                });
+
                                 for (const key of IMPORT_BOOLEAN_SETTING_KEYS) {
                                     const rawValue = settings[key] ?? legacy[key];
                                     if (typeof rawValue !== 'undefined') {
@@ -8847,6 +9940,7 @@
                                 else removeMenuButton('todo');
 
                                 setToggleActive('toggleTitleTime', getData('feature_title_time') !== 'false');
+                                setToggleActive('toggleHistoryTimeline', getData('feature_history_timeline') !== 'false');
                                 setToggleActive('toggleLoadingAnim', getData('feature_loading_anim') !== 'false');
                                 setToggleActive('toggleAutoPiP', getData('feature_auto_pip') !== 'false');
                                 setToggleActive('toggleStopMusicOnTimerEnd', getData('feature_stop_music_on_timer_end') !== 'false');
@@ -8880,6 +9974,7 @@
                                 if (breakDurationEl && getData('break_duration')) breakDurationEl.value = getData('break_duration');
 
                                 applyFonts();
+                                applyTodoPriorityColors();
 
                                 const languageAfterImport = getData('app_language');
                                 if (languageAfterImport === 'ja' || languageAfterImport === 'en') {
@@ -9440,6 +10535,8 @@
                     currentLanguage = (savedLanguage === 'ja' || savedLanguage === 'en') ? savedLanguage : 'ja';
                     applyTranslations();
                     applyFonts();
+                    applyTodoPriorityColors();
+                    updateGroupFilter();
 
                     // Debug helpers for theme persistence (enable to trace where theme changes come from)
                     const DEBUG_THEME = true;
@@ -9600,17 +10697,26 @@
                             setCookie('studyStartTime', '', -1);
                             setCookie('studyPaused', '', -1);
                             setCookie('studyPausedAccum', '', -1);
+                            setCookie('studyPauseHistory', '', -1);
+                            setCookie('studyPauseStart', '', -1);
                             return;
                         }
 
                         const pausedAccum = parseInt(getData('studyPausedAccum') || '0', 10) || 0;
                         const pausedFlag = getData('studyPaused') === 'true';
+                        const restoredPauseHistory = safeJsonParse(getData('studyPauseHistory') || '[]', []);
+                        pauseHistory = Array.isArray(restoredPauseHistory) ? restoredPauseHistory : [];
+                        const pauseStartRaw = getData('studyPauseStart');
+                        const pauseStartDate = pauseStartRaw ? new Date(pauseStartRaw) : null;
+                        currentPauseStartIso = (pauseStartDate && !isNaN(pauseStartDate.getTime())) ? pauseStartDate.toISOString() : null;
 
                         // pausedAccum の妥当性チェック(負数や異常に大きい値は無視)
                         if (pausedAccum < 0 || pausedAccum > MAX_SESSION_HOURS * 60 * 60 * 1000) {
                             setCookie('studyStartTime', '', -1);
                             setCookie('studyPaused', '', -1);
                             setCookie('studyPausedAccum', '', -1);
+                            setCookie('studyPauseHistory', '', -1);
+                            setCookie('studyPauseStart', '', -1);
                             return;
                         }
 
@@ -9624,10 +10730,17 @@
                         pausedTime = pausedAccum;
                         isPaused = pausedFlag;
                         if (isPaused) {
+                            if (!currentPauseStartIso) {
+                                currentPauseStartIso = new Date().toISOString();
+                                saveData('studyPauseStart', currentPauseStartIso);
+                            }
                             document.getElementById('pauseBtn').textContent = getText('resumeButton');
                             // 表示は一時停止時の時間
                             document.getElementById('timer').textContent = formatTime(pausedTime);
                         } else {
+                            currentPauseStartIso = null;
+                            localStorage.removeItem('studyPauseStart');
+                            setCookie('studyPauseStart', '', -1);
                             document.getElementById('pauseBtn').textContent = getText('pauseButton');
                             if (timerInterval) clearInterval(timerInterval);
                             timerInterval = setInterval(updateTimer, 100);
@@ -9650,6 +10763,10 @@
                     }
                     if (getData('feature_title_time') !== 'false') { // デフォルトON
                         document.getElementById('toggleTitleTime').classList.add('active');
+                    }
+                    if (getData('feature_history_timeline') !== 'false') { // デフォルトON
+                        const toggle = document.getElementById('toggleHistoryTimeline');
+                        if (toggle) toggle.classList.add('active');
                     }
                     if (getData('feature_loading_anim') !== 'false') { // デフォルトON
                         const toggle = document.getElementById('toggleLoadingAnim');
@@ -9953,6 +11070,41 @@
                     // Finish loading after all initializations
                     finishLoading();
                 };
+                document.getElementById('priorityColorHue')?.addEventListener('input', (e) => {
+                    todoPickerState.h = Math.max(0, Math.min(360, parseInt(e.target.value, 10) || 0));
+                    updateTodoPickerUIFromState();
+                });
+                document.getElementById('priorityColorHexInput')?.addEventListener('input', (e) => {
+                    const normalized = normalizeHexColor(e.target.value);
+                    if (!normalized) return;
+                    const hsv = hexToHsv(normalized);
+                    todoPickerState = { h: hsv.h, s: hsv.s, v: hsv.v };
+                    updateTodoPickerUIFromState();
+                });
+                (function bindPriorityBoardPointerEvents() {
+                    const board = document.getElementById('priorityColorBoard');
+                    if (!board) return;
+                    let dragging = false;
+                    const move = (event) => {
+                        if (!dragging) return;
+                        updateTodoPickerByBoardEvent(event.clientX, event.clientY);
+                    };
+                    board.addEventListener('pointerdown', (event) => {
+                        dragging = true;
+                        board.setPointerCapture(event.pointerId);
+                        updateTodoPickerByBoardEvent(event.clientX, event.clientY);
+                    });
+                    board.addEventListener('pointermove', move);
+                    board.addEventListener('pointerup', () => {
+                        dragging = false;
+                    });
+                    board.addEventListener('pointercancel', () => {
+                        dragging = false;
+                    });
+                })();
+                document.getElementById('priorityColorOverlay')?.addEventListener('click', (e) => {
+                    if (e.target === e.currentTarget) closeTodoPriorityColorModal();
+                });
                 let studyChart = null;
                 let statsChart = null;
 

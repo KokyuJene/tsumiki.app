@@ -4,15 +4,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="title">ツミキ | 勉強時間管理ツール - 自分好みにカスタマイズできる勉強時間管理ツール</title>
+    <title data-i18n="title">ツミキapp - 自分好みにカスタマイズできる勉強時間管理ツール</title>
+    <link rel="icon" href="https://kokyujene.super-hiko14.com/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="https://kokyujene.super-hiko14.com/favicon.png" type="image/png">
     <link rel="shortcut icon" href="favicon-v2.ico?v=2">
     <link rel="shortcut icon" type="image/webp" href="favicon-v2.webp?v=2">
+    <link rel="icon" type="image/png" sizes="17x17" href="favicon-v2-17x.png?v=2">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-v2-32x.png?v=2">
+    <link rel="icon" type="image/png" sizes="48x48" href="favicon-v2-48x.png?v=2">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-v2.png?v=2">
-    <meta name="description" content="勉強とともにタイマーをスタートし、作業時間を記録しましょう。">
+    <meta name="description" content="タイマーで記録、グラフで可視化、音楽で集中、ToDoで管理。勉強のすべてがこの1ページに。テーマ7色のカスタマイズも。">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <link
         href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@300;400&family=Hina+Mincho&family=JetBrains+Mono:wght@300;400&family=Jost:wght@300;400&family=Klee+One:wght@300;400&family=Lora:wght@400&family=Montserrat:wght@300;400&family=Noto+Sans+JP:wght@300;400&family=Quicksand:wght@300;400&family=Sawarabi+Gothic&family=Zen+Kaku+Gothic+Antique:wght@300;400;500;700&family=Zen+Maru+Gothic:wght@300;400&display=swap"
         rel="stylesheet">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "ツミキapp - 自分好みにカスタマイズできる勉強時間管理ツール",
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "Any",
+      "url": "https://tsumiki.app",
+      "description": "タイマーで記録、グラフで可視化、音楽で集中、ToDoで管理。勉強のすべてがこの1ページに。テーマ7色のカスタマイズも。",
+      "sameAs": [
+        "https://kokyujene.github.io/tool/study/",
+        "https://tools.super-hiko14.com/study/"
+      ]
+    }
+    </script>
 
     <style>
         @font-face {
@@ -4371,7 +4392,7 @@
     </div>
 
     <div class="container">
-        <h1 data-i18n="studyTimeManagement">ツミキ</h1>
+        <h1 data-i18n="studyTimeManagement">ツミキapp</h1>
 
         <div class="menu" id="mainMenu">
             <button class="active" onclick="showPage('timer')" data-page="timer" data-i18n="menuTimer">タイマー</button>
@@ -4974,7 +4995,7 @@
                 </button>
             </div>
 
-            <div class="copyright" data-i18n="copyright">© 2025-2026 ツミキ / Super Hiko14 / 高級ジェネ™ All Rights Reserved.</div>
+            <div class="copyright" data-i18n="copyright">© 2025-2026 ツミキapp / Super Hiko14 / 高級ジェネ™ All Rights Reserved.</div>
 
             <div class="about-link">
                 <button class="about-button" onclick="showAboutModal()" aria-label="このサイトについて"
@@ -5056,7 +5077,7 @@
 
             <div class="about-overlay" id="licenseOverlay" aria-hidden="true">
                 <div class="about-dialog" role="dialog" aria-modal="true" aria-labelledby="licenseTitle">
-                    <h2 id="licenseTitle" data-i18n="licenseTitle">フォントライセンス</h2>
+                    <h2 id="licenseTitle" data-i18n="licenseTitle">ライセンス</h2>
 <div id="licenseContent" class="about-content"
     style="font-size: 0.85rem; max-height: 60vh; overflow-y: auto; text-align: left;">
     <b>[Libraries]</b><br>
@@ -5209,7 +5230,7 @@
                 const translations = {
                     ja: {
                         // メタ
-                        title: 'ツミキ',
+                        title: 'ツミキapp',
                         description: '勉強とともにタイマーをスタートし、作業時間を記録しましょう。',
 
 
@@ -5223,7 +5244,7 @@
                         fontMisaki: '美咲ゴシック',
                         fontKodenmachou: '小伝馬町',
                         licenseButton: 'ライセンス',
-                        licenseTitle: 'フォントライセンス',
+                        licenseTitle: 'ライセンス',
 
                         // 追加: 削除確認メッセージ等
                         deleteTaskConfirm: 'このタスクを削除しますか?',
@@ -5489,7 +5510,7 @@
 
                         // 汎用
                         confirmDefaultTitle: '確認',
-                        studyTimeManagement: 'ツミキ',
+                        studyTimeManagement: 'ツミキapp',
                         cancelButton: 'キャンセル',
                         errorTitle: 'エラー',
                         invalidFileFormat: '無効なファイル形式です。',
@@ -5500,11 +5521,12 @@
                         // About & QA
                         aboutContent: `<div style="text-align: center; margin-bottom: 20px;">
                         <div><img src="guide.png" style="width: 3rem; height: 3rem;"></div>
-                        <h3 style="margin-top: 0;">Tsumiki</h3>
+                        <h3 style="margin-top: 0;">Tsumiki app</h3>
                         <p>シンプルで使いやすい勉強時間管理ツール。</p>
                         このサイトは<a href="https://kokyujene.super-hiko14.com/members/super-hiko14/">Super Hiko14</a>が開発しました。<div class="tyuui-mini-text">※ 一部AIが使用されています。</div>
                         </div>`,
                         qaContent: `<div style="text-align: left;">
+                            <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. ツミキappの記録等の保存方法は?</h3>
                             <p style="margin-left: 15px;">A. すべてのデータはブラウザのローカルストレージに保存されます。サーバーには一切送信されません。</p>
                             <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. 他のデバイスでデータへ移行やバックアップを取りたい。</h3>
                             <p style="margin-left: 15px;">A. エクスポートからJsonファイルをダウンロードできます。インポートで他デバイスに移行やバックアップとして保存できます。</p>
@@ -5623,7 +5645,7 @@
                         licenseTitle: 'Font Licenses',
 
                         // Meta
-                        title: 'Tsumiki',
+                        title: 'Tsumiki app',
                         description: 'Start the timer with your study session and track your work time.',
 
                         // Main Menu
@@ -5941,13 +5963,13 @@
 
                         // General
                         confirmDefaultTitle: 'Confirm',
-                        studyTimeManagement: 'Tsumiki',
+                        studyTimeManagement: 'Tsumiki app',
                         cancelButton: 'Cancel',
 
                         // About & QA
                         aboutContent: `<div style="text-align: center; margin-bottom: 20px;">
                         <div><img src="guide.png" style="width: 3rem; height: 3rem;"></div>
-                        <h3 style="margin-top: 0;">Tsumiki</h3>
+                        <h3 style="margin-top: 0;">Tsumiki app</h3>
                         <p>Simple and easy-to-use study time management tool.</p>
                         Developed by <a href="https://kokyujene.super-hiko14.com/members/super-hiko14/">Super Hiko14</a>.<div class="tyuui-mini-text">* AI is used in some parts.</div>
                         </div>`,
@@ -7875,7 +7897,7 @@
 
                     navigator.mediaSession.metadata = new MediaMetadata({
                         title: file.title,
-                        artist: 'Tsumiki - Music',
+                        artist: 'Tsumiki app - Music',
                         album: 'Local Playlist',
                         artwork: [
                             { src: 'music.png', sizes: '96x96', type: 'image/webp' },

@@ -2589,9 +2589,10 @@
             display: none;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: clamp(8px, 3vw, 20px);
             background: rgba(0, 0, 0, 0.45);
             z-index: 10025;
+            touch-action: none;
         }
 
         .priority-color-overlay.show {
@@ -2600,10 +2601,20 @@
 
         .priority-color-dialog {
             width: 100%;
-            max-width: 680px;
+            max-width: min(680px, 100%);
             border-radius: 24px;
             padding: 20px;
+            max-height: min(92dvh, 860px);
+            overflow: hidden;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
             animation: slideUp .2s ease-out;
+        }
+
+        .priority-color-dialog h2 {
+            font-size: clamp(1.08rem, 4.6vw, 1.35rem);
+            line-height: 1.35;
+            text-align: center;
         }
 
         .light .priority-color-dialog {
@@ -2624,6 +2635,7 @@
         .priority-color-target {
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
             border: none;
             cursor: pointer;
@@ -2655,6 +2667,7 @@
         .priority-color-target-name {
             font-size: 0.86rem;
             opacity: 0.9;
+            white-space: nowrap;
         }
 
         .light .priority-color-target-name {
@@ -2675,6 +2688,7 @@
 
         .priority-color-preview {
             min-height: 180px;
+            height: 180px;
             border-radius: 0;
             border: 1px solid rgba(255, 255, 255, 0.22);
         }
@@ -2784,13 +2798,64 @@
         }
 
         .priority-color-actions {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 10px;
             margin-top: 14px;
         }
 
         .priority-color-actions button {
-            flex: 1;
+            min-height: 44px;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 640px) {
+            .priority-color-dialog {
+                border-radius: 18px;
+                padding: 14px;
+                max-height: calc(100dvh - 12px);
+            }
+
+            .priority-color-targets {
+                gap: 6px;
+                margin-bottom: 10px;
+            }
+
+            .priority-color-target {
+                gap: 6px;
+                padding: 6px 8px;
+                min-height: 42px;
+            }
+
+            .priority-color-target-swatch {
+                width: 22px;
+                height: 22px;
+            }
+
+            .priority-color-target-name {
+                font-size: 0.8rem;
+            }
+
+            .priority-color-picker-wrap {
+                grid-template-columns: 1fr;
+                gap: 8px;
+                margin-bottom: 8px;
+            }
+
+            .priority-color-preview {
+                min-height: 84px;
+                height: 84px;
+            }
+
+            .priority-color-board {
+                height: clamp(130px, 30dvh, 180px);
+            }
+
+            .priority-color-actions {
+                grid-template-columns: 1fr;
+                gap: 8px;
+                margin-top: 10px;
+            }
         }
 
         .todo-repeat-badge {
@@ -4168,8 +4233,6 @@
         } catch(e) {}
     </script>
     <div id="loadingOverlay"></div>
-    <canvas id="pipCanvas" width="960" height="540" style="display:none;"></canvas>
-    <video id="pipVideo" style="display:none;" muted playsinline></video>
 
     <div class="custom-confirm-overlay" id="customConfirmOverlay">
         <div class="custom-confirm-dialog">
@@ -4638,12 +4701,6 @@
                     </div>
                 </div>
                 <div class="toggle-item">
-                    <span data-i18n="autoPiP">自動ミニモード (PiP)</span>
-                    <div class="toggle-switch" id="toggleAutoPiP" onclick="toggleAutoPiP()">
-                        <div class="toggle-slider"></div>
-                    </div>
-                </div>
-                <div class="toggle-item">
                     <span data-i18n="stopMusicOnTimerEnd">タイマー終了時に音楽を一時停止</span>
                     <div class="toggle-switch" id="toggleStopMusicOnTimerEnd" onclick="toggleStopMusicOnTimerEnd()">
                         <div class="toggle-slider"></div>
@@ -5002,6 +5059,16 @@
                     <h2 id="licenseTitle" data-i18n="licenseTitle">フォントライセンス</h2>
 <div id="licenseContent" class="about-content"
     style="font-size: 0.85rem; max-height: 60vh; overflow-y: auto; text-align: left;">
+    <b>[Libraries]</b><br>
+    <br>
+    <b>Chart.js v3.9.1</b><br>
+    <a href="https://www.chartjs.org" target="_blank" style="color: inherit; text-decoration: underline;">https://www.chartjs.org</a><br>
+    (c) 2022 Chart.js Contributors<br>
+    Released under the MIT License<br>
+    <br>
+    <hr style="opacity: 0.2; margin: 15px 0;">
+    <br>
+
     <b>[Google Fonts]</b><br>
     
     <a href="https://fonts.google.com/specimen/Jost" target="_blank" style="color: inherit; text-decoration: underline;"><b>Jost</b></a><br>
@@ -5127,14 +5194,6 @@
                 const NO_COOKIE_FALLBACK_KEYS = new Set([
                     'music_playlists_v2'
                 ]);
-                let pipCanvas = null;
-                let pipCtx = null;
-                let pipVideo = null;
-                let pipStream = null;
-                let pipDrawInterval = null;
-                let pipNeedsGestureUnlock = false;
-                let lastPiPEnterAt = 0;
-                let pipWindow = null;
                 const TODO_PRIORITY_COLOR_DEFAULTS = {
                     high: '#E74C3C',
                     normal: '#3498DB',
@@ -5156,8 +5215,8 @@
 
                         // フォント設定
                         fontSettings: 'フォント設定',
-                        fontJapanese: '日本語･その他用フォント',
-                        fontEnglish: '英数字用フォント(アルファベット･数字)',
+                        fontJapanese: '日本語・その他用フォント',
+                        fontEnglish: '英数字用フォント(アルファベット・数字)',
                         fontNone: '未設定',
                         fontMushin: '無心',
                         fontUtsukushi: 'うつくし明朝体',
@@ -5205,7 +5264,7 @@
 
                         // リストページ
                         allGroupsFilter: 'すべてのグループ',
-                        searchPlaceholder: '日付や時刻で検索(例: 2025年12月11日や、14:30)',
+                        searchPlaceholder: '日付や時刻で検索(例:2025年12月11日や14:30)',
                         sortNewest: '新しい順',
                         sortOldest: '古い順',
                         sortLongest: '時間が長い順',
@@ -5265,7 +5324,7 @@
                         addButton: '追加',
                         // 追加翻訳: ToDo Ver2 / カレンダー関連
                         todoV2PopupTitle: 'ToDo Ver.2を有効にしますか?',
-                        todoV2PopupMessage: '新しいToDo Ver.2では、段階的完了機能、期間設定、カレンダービューなどの高度な機能が利用できます。',
+                        todoV2PopupMessage: '新しいToDo Ver.2では、段階的な完了機能、期間設定、カレンダービューなどの高度な機能が利用できます。',
                         todoV2ToggleLabel: 'ToDo Ver.2を有効にする',
                         todoV2Confirm: '決定',
                         calendarAddTodoTitle: '新しいToDoを追加',
@@ -5283,7 +5342,7 @@
                         endOptional: '終了日(任意)',
                         tutorialPlaceholderTitle: 'タイトル',
                         tutorialPlaceholderMessage: 'メッセージ',
-                        playPause: '再生/一時停止',
+                        playPause: '再生や一時停止',
                         guideAlt: 'ガイド',
                         themeToggleAlt: 'テーマ切替',
                         settingsAlt: '設定',
@@ -5317,15 +5376,13 @@
                         themeOrange: 'オレンジ',
                         themePink: 'ピンク',
                         themeTeal: 'ティール',
-                        themeWhite: 'ホワイト/ブラック',
-                        lockSettingsDuringTimer: 'タイマー作動中は設定を無効化',
-                        loadingAnimSetting: 'ローディングアニメーション表示',
-                        autoPiP: '自動ミニモード (PiP)',
-                        autoPiPUnavailable: 'このブラウザでは自動ミニモード（PiP）は利用できません',
+                        themeWhite: 'ホワイト・ブラック',
+                        lockSettingsDuringTimer: 'タイマー作動中は設定を固定',
+                        loadingAnimSetting: 'ローディングアニメーションを表示',
                         stopMusicOnTimerEnd: 'タイマー終了時に音楽を一時停止',
-                        musicResumeOnTapAfterReload: '更新後に画面タップで音楽を自動再開',
+                        musicResumeOnTapAfterReload: 'ページ再読み込み後に画面タップで音楽を自動再開',
                         historyTimelineToggle: '履歴カードのタイムラインバー表示',
-                        historyTimelineLegacyNote: '一時停止時間が未記録の履歴ではバーを表示しません。4/22より前の記録は表示されません。',
+                        historyTimelineLegacyNote: '一時停止データがない履歴ではタイムラインバーは表示されません。4月22日より前の記録は表示されません。',
                         graphDisplay: 'グラフ表示',
                         studyGraph: '勉強時間のグラフ表示',
                         graphType: 'グラフの種類',
@@ -5347,14 +5404,14 @@
                         groupManagement: 'グループ管理',
                         groupManagementAria: '管理対象グループ',
                         groupRenamePlaceholder: '新しいグループ名',
-                        groupBulkRenameButton: '選択を一括変更',
-                        groupBulkDeleteButton: '選択を一括削除',
+                        groupBulkRenameButton: '選択したグループを一括変更',
+                        groupBulkDeleteButton: '選択したグループを一括削除',
                         groupSelectAll: 'すべて選択',
                         groupClearSelection: '選択解除',
-                        groupManagementHint: '複数選択して一括変更/削除できます。',
+                        groupManagementHint: '複数選択して一括変更や削除ができます。',
                         groupManagementNoGroups: 'グループがありません',
-                        groupRenameConfirm: '選択した{n}個のグループ名を「{name}」に変更しますか?',
-                        groupDeleteConfirm: '選択した{n}個のグループを未分類にしますか?',
+                        groupRenameConfirm: '選択した{n}個のグループを「{name}」に変更しますか?',
+                        groupDeleteConfirm: '選択した{n}個のグループを未分類に変更しますか?',
                         exportData: 'データをエクスポート',
                         importData: 'データをインポート',
                         helpSection: 'ヘルプ',
@@ -5408,7 +5465,7 @@
                         tutorialEndTitle: '記録の終了',
                         tutorialEndMessage: '勉強が完全に終わったら「終了」ボタンを押します。これで学習時間が自動的に記録されます。クリックしてみましょう。',
                         tutorialGroupTitle: 'グループ分け',
-                        tutorialGroupMessage: 'グループ名を入力すると、後で科目別や分野別に記録を分類できます。例:「数学」や、「英語」など',
+                        tutorialGroupMessage: 'グループ名を入力すると、後で科目別や分野別に記録を分類できます。例えば、「数学」や「英語」など',
                         tutorialStatsTitle: '統計の確認',
                         tutorialStatsMessage: 'ここをクリックして統計画面に移動してみましょう。累計の勉強時間、連続日数、グループ別の集計などが確認できます。',
                         tutorialHistoryTitle: '履歴の確認',
@@ -5418,7 +5475,7 @@
                         tutorialSettingsTitle: '設定画面',
                         tutorialSettingsMessage: 'ここから設定画面を開けます。テーマカラーの変更、音楽プレイヤーやToDoリストの表示切替、データのバックアップなどができます。クリックして確認してみましょう!',
                         tutorialDisplaySettingsTitle: '表示設定',
-                        tutorialDisplaySettingsMessage: 'ここで音楽プレイヤーやToDoリストの表示/非表示を切り替えられます。必要な機能だけを表示してシンプルに使えます。',
+                        tutorialDisplaySettingsMessage: 'ここで音楽プレイヤーやToDoリストの表示や非表示を切り替えられます。必要な機能だけを表示してシンプルに使えます。',
                         tutorialThemeColorTitle: 'テーマカラー',
                         tutorialThemeColorMessage: 'お好みのテーマカラーを選択できます。ブルー、グリーン、パープル、オレンジ、ピンク、ティールの6色から選べます。',
                         tutorialGraphDisplayTitle: 'グラフ表示',
@@ -5437,7 +5494,7 @@
                         errorTitle: 'エラー',
                         invalidFileFormat: '無効なファイル形式です。',
                         importDataTitle: 'データをインポート',
-                        importConfirm: 'このデータを読み込みますか？\n履歴: {historyCount}件\nToDo: {todoCount}件',
+                        importConfirm: 'このデータを読み込みますか?\n履歴: {historyCount}件\nToDo: {todoCount}件',
                         importFailed: 'インポートに失敗しました',
 
                         // About & QA
@@ -5527,7 +5584,7 @@
                         showFocusModeToggle: 'フォーカスモード切替を表示',
                         focusDuration: '集中時間',
                         breakDuration: '休憩時間',
-                        tutorialFocusModeMessage: '集中時間と休憩時間を交互に切り替えるフォーカスモード（ポモドーロテクニック）を利用できます。',
+                        tutorialFocusModeMessage: '集中時間と休憩時間を交互に切り替えるフォーカスモード(ポモドーロテクニック)を利用できます。',
                         tutorialStep4Desc: 'ここにグループ名を入力すると、後で統計やリストで分類できます(任意)。',
                         tutorialStep5Title: '統計',
                         tutorialStep5Desc: '統計画面では、今日・今週・今月の勉強時間や、グループごとの統計を確認できます。',
@@ -5542,7 +5599,7 @@
 
                         // テーマスケジューラー
                         themeScheduleTitle: 'テーマスケジュール設定',
-                        themeScheduleSubtitle: '時間帯ごとにダークモード/ライトモードを自動切り替え',
+                        themeScheduleSubtitle: '時間帯ごとにダークモードやライトモードを自動切り替え',
                         themeScheduleSelectTime: '選択中の時間帯',
                         darkMode: 'ダークモード',
                         lightMode: 'ライトモード',
@@ -5687,8 +5744,6 @@
                         themeWhite: 'White/Black',
                         lockSettingsDuringTimer: 'Lock Settings during Timer',
                         loadingAnimSetting: 'Show Loading Animation on Start',
-                        autoPiP: 'Auto Mini Mode (PiP)',
-                        autoPiPUnavailable: 'Auto Mini Mode (PiP) is not available in this browser',
                         stopMusicOnTimerEnd: 'Pause music when timer ends',
                         musicResumeOnTapAfterReload: 'Resume music on tap after reload',
                         historyTimelineToggle: 'Show timeline bar on history cards',
@@ -5704,7 +5759,6 @@
                         period14days: 'Last 14 Days',
                         period30days: 'Last 30 Days',
                         period90days: 'Last 90 Days',
-                        autoPiP: 'Auto Mini Mode (PiP)',
                         period1year: 'Last Year',
                         periodAll: 'All Time',
                         displayLocation: 'Display Location',
@@ -5998,7 +6052,6 @@
                     loadStats();
                     loadPlaylist();
                     loadTodos();
-                    drawPiPCanvas();
                 }
 
                 // すべての翻訳を適用
@@ -6316,8 +6369,6 @@
                     if (getData('graph_enabled') === 'true') {
                         setTimeout(() => updateGraphs(), 100);
                     }
-
-                    drawPiPCanvas();
                 }
 
                 const VALID_THEME_NAMES = ['blue', 'green', 'purple', 'orange', 'pink', 'teal', 'white'];
@@ -6348,34 +6399,6 @@
                     if (getData('graph_enabled') === 'true') {
                         setTimeout(() => updateGraphs(), 100);
                     }
-
-                    drawPiPCanvas();
-                }
-
-                function ensurePiPElements() {
-                    if (!pipCanvas) pipCanvas = document.getElementById('pipCanvas');
-                    if (!pipVideo) pipVideo = document.getElementById('pipVideo');
-                    if (pipCanvas && !pipCtx) pipCtx = pipCanvas.getContext('2d');
-                    if (pipVideo && !pipVideo.__pipBound) {
-                        pipVideo.addEventListener('leavepictureinpicture', cleanupPiPState);
-                        pipVideo.__pipBound = true;
-                    }
-                }
-
-                function isPiPSupported() {
-                    if ('documentPictureInPicture' in window) return true;
-                    const hasCanvasCapture = !!(HTMLCanvasElement.prototype.captureStream || HTMLCanvasElement.prototype.mozCaptureStream);
-                    const hasVideoPiP = !!(document.pictureInPictureEnabled && HTMLVideoElement.prototype.requestPictureInPicture) || !!HTMLVideoElement.prototype.webkitSetPresentationMode;
-                    return hasCanvasCapture && hasVideoPiP;
-                }
-
-                function isLikelyMobileBrowser() {
-                    const ua = navigator.userAgent || '';
-                    return /Android|iPhone|iPad|iPod/i.test(ua);
-                }
-
-                function isAutoPiPEnabled() {
-                    return getData('feature_auto_pip') !== 'false';
                 }
 
                 function isStopMusicOnTimerEndEnabled() {
@@ -6437,6 +6460,12 @@
                     const resumeOnGesture = (e) => {
                         if (e && e.isTrusted === false) return;
 
+                        // 再生UIそのものの操作は通常の再生処理に任せ、二重トリガーを防ぐ
+                        const t = e && e.target;
+                        if (t && typeof t.closest === 'function' && t.closest('.player-main-controls, .player-sub-controls, .playlist-section')) {
+                            return;
+                        }
+
                         const audio = document.getElementById('audioPlayer');
                         if (!audio) {
                             clearMusicResumeState();
@@ -6470,249 +6499,6 @@
                     for (const evt of events) {
                         document.addEventListener(evt, resumeOnGesture, true);
                     }
-                }
-
-                function getActiveMusicTitle() {
-                    if (currentMusicIndex >= 0 && musicFiles[currentMusicIndex]) {
-                        return musicFiles[currentMusicIndex].title || 'Unknown track';
-                    }
-                    return currentLanguage === 'en' ? 'No music selected' : '音楽は選択されていません';
-                }
-
-                function getCssVar(name, fallback) {
-                    const value = getComputedStyle(document.body).getPropertyValue(name).trim();
-                    return value || fallback;
-                }
-
-                function trimCanvasText(ctx, text, maxWidth) {
-                    if (ctx.measureText(text).width <= maxWidth) return text;
-                    let out = text;
-                    while (out.length > 1 && ctx.measureText(`${out}…`).width > maxWidth) {
-                        out = out.slice(0, -1);
-                    }
-                    return `${out}…`;
-                }
-
-                function drawPiPCanvas() {
-                    ensurePiPElements();
-                    if (!pipCtx || !pipCanvas) return;
-
-                    const width = pipCanvas.width;
-                    const height = pipCanvas.height;
-                    const isDark = document.body.classList.contains('dark');
-                    const bg = isDark ? getCssVar('--panel-dark', '#2d3142') : getCssVar('--panel-light', '#f0f2f7');
-                    const panel = isDark ? getCssVar('--panel-dark-2', '#3d4454') : getCssVar('--bg-light', '#f8f9fb');
-                    const primary = isDark ? getCssVar('--primary-color-dark', '#7a95ab') : getCssVar('--primary-color', '#9db4c8');
-                    const textColor = isDark ? '#e8e8e8' : '#323232';
-                    const subText = isDark ? 'rgba(232,232,232,0.72)' : 'rgba(50,50,50,0.72)';
-                    const fontFamily = getComputedStyle(document.body).fontFamily || 'system-ui, sans-serif';
-                    
-                    let timerText = '00:00:00';
-                    const timerEl = document.getElementById('timer');
-                    if (timerEl) {
-                        timerText = timerEl.textContent.trim();
-                    }
-                    
-                    const songTitle = getActiveMusicTitle();
-
-                    pipCtx.clearRect(0, 0, width, height);
-                    pipCtx.fillStyle = bg;
-                    pipCtx.fillRect(0, 0, width, height);
-
-                    const bottomPanelHeight = Math.round(height * 0.24);
-                    pipCtx.fillStyle = panel;
-                    pipCtx.fillRect(0, height - bottomPanelHeight, width, bottomPanelHeight);
-
-                    pipCtx.fillStyle = textColor;
-                    pipCtx.textAlign = 'center';
-                    pipCtx.textBaseline = 'middle';
-                    pipCtx.font = `500 ${Math.round(height * 0.2)}px ${fontFamily}`;
-                    pipCtx.fillText(timerText, width / 2, Math.round(height * 0.42));
-
-                    pipCtx.fillStyle = primary;
-                    pipCtx.fillRect(Math.round(width * 0.1), height - bottomPanelHeight - 2, Math.round(width * 0.8), 2);
-
-                    pipCtx.textAlign = 'left';
-                    pipCtx.fillStyle = subText;
-                    pipCtx.font = `400 ${Math.round(height * 0.04)}px ${fontFamily}`;
-                    pipCtx.fillText('Now Playing', Math.round(width * 0.08), height - Math.round(bottomPanelHeight * 0.62));
-
-                    pipCtx.fillStyle = textColor;
-                    pipCtx.font = `500 ${Math.round(height * 0.052)}px ${fontFamily}`;
-                    const songAreaLeft = Math.round(width * 0.08);
-                    const songAreaWidth = Math.round(width * 0.84);
-                    const fitted = trimCanvasText(pipCtx, songTitle, songAreaWidth);
-                    pipCtx.fillText(fitted, songAreaLeft, height - Math.round(bottomPanelHeight * 0.34));
-                }
-
-                function cleanupPiPState() {
-                    if (pipDrawInterval) {
-                        clearInterval(pipDrawInterval);
-                        pipDrawInterval = null;
-                    }
-                    if (pipStream) {
-                        pipStream.getTracks().forEach(track => track.stop());
-                        pipStream = null;
-                    }
-                    if (pipVideo) {
-                        pipVideo.pause();
-                        pipVideo.srcObject = null;
-                    }
-                    if (pipWindow) {
-                        pipWindow.close();
-                        pipWindow = null;
-                    }
-                }
-
-                async function enterMiniModePiP() {
-                    ensurePiPElements();
-
-                    if (!isPiPSupported()) return false;
-
-                    try {
-                        if ('documentPictureInPicture' in window) {
-                            if (pipWindow) return true;
-                            
-                            pipWindow = await documentPictureInPicture.requestWindow({
-                                width: 300,
-                                height: 150
-                            });
-                            
-                            pipWindow.addEventListener("pagehide", () => {
-                                pipWindow = null;
-                            });
-
-                            const isDark = document.body.classList.contains('dark');
-                            const bg = isDark ? getCssVar('--panel-dark', '#2d3142') : getCssVar('--panel-light', '#f0f2f7');
-                            const color = isDark ? '#e8e8e8' : '#323232';
-                            const fontFamily = getComputedStyle(document.body).fontFamily || 'system-ui, sans-serif';
-
-                            const style = pipWindow.document.createElement('style');
-                            style.textContent = `
-                                body { margin: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; background: ${bg}; color: ${color}; font-family: ${fontFamily}; height: 100vh; overflow: hidden; }
-                                .timer { font-size: 4rem; font-weight: 500; font-variant-numeric: tabular-nums; }
-                                .song { font-size: 1.2rem; opacity: 0.8; margin-top: 15px; text-align: center; max-width: 90%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: ${isDark ? 'rgba(232,232,232,0.72)' : 'rgba(50,50,50,0.72)'} }
-                                .playing-text { font-size: 0.9rem; opacity: 0.6; margin-bottom: 5px; color: ${isDark ? 'rgba(232,232,232,0.72)' : 'rgba(50,50,50,0.72)'} }
-                                .divider { width: 80%; height: 2px; background: ${isDark ? getCssVar('--primary-color-dark', '#7a95ab') : getCssVar('--primary-color', '#9db4c8')}; margin: 20px 0; }
-                            `;
-                            pipWindow.document.head.appendChild(style);
-                            
-                            const container = pipWindow.document.createElement('div');
-                            container.style.cssText = 'display: flex; flex-direction: column; align-items: center; width: 100%;';
-                            container.innerHTML = `
-                                <div class="timer" id="pip-timer">${document.getElementById('timer').textContent}</div>
-                                <div class="divider"></div>
-                                <div class="playing-text">Now Playing</div>
-                                <div class="song" id="pip-song">${getActiveMusicTitle()}</div>
-                            `;
-                            pipWindow.document.body.appendChild(container);
-                            
-                            if (pipDrawInterval) clearInterval(pipDrawInterval);
-                            pipDrawInterval = setInterval(() => {
-                                if (pipWindow) {
-                                    const timerEl = pipWindow.document.getElementById('pip-timer');
-                                    const songEl = pipWindow.document.getElementById('pip-song');
-                                    if (timerEl) {
-                                        let currentTimer = '00:00:00';
-                                        const mainTimer = document.getElementById('timer');
-                                        if (mainTimer) currentTimer = mainTimer.textContent.trim();
-                                        timerEl.textContent = currentTimer;
-                                    }
-                                    if (songEl) songEl.textContent = getActiveMusicTitle();
-                                }
-                            }, 250);
-                            
-                            pipNeedsGestureUnlock = false;
-                            lastPiPEnterAt = Date.now();
-                            return true;
-                        }
-
-                        if (document.pictureInPictureElement === pipVideo) return true;
-
-                        drawPiPCanvas();
-                        if (!pipStream) {
-                            const captureMethod = pipCanvas.captureStream ? 'captureStream' : 'mozCaptureStream';
-                            pipStream = pipCanvas[captureMethod](24);
-
-                            try {
-                                const AudioCtx = window.AudioContext || window.webkitAudioContext;
-                                if (AudioCtx) {
-                                    const ctx = new AudioCtx();
-                                    const osc = ctx.createOscillator();
-                                    const dst = ctx.createMediaStreamDestination();
-                                    osc.connect(dst);
-                                    osc.start();
-                                    const audioTrack = dst.stream.getAudioTracks()[0];
-                                    if (audioTrack) pipStream.addTrack(audioTrack);
-                                }
-                            } catch (e) {}
-
-                            pipVideo.srcObject = pipStream;
-                        }
-                        await pipVideo.play();
-                        
-                        if (pipVideo.requestPictureInPicture) {
-                            await pipVideo.requestPictureInPicture();
-                        } else if (pipVideo.webkitSetPresentationMode) {
-                            pipVideo.webkitSetPresentationMode('picture-in-picture');
-                        }
-                        
-                        pipNeedsGestureUnlock = false;
-                        lastPiPEnterAt = Date.now();
-
-                        if (pipDrawInterval) clearInterval(pipDrawInterval);
-                        pipDrawInterval = setInterval(drawPiPCanvas, 250);
-                        return true;
-                    } catch (err) {
-                        const message = (err && err.message) ? String(err.message) : '';
-                        const blockedByGesture = err && (err.name === 'NotAllowedError' || /user activation|gesture|not supported/i.test(message));
-                        if (blockedByGesture) {
-                            pipNeedsGestureUnlock = true;
-                            console.warn('PiP blocked until user gesture is provided or unsupported media:', err);
-                        } else {
-                            console.error('Failed to launch PiP:', err);
-                        }
-                        cleanupPiPState();
-                        return false;
-                    }
-                }
-
-                async function prepareAutoPiPByUserGesture() {
-                    if (!isAutoPiPEnabled()) return;
-                    if (!isPiPSupported()) return;
-                    if (isLikelyMobileBrowser()) return;
-                    if (!startTime || isPaused) return;
-
-                    const alreadyPrimed = getData('auto_pip_primed') === 'true';
-                    if (alreadyPrimed && !pipNeedsGestureUnlock) return;
-
-                    ensurePiPElements();
-                    drawPiPCanvas();
-                    if (!pipStream) {
-                        pipStream = pipCanvas.captureStream(24);
-                        pipVideo.srcObject = pipStream;
-                    }
-                    await pipVideo.play();
-
-                    if (pipDrawInterval) clearInterval(pipDrawInterval);
-                    pipDrawInterval = setInterval(drawPiPCanvas, 250);
-
-                    saveData('auto_pip_primed', 'true');
-                    pipNeedsGestureUnlock = false;
-                }
-
-                async function exitMiniModePiP() {
-                    if ('documentPictureInPicture' in window && pipWindow) {
-                        pipWindow.close();
-                        pipWindow = null;
-                    } else if (document.pictureInPictureElement === pipVideo) {
-                        try {
-                            await document.exitPictureInPicture();
-                        } catch (e) {}
-                    } else if (pipVideo && pipVideo.webkitSetPresentationMode) {
-                        pipVideo.webkitSetPresentationMode('inline');
-                    }
-                    cleanupPiPState();
                 }
 
                 function toggleFeature(feature) {
@@ -7128,7 +6914,6 @@
                         document.title = `${timeStr} - ${getText('studyTimeManagement')}`;
                     }
 
-                    drawPiPCanvas();
                 }
                 
 
@@ -7166,10 +6951,6 @@
                         updateTimer(); // Initial update
                     }
 
-                    // Chrome系などの「ユーザー操作必須」制約に備えて、開始クリック時にPiPを事前解錠
-                    prepareAutoPiPByUserGesture().catch(err => {
-                        console.warn('Auto PiP prepare failed:', err);
-                    });
                 }
 
                 function pauseStudy() {
@@ -7199,7 +6980,6 @@
 
                 function endStudy() {
                     if (timerInterval) clearInterval(timerInterval);
-                    exitMiniModePiP();
                     document.title = getText('studyTimeManagement');
                     if (isStopMusicOnTimerEndEnabled()) {
                         const audio = document.getElementById('audioPlayer');
@@ -7408,7 +7188,6 @@
                         if (playlistCount) playlistCount.textContent = '0';
                         selectedMusicItems.clear();
                         updatePlaylistSelectionUI();
-                        drawPiPCanvas();
                         return;
                     }
                     if (playlistCount) playlistCount.textContent = musicFiles.length;
@@ -7431,7 +7210,6 @@
     `).join('');
                     attachPlaylistHandlers();
                     updateMusicTitleDisplay();
-                    drawPiPCanvas();
                 }
 
                 // エスケープ用(簡易)
@@ -8050,29 +7828,32 @@
                 }
 
                 function playMusic(index) {
-                    if (musicFiles[index]) {
-                        const audio = document.getElementById('audioPlayer');
-                        audio.src = musicFiles[index].url;
-                        // iOS の場合、バックグラウンド復帰後などで play() が拒否されることがあるため、リトライを行う
-                        attemptPlay(audio).then(() => {
-                            updatePlayPauseUI(true);
-                        }).catch((err) => {
-                            console.warn('Playback failed after retries:', err);
-                            updatePlayPauseUI(false);
-                        });
+                    if (!musicFiles[index]) return;
 
-                        currentMusicIndex = index;
-                        saveData('music_current_playlist_id', currentPlaylistId);
-                        if (musicFiles[index] && musicFiles[index].id != null) {
-                            saveData('music_current_track_id', String(musicFiles[index].id));
-                        }
-                        const playImg = document.getElementById('playIconImg');
-                        if (playImg) { playImg.src = 'pause.webp'; playImg.alt = getText('pause'); }
-                        loadPlaylist();
-                        updateMusicTitleDisplay();
-                        updateMediaSession(); // Media Session API更新
-                        drawPiPCanvas();
+                    const audio = document.getElementById('audioPlayer');
+                    if (!audio) return;
+
+                    userInitiatedPause = false;
+                    currentMusicIndex = index;
+                    if (audio.getAttribute('src') !== musicFiles[index].url) {
+                        audio.src = musicFiles[index].url;
                     }
+
+                    // iOS の場合、バックグラウンド復帰後などで play() が拒否されることがあるため、リトライを行う
+                    attemptPlay(audio).then(() => {
+                        updatePlayPauseUI(true);
+                    }).catch((err) => {
+                        console.warn('Playback failed after retries:', err);
+                        updatePlayPauseUI(false);
+                    });
+
+                    saveData('music_current_playlist_id', currentPlaylistId);
+                    if (musicFiles[index] && musicFiles[index].id != null) {
+                        saveData('music_current_track_id', String(musicFiles[index].id));
+                    }
+                    loadPlaylist();
+                    updateMusicTitleDisplay();
+                    updateMediaSession(); // Media Session API更新
                 }
 
                 function updateMusicTitleDisplay() {
@@ -8106,9 +7887,6 @@
                     navigator.mediaSession.setActionHandler('play', function () {
                         const audio = document.getElementById('audioPlayer');
                         audio.play();
-                        togglePlayStateUI(true); // UIのみ更新する関数が必要であれば分離、今回はtogglePlayを呼ぶと停止してしまうので直接制御か、togglePlayを改良
-                        // ここでは既存のtogglePlayを呼ぶとトグルしてしまうので、再生用・停止用と分けるのがベターだが、
-                        // 簡易的に audio.play() しているので、UI同期のため togglePlay を呼ぶのではなくUI更新処理を入れる
                         updatePlayPauseUI(true);
                     });
 
@@ -8142,20 +7920,29 @@
                 function updatePlayPauseUI(isPlaying) {
                     const playImg = document.getElementById('playIconImg');
                     if (playImg) {
-                        playImg.src = isPlaying ? 'pause.webp' : 'play_arrow.webp';
+                        playImg.src = isPlaying ? 'pause.webp' : 'play.webp';
                         playImg.alt = isPlaying ? getText('pause') : getText('play');
                     }
                     // リスト上のplayingクラスは再生中も一時停止中もactiveで良いならそのままだが、
                     // 一時停止中にスタイルを変えたい場合はここで制御。今回は変更なし。
-                    drawPiPCanvas();
                 }
 
                 function togglePlay() {
                     const audio = document.getElementById('audioPlayer');
+                    if (!audio) return;
+
                     if (audio.paused) {
                         userInitiatedPause = false;
-                        if (currentMusicIndex === -1 && musicFiles.length > 0) {
+                        if (!musicFiles.length) {
+                            updatePlayPauseUI(false);
+                            return;
+                        }
+
+                        if (currentMusicIndex < 0 || currentMusicIndex >= musicFiles.length) {
                             playMusic(0);
+                        } else if (audio.getAttribute('src') !== musicFiles[currentMusicIndex].url) {
+                            // 復元済みの選択インデックスと audio.src がずれている場合は再読込して再生
+                            playMusic(currentMusicIndex);
                         } else {
                             attemptPlay(audio).then(() => {
                                 updatePlayPauseUI(true);
@@ -8259,29 +8046,12 @@
 
                 const audioEl = document.getElementById('audioPlayer');
                 audioEl.addEventListener('play', () => {
-                    const playImg = document.getElementById('playIconImg');
-                    if (playImg) { playImg.src = 'pause.webp'; playImg.alt = getText('pause'); }
+                    updatePlayPauseUI(true);
                 });
 
-                // 自動的に停止された (バックグラウンドや別アプリの影響) 場合は短時間後に再生を試みる
+                // OS側操作や外部要因で pause された場合も自動復帰させない
                 audioEl.addEventListener('pause', () => {
-                    const playImg = document.getElementById('playIconImg');
-                    if (playImg) { playImg.src = 'play.webp'; playImg.alt = getText('play'); }
-
-                    // ユーザーが明示的に一時停止した場合は復帰しない
-                    if (userInitiatedPause) return;
-
-                    // ドキュメントが非表示(バックグラウンド)または iOS の取り扱いで一時停止された可能性がある
-                    // 少し間をおいて再生を試みる(最大3回)
-                    if (document.hidden || /iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                        const audio = document.getElementById('audioPlayer');
-                        attemptPlay(audio, 3, 600).then(() => {
-                            console.info('Resumed playback after unexpected pause');
-                            updatePlayPauseUI(true);
-                        }).catch((e) => {
-                            console.warn('Could not resume playback automatically', e);
-                        });
-                    }
+                    updatePlayPauseUI(false);
                 });
 
                 const progressContainer = document.getElementById('progressContainer');
@@ -8316,11 +8086,38 @@
                 });
 
                 if (progressContainer) {
-                    progressContainer.addEventListener('click', (e) => {
+                    const seekByClientX = (clientX) => {
                         const rect = progressContainer.getBoundingClientRect();
-                        const x = e.clientX - rect.left;
+                        const x = clientX - rect.left;
                         const pct = Math.max(0, Math.min(1, x / rect.width));
                         if (audioEl.duration) audioEl.currentTime = pct * audioEl.duration;
+                    };
+
+                    let isSeeking = false;
+
+                    progressContainer.addEventListener('pointerdown', (e) => {
+                        isSeeking = true;
+                        if (typeof progressContainer.setPointerCapture === 'function') {
+                            try { progressContainer.setPointerCapture(e.pointerId); } catch (_) { }
+                        }
+                        seekByClientX(e.clientX);
+                    });
+
+                    progressContainer.addEventListener('pointermove', (e) => {
+                        if (!isSeeking) return;
+                        seekByClientX(e.clientX);
+                    });
+
+                    progressContainer.addEventListener('pointerup', () => {
+                        isSeeking = false;
+                    });
+
+                    progressContainer.addEventListener('pointercancel', () => {
+                        isSeeking = false;
+                    });
+
+                    progressContainer.addEventListener('click', (e) => {
+                        seekByClientX(e.clientX);
                     });
                 }
 
@@ -9522,6 +9319,7 @@
                     selectTodoPriorityColorTarget('high');
                     overlay.classList.add('show');
                     overlay.setAttribute('aria-hidden', 'false');
+                    document.body.classList.add('no-scroll');
                 }
 
                 function closeTodoPriorityColorModal() {
@@ -9529,6 +9327,7 @@
                     if (!overlay) return;
                     overlay.classList.remove('show');
                     overlay.setAttribute('aria-hidden', 'true');
+                    document.body.classList.remove('no-scroll');
                 }
 
                 function saveTodoPriorityColorSettings() {
@@ -9713,7 +9512,6 @@
                     'feature_title_time',
                     'feature_history_timeline',
                     'feature_loading_anim',
-                    'feature_auto_pip',
                     'feature_stop_music_on_timer_end',
                     'feature_music_resume_on_tap_after_reload',
                     'lock_settings_during_timer',
@@ -9738,7 +9536,6 @@
                     'feature_title_time',
                     'feature_history_timeline',
                     'feature_loading_anim',
-                    'feature_auto_pip',
                     'feature_stop_music_on_timer_end',
                     'feature_music_resume_on_tap_after_reload',
                     'lock_settings_during_timer',
@@ -9759,7 +9556,6 @@
                     'studyPausedAccum',
                     'studyPauseHistory',
                     'studyPauseStart',
-                    'auto_pip_primed',
                     'music_resume_pending',
                     'music_resume_index',
                     'music_resume_time'
@@ -10015,7 +9811,6 @@
                                 setToggleActive('toggleTitleTime', getData('feature_title_time') !== 'false');
                                 setToggleActive('toggleHistoryTimeline', getData('feature_history_timeline') !== 'false');
                                 setToggleActive('toggleLoadingAnim', getData('feature_loading_anim') !== 'false');
-                                setToggleActive('toggleAutoPiP', getData('feature_auto_pip') !== 'false');
                                 setToggleActive('toggleStopMusicOnTimerEnd', getData('feature_stop_music_on_timer_end') !== 'false');
                                 setToggleActive('toggleMusicResumeOnTap', getData('feature_music_resume_on_tap_after_reload') !== 'false');
                                 setToggleActive('toggleLockSettings', getData('lock_settings_during_timer') === 'true');
@@ -10846,11 +10641,6 @@
                         if (toggle) toggle.classList.add('active');
                     }
 
-                    if (isAutoPiPEnabled()) { // デフォルトON
-                        const toggle = document.getElementById('toggleAutoPiP');
-                        if (toggle) toggle.classList.add('active');
-                    }
-
                     if (isStopMusicOnTimerEndEnabled()) { // デフォルトON
                         const toggle = document.getElementById('toggleStopMusicOnTimerEnd');
                         if (toggle) toggle.classList.add('active');
@@ -10859,18 +10649,6 @@
                     if (isMusicResumeOnTapEnabled()) { // デフォルトON
                         const toggle = document.getElementById('toggleMusicResumeOnTap');
                         if (toggle) toggle.classList.add('active');
-                    }
-
-                    if (!isPiPSupported() || isLikelyMobileBrowser()) {
-                        const toggle = document.getElementById('toggleAutoPiP');
-                        if (toggle) {
-                            toggle.classList.remove('active');
-                            toggle.style.opacity = '0.45';
-                            toggle.style.pointerEvents = 'none';
-                            toggle.title = getText('autoPiPUnavailable');
-                        }
-                        saveData('feature_auto_pip', 'false');
-                        saveData('auto_pip_primed', 'false');
                     }
 
                     const loopImg = document.getElementById('loopBtnImg');
@@ -10948,49 +10726,6 @@
                         if (e.key === 'Enter') {
                             e.preventDefault();
                             addTodo();
-                        }
-                    });
-
-                    // 閲覧タブやウィンドウが切り替わった時に自動でミニモード（PiP）を起動
-                    document.addEventListener('visibilitychange', () => {
-                        if (document.visibilityState === 'hidden') {
-                            // 設定で有効な場合のみ自動起動
-                            if (isAutoPiPEnabled()) {
-                                // タブが非表示になった時：タイマーが動いていて一時停止中でなければPiP起動
-                                if (startTime && !isPaused) {
-                                    enterMiniModePiP().catch(err => {
-                                        console.warn('Auto PiP blocked by browser security:', err);
-                                    });
-                                }
-                            }
-                        } else {
-                            // タブに戻ってきた時：PiPを終了
-                            if (document.pictureInPictureElement === pipVideo) {
-                                exitMiniModePiP();
-                            }
-                        }
-                    });
-
-                    // ウィンドウフォーカスが外れた時（別ウィンドウをクリックした時など）
-                    window.addEventListener('blur', () => {
-                        // 設定で有効な場合のみ自動起動
-                        if (isAutoPiPEnabled()) {
-                            // タブ自体は表示されているが、ウィンドウのフォーカスが外れた場合
-                            if (startTime && !isPaused && document.visibilityState === 'visible') {
-                                enterMiniModePiP().catch(err => {
-                                    console.warn('Auto PiP blocked by browser security:', err);
-                                });
-                            }
-                        }
-                    });
-
-                    // ウィンドウにフォーカスが戻った時
-                    window.addEventListener('focus', () => {
-                        // PiP起動直後のフォーカス競合で即終了しないように猶予を設ける
-                        if (Date.now() - lastPiPEnterAt < 1200) return;
-                        // タブが表示されている状態でフォーカスが戻った場合
-                        if (document.visibilityState === 'visible' && document.pictureInPictureElement === pipVideo) {
-                            exitMiniModePiP();
                         }
                     });
 
@@ -11191,23 +10926,6 @@
                     } else {
                         toggle.classList.add('active');
                         saveData('feature_loading_anim', 'true');
-                    }
-                }
-
-                function toggleAutoPiP() {
-                    const toggle = document.getElementById('toggleAutoPiP');
-                    const isActive = toggle.classList.contains('active');
-
-                    if (isActive) {
-                        toggle.classList.remove('active');
-                        saveData('feature_auto_pip', 'false');
-                        saveData('auto_pip_primed', 'false');
-                        pipNeedsGestureUnlock = false;
-                    } else {
-                        toggle.classList.add('active');
-                        saveData('feature_auto_pip', 'true');
-                        // 有効化直後に、タイマー動作中なら次回ユーザー操作で解錠を試す
-                        pipNeedsGestureUnlock = true;
                     }
                 }
 

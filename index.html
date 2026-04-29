@@ -2311,7 +2311,7 @@
         .group-management-section .setting-note {
             margin-top: 12px;
             padding: 10px 12px;
-            border-radius: 12px;
+            border-radius: 24px;
         }
 
         .light .group-management-section .setting-note {
@@ -7053,6 +7053,9 @@
                                 }))
                             });
                             saveData('studyHistory', JSON.stringify(history));
+                            updateGroupFilter();
+                            loadHistory();
+                            loadStats();
                             const startDisplay = formatDateTimeLong(start);
                             const endDisplay = formatDateTimeLong(endTime);
                             document.getElementById('sessionInfo').innerHTML = `${getText('startTime')}: ${startDisplay}<br>${getText('endTime')}: ${endDisplay}<br>${getText('studyTime')}: ${formatTime(actualStudyTime)}${groupName ? '<br>' + getText('group') + ': ' + groupName : ''}`;

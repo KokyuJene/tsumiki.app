@@ -643,7 +643,6 @@
             gap: 12px;
             align-items: center;
             z-index: 100;
-            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
         }
 
         .move-group-container.active {
@@ -681,13 +680,11 @@
         .light .move-group-container input:focus {
             outline: none;
             background-color: var(--panel-light-focus);
-            box-shadow: 0 0 0 3px rgba(107, 123, 140, 0.1);
         }
 
         .dark .move-group-container input:focus {
             outline: none;
             background-color: var(--panel-dark-2);
-            box-shadow: 0 0 0 3px rgba(122, 139, 156, 0.1);
         }
 
         .light .move-group-container input::placeholder {
@@ -934,7 +931,6 @@
             background: var(--panel-light);
             color: #323232;
             border-radius: 24px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
             z-index: 1000;
             display: none;
             overflow: hidden;
@@ -1048,7 +1044,6 @@
             height: 14px;
             border-radius: 50%;
             background: #fff;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
             display: none;
             cursor: grab;
             transition: all 0.2s;
@@ -1192,7 +1187,6 @@
             border-radius: 50%;
             background: var(--primary-color);
             cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         .dark .volume-slider::-webkit-slider-thumb {
@@ -1205,7 +1199,6 @@
             border-radius: 50%;
             background: var(--primary-color);
             cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
             border: none;
         }
 
@@ -1647,7 +1640,6 @@
             padding: 30px;
             max-width: 420px;
             width: 90%;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             animation: slideUp 0.3s ease-out;
         }
 
@@ -2029,7 +2021,6 @@
         }
 
         .custom-select:focus-within select {
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
             transform: translateY(-1px);
         }
 
@@ -2088,7 +2079,6 @@
             color: inherit;
             border-radius: 24px;
             padding: 22px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
             transform: translateY(6px);
             animation: slideUp .18s ease-out;
         }
@@ -2159,7 +2149,6 @@
 
         .about-button:focus {
             outline: none;
-            box-shadow: 0 0 0 4px rgba(107, 123, 140, 0.07);
             transform: translateY(-1px);
         }
 
@@ -2347,7 +2336,6 @@
             color: inherit;
             border-radius: 24px;
             padding: 20px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
             z-index: 10001;
             animation: slideInRight 0.3s ease-out;
             pointer-events: auto;
@@ -2400,7 +2388,6 @@
             color: inherit;
             border-radius: 24px;
             padding: 20px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
             z-index: 10002;
             max-width: 400px;
             width: calc(100vw - 40px);
@@ -2446,7 +2433,6 @@
         .tutorial-highlight {
             position: relative;
             z-index: 10001 !important;
-            box-shadow: 0 0 0 4px rgba(157, 180, 200, 0.5) !important;
             border-radius: 24px !important;
         }
 
@@ -2759,7 +2745,6 @@
             height: 18px;
             border-radius: 50%;
             border: 2px solid #fff;
-            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.45);
             transform: translate(-50%, -50%);
             pointer-events: none;
             z-index: 2;
@@ -2790,7 +2775,6 @@
             border-radius: 24px;
             border: 2px solid #fff;
             background: transparent;
-            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.45);
         }
 
         .priority-color-hue::-moz-range-thumb {
@@ -2799,7 +2783,6 @@
             border-radius: 24px;
             border: 2px solid #fff;
             background: transparent;
-            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.45);
         }
 
         .priority-color-hex {
@@ -3048,23 +3031,25 @@
 
         .todo-item {
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             gap: 12px;
+            position: relative;
         }
 
         .todo-checkbox {
             flex-shrink: 0;
-            margin-top: 6px;
+            margin-top: 0;
+            align-self: center;
         }
 
         .todo-text {
             line-height: 1.6;
-            padding-top: 3px;
+            padding-top: 0;
         }
 
         .todo-delete {
-            align-self: flex-start;
-            margin-top: 3px;
+            align-self: center;
+            margin-top: 0;
         }
 
         /* ドラッグハンドル画像 */
@@ -3085,8 +3070,31 @@
             cursor: grabbing;
         }
 
+        .todo-drag-handle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: grab;
+            user-select: none;
+            opacity: 0.75;
+            width: 18px;
+            height: 18px;
+            margin-right: 6px;
+            flex-shrink: 0;
+            touch-action: none;
+        }
+
+        .todo-drag-handle:active {
+            cursor: grabbing;
+        }
+
         /* ドラッグ中のスタイル */
         .playlist-item.dragging {
+            opacity: 0.6;
+            border: 2px dashed #999;
+        }
+
+        .todo-item.dragging {
             opacity: 0.6;
             border: 2px dashed #999;
         }
@@ -3129,8 +3137,32 @@
             background: var(--primary-color);
         }
 
+        .todo-item.drag-over-top::before,
+        .todo-item.drag-over-bottom::after {
+            content: '';
+            position: absolute;
+            left: 8px;
+            right: 8px;
+            height: 3px;
+            border-radius: 24px;
+            background: var(--primary-color);
+        }
+
+        .todo-item.drag-over-top::before {
+            top: -2px;
+        }
+
+        .todo-item.drag-over-bottom::after {
+            bottom: -2px;
+        }
+
         .dark .playlist-item.drag-over-top::before,
         .dark .playlist-item.drag-over-bottom::after {
+            background: var(--primary-color-dark);
+        }
+
+        .dark .todo-item.drag-over-top::before,
+        .dark .todo-item.drag-over-bottom::after {
             background: var(--primary-color-dark);
         }
 
@@ -3327,7 +3359,6 @@
             padding: 40px;
             max-width: 500px;
             width: 90%;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             animation: slideUp 0.3s ease-out;
             text-align: center;
         }
@@ -3680,7 +3711,6 @@
             border-radius: 10px;
             padding: 0 4px;
             font-weight: bold;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
             pointer-events: none;
         }
 
@@ -3784,7 +3814,6 @@
             transform: translate(-50%, -50%);
             border-radius: 24px;
             padding: 25px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
             z-index: 10001;
             width: 90%;
             max-width: 380px;
@@ -3959,7 +3988,6 @@
             width: 90%;
             max-height: 80vh;
             overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             animation: slideUp 0.3s ease-out;
         }
 
@@ -4081,13 +4109,11 @@
         input[type="checkbox"]:checked {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .dark input[type="checkbox"]:checked {
             background-color: var(--primary-color-dark);
             border-color: var(--primary-color-dark);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         /* チェックマークアイコン */
@@ -4229,7 +4255,6 @@
                 width: 90%;
                 max-width: 350px;
                 padding: 20px;
-                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
             }
 
             .calendar-day-dialog {
@@ -4741,6 +4766,27 @@
                     <div class="toggle-switch" id="toggleMusicResumeOnTap" onclick="toggleMusicResumeOnTap()">
                         <div class="toggle-slider"></div>
                     </div>
+                </div>
+                <div class="toggle-item">
+                    <span data-i18n="musicResumeWindowLabel">タップ再開の有効時間</span>
+                    <div class="toggle-controls">
+                        <div class="custom-select" style="width: 120px;">
+                            <select id="musicResumeWindowSelect" onchange="updateMusicResumeWindow()">
+                                <option value="1">1</option>
+                                <option value="3">3</option>
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="30">30</option>
+                                <option value="60">60</option>
+                                <option value="120">120</option>
+                            </select>
+                            <div class="select-arrow">▾</div>
+                        </div>
+                        <span data-i18n="musicResumeWindowMinutes">分</span>
+                    </div>
+                </div>
+                <div class="setting-note" data-i18n="musicResumeWindowNote">
+                    設定した時間を過ぎると、再開は手動になります。
                 </div>
                 <div style="margin-top: 14px;">
                     <button class="secondary" style="width: 100%;" onclick="openTodoPriorityColorModal()" data-i18n="todoPriorityColorSettingsButton">
@@ -5411,6 +5457,9 @@
                         loadingAnimSetting: 'ローディングアニメーションを表示',
                         stopMusicOnTimerEnd: 'タイマー終了時に音楽を一時停止',
                         musicResumeOnTapAfterReload: 'ページ再読み込み後に画面タップで音楽を自動再開',
+                        musicResumeWindowLabel: 'タップ再開の有効時間',
+                        musicResumeWindowMinutes: '分',
+                        musicResumeWindowNote: '設定した時間を過ぎると、再開は手動になります。',
                         historyTimelineToggle: '履歴カードのタイムラインバー表示',
                         historyTimelineLegacyNote: '一時停止データがない履歴ではタイムラインバーは表示されません。4月22日より前の記録は表示されません。',
                         graphDisplay: 'グラフ表示',
@@ -5777,6 +5826,9 @@
                         loadingAnimSetting: 'Show Loading Animation on Start',
                         stopMusicOnTimerEnd: 'Pause music when timer ends',
                         musicResumeOnTapAfterReload: 'Resume music on tap after reload',
+                        musicResumeWindowLabel: 'Tap resume window',
+                        musicResumeWindowMinutes: 'min',
+                        musicResumeWindowNote: 'After this time, resume is manual.',
                         historyTimelineToggle: 'Show timeline bar on history cards',
                         historyTimelineLegacyNote: 'Timeline bars are hidden for records without pause data. Records before 4/22 are not shown in this bar feature.',
                         graphDisplay: 'Graph Display',
@@ -6400,6 +6452,7 @@
                     if (getData('graph_enabled') === 'true') {
                         setTimeout(() => updateGraphs(), 100);
                     }
+                    updateDragHandleIcons();
                 }
 
                 const VALID_THEME_NAMES = ['blue', 'green', 'purple', 'orange', 'pink', 'teal', 'white'];
@@ -6430,6 +6483,7 @@
                     if (getData('graph_enabled') === 'true') {
                         setTimeout(() => updateGraphs(), 100);
                     }
+                    updateDragHandleIcons();
                 }
 
                 function isStopMusicOnTimerEndEnabled() {
@@ -6440,12 +6494,59 @@
                     return getData('feature_music_resume_on_tap_after_reload') !== 'false';
                 }
 
+                function getDragHandleSrc(isActive) {
+                    if (isActive) return 'drag_handle.webp';
+                    return document.body.classList.contains('dark') ? 'drag_handle.webp' : 'drag_handle_kuro.webp';
+                }
+
+                function updateDragHandleIcons() {
+                    document.querySelectorAll('.drag-handle').forEach(handle => {
+                        const item = handle.closest('.playlist-item, .playlist-manager-item');
+                        const isActive = item && (item.classList.contains('playing') || item.classList.contains('selected'));
+                        handle.src = getDragHandleSrc(isActive);
+                    });
+                    document.querySelectorAll('.todo-drag-handle').forEach(handle => {
+                        handle.src = getDragHandleSrc(false);
+                    });
+                }
+
+                function getMusicResumeWindowMinutes() {
+                    const raw = parseInt(getData('music_resume_window_min') || '5', 10);
+                    if (!Number.isFinite(raw) || raw <= 0) return 5;
+                    return raw;
+                }
+
+                function getMusicResumeWindowMs() {
+                    return getMusicResumeWindowMinutes() * 60 * 1000;
+                }
+
+                function applyMusicResumeWindowSetting() {
+                    const select = document.getElementById('musicResumeWindowSelect');
+                    if (!select) return;
+                    select.value = String(getMusicResumeWindowMinutes());
+                }
+
+                function updateMusicResumeWindow() {
+                    const select = document.getElementById('musicResumeWindowSelect');
+                    if (!select) return;
+                    const minutes = parseInt(select.value, 10);
+                    if (!Number.isFinite(minutes) || minutes <= 0) {
+                        select.value = '5';
+                        saveData('music_resume_window_min', '5');
+                        return;
+                    }
+                    saveData('music_resume_window_min', String(minutes));
+                    setupMusicResumeOnNextGesture();
+                }
+
                 function clearMusicResumeState() {
                     saveData('music_resume_pending', 'false');
                     localStorage.removeItem('music_resume_index');
                     localStorage.removeItem('music_resume_time');
+                    localStorage.removeItem('music_resume_saved_at');
                     setCookie('music_resume_index', '', -1);
                     setCookie('music_resume_time', '', -1);
+                    setCookie('music_resume_saved_at', '', -1);
                 }
 
                 function saveMusicResumeStateForReload() {
@@ -6467,6 +6568,7 @@
                     saveData('music_resume_pending', 'true');
                     saveData('music_resume_index', String(currentMusicIndex));
                     saveData('music_resume_time', String(Math.max(0, audio.currentTime || 0)));
+                    saveData('music_resume_saved_at', String(Date.now()));
                 }
 
                 function setupMusicResumeOnNextGesture() {
@@ -6480,6 +6582,13 @@
 
                     const savedIndex = parseInt(getData('music_resume_index') || '-1', 10);
                     const savedTime = Math.max(0, parseFloat(getData('music_resume_time') || '0') || 0);
+                    const savedAt = parseInt(getData('music_resume_saved_at') || '0', 10) || 0;
+                    const resumeWindowMs = getMusicResumeWindowMs();
+
+                    if (savedAt && resumeWindowMs > 0 && (Date.now() - savedAt) > resumeWindowMs) {
+                        clearMusicResumeState();
+                        return;
+                    }
 
                     if (!Number.isFinite(savedIndex) || savedIndex < 0 || !musicFiles[savedIndex]) {
                         clearMusicResumeState();
@@ -7228,7 +7337,7 @@
                     playlistDiv.innerHTML = musicFiles.map((item, index) => `
         <div class="playlist-item ${index === currentMusicIndex ? 'playing' : ''} ${playlistSelectMode ? 'select-mode' : ''} ${selectedMusicItems.has(index) ? 'selected' : ''}" data-index="${index}">
             <div style="display:flex; align-items:center; gap:8px; flex:1; min-width:0;">
-                <img src="drag_handle.webp" class="drag-handle" data-index="${index}" aria-label="${getText('dragHandle')}" data-i18n-aria="dragHandle" alt="">
+                <img src="${getDragHandleSrc(index === currentMusicIndex || selectedMusicItems.has(index))}" class="drag-handle" data-index="${index}" draggable="${playlistSelectMode ? 'false' : 'true'}" aria-label="${getText('dragHandle')}" data-i18n-aria="dragHandle" alt="">
                 ${playlistSelectMode ? `<input type="checkbox" class="playlist-item-checkbox" data-index="${index}" ${selectedMusicItems.has(index) ? 'checked' : ''} onclick="event.stopPropagation(); togglePlaylistItemSelection(${index}, this.checked)">` : ''}
                 <div class="playlist-item-info" style="flex:1; min-width:0;">
                     <div class="playlist-item-title">
@@ -7244,6 +7353,7 @@
     `).join('');
                     attachPlaylistHandlers();
                     updateMusicTitleDisplay();
+                    updateDragHandleIcons();
                 }
 
                 // エスケープ用(簡易)
@@ -7253,84 +7363,37 @@
 
                 // ドラッグ & 長押しで並べ替えモード
                 let _dragSrcIndex = null;
+                let _touchDragTimer = null;
                 function attachPlaylistHandlers() {
                     const playlist = document.getElementById('playlist');
+                    if (!playlist) return;
 
-                    // 各プレイリストアイテムにドラッグを有効化
+                    const clearIndicators = () => {
+                        playlist.querySelectorAll('.playlist-item').forEach(el => {
+                            el.classList.remove('drag-over-top');
+                            el.classList.remove('drag-over-bottom');
+                        });
+                    };
+
+                    const clearDragState = () => {
+                        _dragSrcIndex = null;
+                        if (_touchDragTimer) {
+                            clearTimeout(_touchDragTimer);
+                            _touchDragTimer = null;
+                        }
+                        _touchDragState = null;
+                        playlist.querySelectorAll('.playlist-item').forEach(el => {
+                            el.classList.remove('dragging');
+                        });
+                        clearIndicators();
+                    };
+
                     playlist.querySelectorAll('.playlist-item').forEach(item => {
-                        item.setAttribute('draggable', playlistSelectMode ? 'false' : 'true');
+                        const index = parseInt(item.getAttribute('data-index'), 10);
+                        const handle = item.querySelector('.drag-handle');
 
-                        // dragstart: ドラッグ開始
-                        item.addEventListener('dragstart', (e) => {
-                            if (playlistSelectMode) {
-                                e.preventDefault();
-                                return;
-                            }
-                            const idx = parseInt(item.getAttribute('data-index'), 10);
-                            _dragSrcIndex = idx;
-                            e.dataTransfer.effectAllowed = 'move';
-                            e.dataTransfer.setData('text/plain', String(idx));
-                            item.classList.add('dragging');
-                        });
+                        item.setAttribute('draggable', 'false');
 
-                        // dragover: ドラッグ中は常にデフォルト動作を抑止
-                        item.addEventListener('dragover', (e) => {
-                            if (playlistSelectMode) return;
-                            e.preventDefault();
-                            e.dataTransfer.dropEffect = 'move';
-                            playlist.querySelectorAll('.playlist-item').forEach(el => {
-                                if (el !== item) {
-                                    el.classList.remove('drag-over-top');
-                                    el.classList.remove('drag-over-bottom');
-                                }
-                            });
-                            const rect = item.getBoundingClientRect();
-                            const isTopHalf = (e.clientY - rect.top) < (rect.height / 2);
-                            item.classList.toggle('drag-over-top', isTopHalf);
-                            item.classList.toggle('drag-over-bottom', !isTopHalf);
-                        });
-
-                        // dragleave: ドラッグ対象外になった時
-                        item.addEventListener('dragleave', () => {
-                            item.classList.remove('drag-over-top');
-                            item.classList.remove('drag-over-bottom');
-                        });
-
-                        // drop: ドロップ時に並べ替え実行
-                        item.addEventListener('drop', (e) => {
-                            if (playlistSelectMode) return;
-                            e.preventDefault();
-                            e.stopPropagation();
-                            item.classList.remove('drag-over-top');
-                            item.classList.remove('drag-over-bottom');
-
-                            const targetIndex = parseInt(item.getAttribute('data-index'), 10);
-                            const src = _dragSrcIndex !== null ? _dragSrcIndex : parseInt(e.dataTransfer.getData('text/plain') || -1, 10);
-                            const rect = item.getBoundingClientRect();
-                            const isTopHalf = (e.clientY - rect.top) < (rect.height / 2);
-                            let insertIndex = isTopHalf ? targetIndex : targetIndex + 1;
-                            if (src < insertIndex) insertIndex -= 1;
-
-                            if (!isNaN(src) && src >= 0 && src !== insertIndex) {
-                                reorderMusicToIndex(src, insertIndex);
-                            }
-
-                            _dragSrcIndex = null;
-                        });
-
-                        // dragend: ドラッグ終了
-                        item.addEventListener('dragend', () => {
-                            item.classList.remove('dragging');
-                            item.classList.remove('drag-over-top');
-                            item.classList.remove('drag-over-bottom');
-                            playlist.querySelectorAll('.playlist-item').forEach(el => {
-                                el.classList.remove('drag-over-top');
-                                el.classList.remove('drag-over-bottom');
-                            });
-                            _dragSrcIndex = null;
-                        });
-
-                        // クリックで再生(ハンドル以外の場所をクリック時)
                         item.addEventListener('click', () => {
                             const idx = parseInt(item.getAttribute('data-index'), 10);
                             if (playlistSelectMode) {
@@ -7341,65 +7404,149 @@
                             playMusic(idx);
                         });
 
-                        const handle = item.querySelector('.drag-handle');
-                        if (handle) {
-                            handle.addEventListener('click', (e) => {
-                                e.stopPropagation();
-                            });
-                            handle.addEventListener('touchstart', (e) => {
-                                if (playlistSelectMode) return;
-                                e.stopPropagation();
-                                const idx = parseInt(item.getAttribute('data-index'), 10);
-                                _touchDragState = {
-                                    srcIndex: idx,
-                                    targetIndex: idx,
-                                    insertTop: true
-                                };
-                                item.classList.add('dragging');
-                            }, { passive: true });
+                        item.addEventListener('dragover', (e) => {
+                            if (playlistSelectMode) return;
+                            if (_dragSrcIndex === null) return;
+                            e.preventDefault();
+                            e.dataTransfer.dropEffect = 'move';
+                            clearIndicators();
+                            const rect = item.getBoundingClientRect();
+                            const isTopHalf = (e.clientY - rect.top) < (rect.height / 2);
+                            item.classList.toggle('drag-over-top', isTopHalf);
+                            item.classList.toggle('drag-over-bottom', !isTopHalf);
+                        });
 
-                            handle.addEventListener('touchmove', (e) => {
-                                if (!_touchDragState || playlistSelectMode) return;
-                                const touch = e.touches && e.touches[0];
-                                if (!touch) return;
-                                const target = document.elementFromPoint(touch.clientX, touch.clientY);
-                                const targetItem = target ? target.closest('.playlist-item') : null;
-                                if (!targetItem) return;
+                        item.addEventListener('dragleave', () => {
+                            if (_dragSrcIndex === null) return;
+                            item.classList.remove('drag-over-top');
+                            item.classList.remove('drag-over-bottom');
+                        });
+
+                        item.addEventListener('drop', (e) => {
+                            if (playlistSelectMode) return;
+                            if (_dragSrcIndex === null) return;
+                            e.preventDefault();
+                            e.stopPropagation();
+                            const targetIndex = parseInt(item.getAttribute('data-index'), 10);
+                            const rect = item.getBoundingClientRect();
+                            const isTopHalf = (e.clientY - rect.top) < (rect.height / 2);
+                            let insertIndex = isTopHalf ? targetIndex : targetIndex + 1;
+                            const src = _dragSrcIndex;
+                            if (src < insertIndex) insertIndex -= 1;
+                            clearDragState();
+                            if (!isNaN(src) && src >= 0 && src !== insertIndex) {
+                                reorderMusicToIndex(src, insertIndex);
+                            }
+                        });
+
+                        item.addEventListener('dragend', () => {
+                            clearDragState();
+                        });
+
+                        if (!handle) return;
+
+                        handle.setAttribute('draggable', playlistSelectMode ? 'false' : 'true');
+                        handle.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                        });
+                        handle.addEventListener('dragstart', (e) => {
+                            if (playlistSelectMode) {
                                 e.preventDefault();
-                                const targetIdx = parseInt(targetItem.getAttribute('data-index'), 10);
-                                const rect = targetItem.getBoundingClientRect();
-                                const isTopHalf = (touch.clientY - rect.top) < (rect.height / 2);
+                                return;
+                            }
+                            _dragSrcIndex = index;
+                            e.dataTransfer.effectAllowed = 'move';
+                            e.dataTransfer.setData('text/plain', String(index));
+                            item.classList.add('dragging');
+                            clearIndicators();
+                        });
+                        handle.addEventListener('dragend', () => {
+                            clearDragState();
+                        });
 
-                                playlist.querySelectorAll('.playlist-item').forEach(el => {
-                                    el.classList.remove('drag-over-top');
-                                    el.classList.remove('drag-over-bottom');
-                                });
-                                targetItem.classList.toggle('drag-over-top', isTopHalf);
-                                targetItem.classList.toggle('drag-over-bottom', !isTopHalf);
+                        handle.addEventListener('touchstart', (e) => {
+                            if (playlistSelectMode) return;
+                            const touch = e.touches && e.touches[0];
+                            if (!touch) return;
+                            if (e.cancelable) e.preventDefault();
+                            e.stopPropagation();
+                            if (_touchDragTimer) {
+                                clearTimeout(_touchDragTimer);
+                                _touchDragTimer = null;
+                            }
+                            _touchDragState = {
+                                srcIndex: index,
+                                targetIndex: index,
+                                insertTop: true,
+                                active: false,
+                                startX: touch.clientX,
+                                startY: touch.clientY
+                            };
+                            _touchDragTimer = setTimeout(() => {
+                                if (!_touchDragState || _touchDragState.srcIndex !== index) return;
+                                _touchDragState.active = true;
+                                item.classList.add('dragging');
+                                clearIndicators();
+                            }, 220);
+                        }, { passive: false });
 
-                                _touchDragState.targetIndex = targetIdx;
-                                _touchDragState.insertTop = isTopHalf;
-                            }, { passive: false });
-
-                            handle.addEventListener('touchend', () => {
-                                if (!_touchDragState || playlistSelectMode) return;
-                                const src = _touchDragState.srcIndex;
-                                const targetIndex = _touchDragState.targetIndex;
-                                let insertIndex = _touchDragState.insertTop ? targetIndex : targetIndex + 1;
-                                if (src < insertIndex) insertIndex -= 1;
-
-                                playlist.querySelectorAll('.playlist-item').forEach(el => {
-                                    el.classList.remove('dragging');
-                                    el.classList.remove('drag-over-top');
-                                    el.classList.remove('drag-over-bottom');
-                                });
-
-                                if (!isNaN(src) && src >= 0 && src !== insertIndex) {
-                                    reorderMusicToIndex(src, insertIndex);
+                        handle.addEventListener('touchmove', (e) => {
+                            if (!_touchDragState || playlistSelectMode) return;
+                            const touch = e.touches && e.touches[0];
+                            if (!touch) return;
+                            const movedX = Math.abs(touch.clientX - _touchDragState.startX);
+                            const movedY = Math.abs(touch.clientY - _touchDragState.startY);
+                            if (!_touchDragState.active) {
+                                if (movedX > 12 || movedY > 12) {
+                                    if (_touchDragTimer) {
+                                        clearTimeout(_touchDragTimer);
+                                        _touchDragTimer = null;
+                                    }
+                                    _touchDragState = null;
                                 }
-                                _touchDragState = null;
-                            }, { passive: true });
-                        }
+                                return;
+                            }
+                            const target = document.elementFromPoint(touch.clientX, touch.clientY);
+                            const targetItem = target ? target.closest('.playlist-item') : null;
+                            if (!targetItem) return;
+                            if (e.cancelable) e.preventDefault();
+                            const targetIdx = parseInt(targetItem.getAttribute('data-index'), 10);
+                            const rect = targetItem.getBoundingClientRect();
+                            const isTopHalf = (touch.clientY - rect.top) < (rect.height / 2);
+                            clearIndicators();
+                            targetItem.classList.toggle('drag-over-top', isTopHalf);
+                            targetItem.classList.toggle('drag-over-bottom', !isTopHalf);
+                            _touchDragState.targetIndex = targetIdx;
+                            _touchDragState.insertTop = isTopHalf;
+                        }, { passive: false });
+
+                        handle.addEventListener('touchend', () => {
+                            if (_touchDragTimer) {
+                                clearTimeout(_touchDragTimer);
+                                _touchDragTimer = null;
+                            }
+                            if (!_touchDragState || playlistSelectMode) {
+                                clearDragState();
+                                return;
+                            }
+                            const state = _touchDragState;
+                            _touchDragState = null;
+                            clearIndicators();
+                            item.classList.remove('dragging');
+                            if (!state.active) return;
+                            const src = state.srcIndex;
+                            const targetIndex = state.targetIndex;
+                            let insertIndex = state.insertTop ? targetIndex : targetIndex + 1;
+                            if (src < insertIndex) insertIndex -= 1;
+                            clearDragState();
+                            if (!isNaN(src) && src >= 0 && src !== insertIndex) {
+                                reorderMusicToIndex(src, insertIndex);
+                            }
+                        }, { passive: true });
+
+                        handle.addEventListener('touchcancel', () => {
+                            clearDragState();
+                        }, { passive: true });
                     });
                 }
 
@@ -7493,7 +7640,7 @@
                         return `
                             <div class="playlist-manager-item ${p.id === currentPlaylistId ? 'playing' : ''}" data-pl-index="${index}" data-pl-id="${p.id}" draggable="true">
                                 <div style="display:flex; align-items:center; gap:8px; min-width:0; flex:1;">
-                                    <img src="drag_handle.webp" class="drag-handle" alt="" data-i18n-aria="dragHandle" aria-label="${getText('dragHandle')}" style="cursor: grab; width: 24px; height: 24px;">
+                                    <img src="${getDragHandleSrc(p.id === currentPlaylistId)}" class="drag-handle" alt="" data-i18n-aria="dragHandle" aria-label="${getText('dragHandle')}" style="cursor: grab; width: 24px; height: 24px;">
                                     <div style="display:flex; flex-direction:column; min-width:0;">
                                         <span class="playlist-manager-item-name">${escapeHtml(p.name || getText('playlist'))}</span>
                                         <span class="playlist-manager-item-count" style="opacity:.65; font-size:.82rem;">${trackCount}曲</span>
@@ -7508,6 +7655,7 @@
                     }).join('');
 
                     attachPlaylistManagerHandlers();
+                    updateDragHandleIcons();
                 }
 
                 function attachPlaylistManagerHandlers() {
@@ -8116,6 +8264,7 @@
                         saveData('music_resume_pending', 'true');
                         saveData('music_resume_index', String(currentMusicIndex));
                         saveData('music_resume_time', String(Math.max(0, cur || 0)));
+                        saveData('music_resume_saved_at', String(Date.now()));
                     }
                 });
 
@@ -8173,6 +8322,52 @@
 
                 let currentTodoFilter = 'all';
                 const todoDetailsExpanded = {};
+                let _todoDragSrcId = null;
+                let _todoTouchDragState = null;
+
+                function generateTodoId() {
+                    if (window.crypto && typeof crypto.randomUUID === 'function') {
+                        return crypto.randomUUID();
+                    }
+                    return `todo_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`;
+                }
+
+                function getNextTodoOrder(todos) {
+                    let maxOrder = -1;
+                    todos.forEach(todo => {
+                        const orderNum = Number(todo.order);
+                        if (Number.isFinite(orderNum) && orderNum > maxOrder) {
+                            maxOrder = orderNum;
+                        }
+                    });
+                    return maxOrder + 1;
+                }
+
+                function normalizeTodoState(todos) {
+                    let changed = false;
+                    const seen = new Set();
+                    todos.forEach((todo, index) => {
+                        if (!todo.id || seen.has(todo.id)) {
+                            todo.id = generateTodoId();
+                            changed = true;
+                        }
+                        seen.add(todo.id);
+
+                        const orderNum = Number(todo.order);
+                        if (!Number.isFinite(orderNum)) {
+                            todo.order = index;
+                            changed = true;
+                        } else if (todo.order !== orderNum) {
+                            todo.order = orderNum;
+                            changed = true;
+                        }
+                    });
+                    return changed;
+                }
+
+                function getOrderedTodos(todos) {
+                    return [...todos].sort((a, b) => Number(a.order) - Number(b.order));
+                }
 
                 function addTodo() {
                     const input = document.getElementById('todoInput');
@@ -8202,10 +8397,11 @@
                     const newTodo = {
                         text: text,
                         completed: false,
-                        id: Date.now(),
+                        id: generateTodoId(),
                         repeat: repeat,
                         priority: priority,
                         createdAt: new Date().toISOString(),
+                        order: getNextTodoOrder(todos),
                         // Ver.2: 段階的完了
                         completionStages: {
                             stage1: false,
@@ -8239,6 +8435,9 @@
                     let todos = getData('todos');
                     todos = todos ? JSON.parse(todos) : [];
                     const todoV2Enabled = getData('todo_v2_enabled') === 'true';
+                    const normalized = normalizeTodoState(todos);
+                    if (normalized) saveData('todos', JSON.stringify(todos));
+                    const orderedTodos = getOrderedTodos(todos);
 
                     const now = new Date();
                     const today = now.toDateString();
@@ -8281,21 +8480,16 @@
 
                     saveData('todos', JSON.stringify(todos));
 
-                    let filteredTodos = todos;
+                    let filteredTodos = orderedTodos;
                     if (currentTodoFilter === 'active') {
-                        filteredTodos = todos.filter(todo => !todo.completed);
+                        filteredTodos = orderedTodos.filter(todo => !todo.completed);
                     } else if (currentTodoFilter === 'completed') {
-                        filteredTodos = todos.filter(todo => todo.completed);
+                        filteredTodos = orderedTodos.filter(todo => todo.completed);
                     } else if (currentTodoFilter === 'daily') {
-                        filteredTodos = todos.filter(todo => todo.repeat === 'daily');
+                        filteredTodos = orderedTodos.filter(todo => todo.repeat === 'daily');
                     } else if (currentTodoFilter === 'weekly') {
-                        filteredTodos = todos.filter(todo => todo.repeat === 'weekly');
+                        filteredTodos = orderedTodos.filter(todo => todo.repeat === 'weekly');
                     }
-
-                    filteredTodos.sort((a, b) => {
-                        const priorityOrder = { high: 0, normal: 1, low: 2 };
-                        return priorityOrder[a.priority] - priorityOrder[b.priority];
-                    });
 
                     const todosDiv = document.getElementById('todoItems');
                     if (filteredTodos.length === 0) {
@@ -8355,7 +8549,8 @@
                         }
 
                         return `
-            <div class="todo-item todo-priority-${todo.priority} ${todo.completed ? 'completed' : ''}">
+            <div class="todo-item todo-priority-${todo.priority} ${todo.completed ? 'completed' : ''}" data-id="${todo.id}">
+                <img src="${getDragHandleSrc(false)}" class="todo-drag-handle" alt="${getText('dragHandle')}">
                 <input type="checkbox" class="todo-checkbox" ${todo.completed ? 'checked' : ''} onchange="toggleTodo(${index})">
                 <div style="flex: 1; min-width: 0;">
                     <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
@@ -8369,6 +8564,129 @@
             </div>
         `;
                     }).join('');
+                    attachTodoDragHandlers();
+                    updateDragHandleIcons();
+                }
+
+                function clearTodoDragIndicators() {
+                    document.querySelectorAll('#todoItems .todo-item').forEach(item => {
+                        item.classList.remove('drag-over-top', 'drag-over-bottom');
+                    });
+                }
+
+                function reorderTodoById(srcId, targetId, insertAfter) {
+                    if (!srcId || !targetId || srcId === targetId) return;
+                    let todos = getData('todos');
+                    todos = todos ? JSON.parse(todos) : [];
+                    if (normalizeTodoState(todos)) saveData('todos', JSON.stringify(todos));
+
+                    const ordered = getOrderedTodos(todos);
+                    const srcIndex = ordered.findIndex(todo => String(todo.id) === String(srcId));
+                    const targetIndex = ordered.findIndex(todo => String(todo.id) === String(targetId));
+                    if (srcIndex < 0 || targetIndex < 0) return;
+
+                    let insertIndex = insertAfter ? targetIndex + 1 : targetIndex;
+                    if (srcIndex < insertIndex) insertIndex -= 1;
+
+                    const moved = ordered.splice(srcIndex, 1)[0];
+                    ordered.splice(insertIndex, 0, moved);
+
+                    ordered.forEach((todo, index) => {
+                        todo.order = index;
+                    });
+
+                    saveData('todos', JSON.stringify(ordered));
+                    loadTodos();
+                }
+
+                function attachTodoDragHandlers() {
+                    const items = document.querySelectorAll('#todoItems .todo-item');
+                    items.forEach(item => {
+                        item.setAttribute('draggable', 'true');
+
+                        item.addEventListener('dragstart', (e) => {
+                            const handle = e.target.closest('.todo-drag-handle');
+                            if (!handle) {
+                                e.preventDefault();
+                                return;
+                            }
+                            _todoDragSrcId = item.dataset.id || '';
+                            item.classList.add('dragging');
+                        });
+
+                        item.addEventListener('dragend', () => {
+                            _todoDragSrcId = null;
+                            item.classList.remove('dragging');
+                            clearTodoDragIndicators();
+                        });
+
+                        item.addEventListener('dragover', (e) => {
+                            if (!_todoDragSrcId) return;
+                            e.preventDefault();
+                            const rect = item.getBoundingClientRect();
+                            const isTopHalf = (e.clientY - rect.top) < rect.height / 2;
+                            item.classList.toggle('drag-over-top', isTopHalf);
+                            item.classList.toggle('drag-over-bottom', !isTopHalf);
+                        });
+
+                        item.addEventListener('dragleave', () => {
+                            item.classList.remove('drag-over-top', 'drag-over-bottom');
+                        });
+
+                        item.addEventListener('drop', (e) => {
+                            if (!_todoDragSrcId) return;
+                            e.preventDefault();
+                            const rect = item.getBoundingClientRect();
+                            const isTopHalf = (e.clientY - rect.top) < rect.height / 2;
+                            const targetId = item.dataset.id || '';
+                            clearTodoDragIndicators();
+                            reorderTodoById(_todoDragSrcId, targetId, !isTopHalf);
+                        });
+
+                        const handle = item.querySelector('.todo-drag-handle');
+                        if (!handle) return;
+
+                        handle.addEventListener('touchstart', (e) => {
+                            if (e.cancelable) e.preventDefault();
+                            _todoTouchDragState = {
+                                srcId: item.dataset.id || '',
+                                targetId: item.dataset.id || '',
+                                insertTop: true
+                            };
+                            item.classList.add('dragging');
+                        }, { passive: false });
+
+                        handle.addEventListener('touchmove', (e) => {
+                            if (!_todoTouchDragState) return;
+                            const touch = e.touches[0];
+                            if (!touch) return;
+                            if (e.cancelable) e.preventDefault();
+
+                            const target = document.elementFromPoint(touch.clientX, touch.clientY);
+                            const targetItem = target ? target.closest('.todo-item') : null;
+                            if (!targetItem) return;
+
+                            const rect = targetItem.getBoundingClientRect();
+                            const isTopHalf = (touch.clientY - rect.top) < rect.height / 2;
+                            _todoTouchDragState.targetId = targetItem.dataset.id || '';
+                            _todoTouchDragState.insertTop = isTopHalf;
+
+                            clearTodoDragIndicators();
+                            targetItem.classList.toggle('drag-over-top', isTopHalf);
+                            targetItem.classList.toggle('drag-over-bottom', !isTopHalf);
+                        }, { passive: false });
+
+                        handle.addEventListener('touchend', () => {
+                            if (!_todoTouchDragState) return;
+                            const state = _todoTouchDragState;
+                            _todoTouchDragState = null;
+                            item.classList.remove('dragging');
+                            clearTodoDragIndicators();
+                            if (state.srcId && state.targetId) {
+                                reorderTodoById(state.srcId, state.targetId, !state.insertTop);
+                            }
+                        });
+                    });
                 }
 
                 function toggleTodoDetails(todoId) {
@@ -8413,6 +8731,7 @@
                 function toggleTodo(index) {
                     let todos = getData('todos');
                     todos = todos ? JSON.parse(todos) : [];
+                    if (!todos[index]) return;
                     const newState = !todos[index].completed;
                     todos[index].completed = newState;
 
@@ -8437,6 +8756,7 @@
                     if (confirmed) {
                         let todos = getData('todos');
                         todos = todos ? JSON.parse(todos) : [];
+                        if (!todos[index]) return;
                         todos.splice(index, 1);
                         saveData('todos', JSON.stringify(todos));
                         loadTodos();
@@ -8449,6 +8769,7 @@
                 function toggleTodoStageAll(index) {
                     let todos = getData('todos');
                     todos = todos ? JSON.parse(todos) : [];
+                    if (!todos[index]) return;
 
                     const newState = !todos[index].completed;
                     todos[index].completed = newState;
@@ -8476,6 +8797,7 @@
                 function toggleTodoStage(index, stage) {
                     let todos = getData('todos');
                     todos = todos ? JSON.parse(todos) : [];
+                    if (!todos[index]) return;
 
                     const stageKey = `stage${stage}`;
                     const newState = !todos[index].completionStages[stageKey];
@@ -9548,6 +9870,7 @@
                     'feature_loading_anim',
                     'feature_stop_music_on_timer_end',
                     'feature_music_resume_on_tap_after_reload',
+                    'music_resume_window_min',
                     'lock_settings_during_timer',
                     'feature_focus_mode_display',
                     'focus_mode_enabled',
@@ -10684,6 +11007,7 @@
                         const toggle = document.getElementById('toggleMusicResumeOnTap');
                         if (toggle) toggle.classList.add('active');
                     }
+                    applyMusicResumeWindowSetting();
 
                     const loopImg = document.getElementById('loopBtnImg');
                     if (loopImg) {

@@ -132,6 +132,17 @@
             letter-spacing: 1px;
         }
 
+        .tsumiki-logo {
+            display: block;
+            margin: 0 auto;
+            width: clamp(170px, 45vw, 250px);
+            height: auto;
+        }
+
+        .tsumiki-logo-about {
+            width: clamp(120px, 28vw, 200px);
+        }
+
         h2 {
             font-size: 1.3rem;
             margin-bottom: 20px;
@@ -797,6 +808,12 @@
             padding: 15px;
             border-radius: 24px;
             margin-bottom: 10px;
+            gap: 12px;
+        }
+
+        .toggle-item > span {
+            flex: 1;
+            min-width: 0;
         }
 
         .setting-note {
@@ -824,12 +841,14 @@
             border-radius: 24px;
             cursor: pointer;
             transition: background-color 0.3s;
+            flex-shrink: 0;
         }
 
         .toggle-controls {
             display: flex;
             align-items: center;
             gap: 12px;
+            flex-shrink: 0;
         }
 
 
@@ -1887,6 +1906,20 @@
             .history-item-duration {
                 font-size: 1.1rem;
             }
+
+            .toggle-item {
+                flex-wrap: wrap;
+                align-items: flex-start;
+            }
+
+            .toggle-item > span {
+                width: 100%;
+            }
+
+            .toggle-controls {
+                width: 100%;
+                justify-content: flex-end;
+            }
         }
 
         :root {
@@ -2621,9 +2654,10 @@
             border-radius: 24px;
             padding: 20px;
             max-height: min(92dvh, 860px);
-            overflow: hidden;
-            -webkit-overflow-scrolling: touch;
+            overflow-y: auto;
             overscroll-behavior: contain;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: max(20px, env(safe-area-inset-bottom));
             animation: slideUp .2s ease-out;
         }
 
@@ -4266,6 +4300,21 @@
                 font-size: 1.1rem;
             }
         }
+
+        @media (max-width: 480px) {
+            .tsumiki-logo {
+                width: clamp(190px, 44vw, 290px);
+            }
+
+            .tsumiki-logo-about {
+                width: clamp(140px, 40vw, 220px);
+            }
+
+            h1 {
+                margin-bottom: 14px;
+            }
+        }
+
     </style>
 
 </head>
@@ -4426,7 +4475,10 @@
     </div>
 
     <div class="container">
-        <h1 data-i18n="studyTimeManagement">ツミキapp</h1>
+        <h1 aria-label="ツミキapp">
+            <img class="tsumiki-logo" id="tsumikiLogoMain" src="tsumiki_logo.svg" data-light-src="tsumiki_logo.svg"
+                data-dark-src="tsumiki_logo_akarui.svg" alt="ツミキapp" data-i18n-alt="studyTimeManagement">
+        </h1>
 
         <div class="menu" id="mainMenu">
             <button class="active" onclick="showPage('timer')" data-page="timer" data-i18n="menuTimer">タイマー</button>
@@ -5533,7 +5585,7 @@
                         playlistNamePlaceholder: 'プレイリスト名を入力',
 
                         // チュートリアル
-                        tutorialStartTitle: 'ストップウォッチの開始',
+                        tutorialStartTitle: 'ストップウォッチの開始(クリック)',
                         tutorialStartMessage: 'この「勉強開始」ボタンをクリックすると、タイマーがスタートします。',
                         tutorialTimerStartedTitle: 'タイマーがスタートしました',
                         tutorialTimerStartedMessage: '今はチュートリアルですが、実際の勉強では、このまま集中して作業を続けましょう。',
@@ -5578,8 +5630,11 @@
 
                         // About & QA
                         aboutContent: `<div style="text-align: center; margin-bottom: 20px;">
-                        <div><img src="guide.png" style="width: 3rem; height: 3rem;"></div>
-                        <h3 style="margin-top: 0;">Tsumiki app</h3>
+                        <div><img src="1024,1024_icon.png" style="width: 3rem; height: 3rem; margin-bottom: -20px;"></div>
+                        <div style="margin-top: 6px;">
+                            <img class="tsumiki-logo tsumiki-logo-about" src="tsumiki_logo.svg" data-light-src="tsumiki_logo.svg"
+                                data-dark-src="tsumiki_logo_akarui.svg" alt="Tsumiki app">
+                        </div>
                         <p>シンプルで使いやすい勉強時間管理ツール。</p>
                         このサイトは<a href="https://kokyujene.super-hiko14.com/members/super-hiko14/">Super Hiko14</a>が開発しました。<div class="tyuui-mini-text">※ 一部AIが使用されています。</div>
                         </div>`,
@@ -6030,7 +6085,10 @@
                         // About & QA
                         aboutContent: `<div style="text-align: center; margin-bottom: 20px;">
                         <div><img src="guide.png" style="width: 3rem; height: 3rem;"></div>
-                        <h3 style="margin-top: 0;">Tsumiki app</h3>
+                        <div style="margin-top: 6px;">
+                            <img class="tsumiki-logo tsumiki-logo-about" src="tsumiki_logo.svg" data-light-src="tsumiki_logo.svg"
+                                data-dark-src="tsumiki_logo_akarui.svg" alt="Tsumiki app">
+                        </div>
                         <p>Simple and easy-to-use study time management tool.</p>
                         Developed by <a href="https://kokyujene.super-hiko14.com/members/super-hiko14/">Super Hiko14</a>.<div class="tyuui-mini-text">* AI is used in some parts.</div>
                         </div>`,
@@ -6195,6 +6253,8 @@
 
                     // HTML lang属性を更新
                     document.documentElement.lang = currentLanguage;
+
+                    updateTsumikiLogoSources();
 
                     // プレイリスト見出しは選択中プレイリスト名を優先表示
                     if (typeof updatePlaylistTitle === 'function') {
@@ -6432,6 +6492,15 @@
                     }
                 }
 
+                function updateTsumikiLogoSources() {
+                    const isDark = document.body.classList.contains('dark');
+                    document.querySelectorAll('.tsumiki-logo').forEach(img => {
+                        const lightSrc = img.getAttribute('data-light-src') || 'tsumiki_logo.svg';
+                        const darkSrc = img.getAttribute('data-dark-src') || 'tsumiki_logo_akarui.svg';
+                        img.src = isDark ? darkSrc : lightSrc;
+                    });
+                }
+
                 function toggleTheme() {
                     const body = document.body;
                     const themeIcon = document.getElementById('themeIcon');
@@ -6453,6 +6522,7 @@
                         setTimeout(() => updateGraphs(), 100);
                     }
                     updateDragHandleIcons();
+                    updateTsumikiLogoSources();
                 }
 
                 const VALID_THEME_NAMES = ['blue', 'green', 'purple', 'orange', 'pink', 'teal', 'white'];
@@ -10820,6 +10890,7 @@
                         console.log('[DEBUG] No stored theme found on load. Saving current body theme ->', currentTheme);
                         saveData('theme', currentTheme);
                     }
+                    updateTsumikiLogoSources();
                     const musicEnabled = getData('feature_music') === 'true';
                     const todoEnabled = getData('feature_todo') === 'true';
 

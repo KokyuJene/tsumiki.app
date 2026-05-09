@@ -137,6 +137,8 @@
             margin: 0 auto;
             width: clamp(170px, 45vw, 250px);
             height: auto;
+            pointer-events: none;
+            -webkit-touch-callout: none;
         }
 
         .tsumiki-logo-about {
@@ -5102,9 +5104,14 @@
                         style="width:16px;height:16px;margin-right:6px;vertical-align:middle;">
                     <span data-i18n="showGuide">使い方ガイドを再表示</span>
                 </button>
+                <a href="https://about.tsumiki.app/help/">
+                <button class="secondary" style="width: 100%; padding: 12px 20px; margin-top: 10px;">
+                    <span data-i18n="helpPage">HELPページへ</span>
+                </button>
+                </a>
             </div>
 
-            <div class="copyright" data-i18n="copyright">© 2025-2026 ツミキapp / Super Hiko14 / 高級ジェネ™ All Rights Reserved.</div>
+            <div class="copyright" data-i18n="copyright">© ツミキapp / Super Hiko14 / 高級ジェネ™ All rights reserved.</div>
 
             <div class="about-link">
                 <button class="about-button" onclick="showAboutModal()" aria-label="このサイトについて"
@@ -5120,6 +5127,18 @@
                     </span>
                     <span class="about-text" data-i18n="aboutButton">このサイトについて</span>
                 </button>
+            </div>
+
+            <div class="about-link">
+                <a href="https://about.tsumiki.app">
+                <button class="about-button"aria-label="このサイトについて"
+                    data-i18n-aria="aboutButton">
+                    <span class="about-icon" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M240-200h156v-234h168v234h156v-360L480-742 240-560v360Zm-28 28v-402l268-203 268 203v402H536v-234H424v234H212Zm268-299Z"/></svg>
+                    </span>
+                    <span class="about-text" data-i18n="homePage">ホームページ</span>
+                </button>
+                </a>
             </div>
 
             <div class="about-link" style="margin-top: 8px;">
@@ -5549,13 +5568,15 @@
                         importData: 'データをインポート',
                         helpSection: 'ヘルプ',
                         showGuide: '使い方ガイドを再表示',
-                        copyright: '© 高級ジェネ™ All rights reserved.',
+                        helpPage: 'HELPページへ',
+                        copyright: '© ツミキapp / Super Hiko14 / 高級ジェネ™ All rights reserved.',
                         languageSettings: '言語設定',
                         japanese: '日本語',
                         english: 'English',
 
                         // About
                         aboutButton: 'このサイトについて',
+                        homePage: 'ホームページ',
                         qaButton: 'よくある質問(Q&A)',
                         aboutTitle: 'このサイトについて',
                         qaTitle: 'よくある質問(Q&A)',
@@ -5578,7 +5599,7 @@
                         tutorialFinish: '終了',
                         tutorialStep: 'ステップ',
                         tutorialComplete: 'チュートリアル完了!',
-                        tutorialCompleteMessage: 'お疲れ様でした!これで基本的な使い方の説明は終了です。また分からなくなったら、設定画面の「使い方ガイドを再表示」からいつでも確認できます。',
+                        tutorialCompleteMessage: 'お疲れ様でした!これで基本的な使い方の説明は終了です。また分からなくなったら、設定画面の「使い方ガイドを再表示」からいつでも確認できます。もっと詳しく知りたかったらホームページを覗いてみてください! <a href="https://about.tsumiki.app">about.tsumiki.app</a>',
                         // アクセシビリティ用ラベル
                         dragHandle: '並べ替えハンドル',
                         playlistManagerTitle: 'プレイリスト管理',
@@ -5616,7 +5637,7 @@
                         tutorialDataManagementTitle: 'データ管理',
                         tutorialDataManagementMessage: 'データのエクスポート/インポート機能です。バックアップを取ったり、他のデバイスにデータを移行できます。',
                         tutorialCompletedTitle: 'チュートリアル完了!',
-                        tutorialCompletedMessage: 'お疲れ様でした!これで基本的な使い方の説明は終了です。また分からなくなったら、設定画面の「使い方ガイドを再表示」からいつでも確認できます。',
+                        tutorialCompletedMessage: 'お疲れ様でした!これで基本的な使い方の説明は終了です。また分からなくなったら、設定画面の「使い方ガイドを再表示」からいつでも確認できます。お疲れ様でした!これで基本的な使い方の説明は終了です。また分からなくなったら、設定画面の「使い方ガイドを再表示」からいつでも確認できます。もっと詳しく知りたかったらホームページを覗いてみてください! <a href="https://about.tsumiki.app">about.tsumiki.app</a>',
                         skipButton: 'スキップ',
                         step: 'ステップ',
 
@@ -5921,12 +5942,14 @@
                         importData: 'Import Data',
                         helpSection: 'Help',
                         showGuide: 'Show User Guide',
+                        helpPage: 'Go to HELP page',
                         languageSettings: 'Language Settings',
                         japanese: '日本語',
                         english: 'English',
 
                         // About
                         aboutButton: 'About This Site',
+                        homePage: 'Home Page',
                         qaButton: 'FAQ (Q&A)',
                         aboutTitle: 'About This Site',
                         qaTitle: 'Frequently Asked Questions (FAQ)',
@@ -5949,14 +5972,14 @@
                         tutorialFinish: 'Finish',
                         tutorialStep: 'Step',
                         tutorialComplete: 'Tutorial Complete!',
-                        tutorialCompleteMessage: 'Great job! You\'ve completed the basic tutorial. If you need help again, you can access the guide anytime from "Show User Guide" in the settings.',
+                        tutorialCompleteMessage: 'Great job! You\'ve completed the basic tutorial. If you need help again, you can access the guide anytime from "Show User Guide" in the settings.If you\'d like to learn more, please check out our website! <a href="https://about.tsumiki.app">about.tsumiki.app</a>',
                         // Accessibility labels
                         dragHandle: 'Drag handle',
                         playlistManagerTitle: 'Playlist manager',
                         newPlaylistPlaceholder: 'New playlist name',
                         renamePlaylist: 'Rename playlist',
                         playlistNamePlaceholder: 'Enter playlist name',
-                        copyright: '© 高級ジェネ™ All rights reserved.',
+                        copyright: '© ツミキapp / Super Hiko14 / 高級ジェネ™ All rights reserved.',
                         // Date format
                         year: '/',
                         month: '/',
@@ -6075,7 +6098,7 @@
                         tutorialDataManagementTitle: 'Data Management',
                         tutorialDataManagementMessage: 'Export/Import data for backup or migration.',
                         tutorialCompletedTitle: 'Tutorial Completed!',
-                        tutorialCompletedMessage: 'That\'s it! You can review this guide anytime from Settings.',
+                        tutorialCompletedMessage: 'That\'s it! You can review this guide anytime from Settings.If you\'d like to learn more, please check out our website! <a href="https://about.tsumiki.app">about.tsumiki.app</a>',
                         skipButton: 'Skip',
                         step: 'step',
 

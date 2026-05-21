@@ -485,10 +485,11 @@
             flex: 1;
             min-width: 200px;
             padding: 12px 25px;
-            border: none;
+            border: 2px solid transparent;
             border-radius: 24px;
             font-size: 0.95rem;
             font-family: inherit;
+            transition: all 0.2s;
         }
 
         .light .search-box input {
@@ -511,14 +512,11 @@
 
         .search-box input:focus {
             outline: none;
-        }
-
-        .light .search-box input:focus {
-            background-color: var(--panel-light-focus);
+            border-color: var(--primary-color);
         }
 
         .dark .search-box input:focus {
-            background-color: var(--panel-dark-2);
+            border-color: var(--primary-color-dark);
         }
 
         .stats-container {
@@ -594,10 +592,11 @@
         .group-input input {
             flex: 1;
             padding: 12px 15px;
-            border: none;
+            border: 2px solid transparent;
             border-radius: 24px;
             font-size: 0.95rem;
             font-family: inherit;
+            transition: all 0.2s;
         }
 
         .light .group-input input {
@@ -608,6 +607,23 @@
         .dark .group-input input {
             background-color: var(--panel-dark);
             color: #e8e8e8;
+        }
+
+        .light .group-input input::placeholder {
+            color: #8a8a8a;
+        }
+
+        .dark .group-input input::placeholder {
+            color: #a8a8a8;
+        }
+
+        .group-input input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .dark .group-input input:focus {
+            border-color: var(--primary-color-dark);
         }
 
         .group-badge {
@@ -680,6 +696,15 @@
             border-top: 1px solid var(--panel-dark);
         }
 
+        .move-group-container input {
+            padding: 12px 15px;
+            border: 2px solid transparent;
+            border-radius: 24px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
         .light .move-group-container input {
             background-color: var(--panel-light);
             color: #323232;
@@ -690,22 +715,22 @@
             color: #e8e8e8;
         }
 
-        .light .move-group-container input:focus {
-            outline: none;
-            background-color: var(--panel-light-focus);
-        }
-
-        .dark .move-group-container input:focus {
-            outline: none;
-            background-color: var(--panel-dark-2);
-        }
-
         .light .move-group-container input::placeholder {
             color: #9a9a9a;
         }
 
         .dark .move-group-container input::placeholder {
             color: #8a8a8a;
+        }
+
+        .light .move-group-container input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .dark .move-group-container input:focus {
+            outline: none;
+            border-color: var(--primary-color-dark);
         }
 
         .move-group-container button {
@@ -1518,10 +1543,11 @@
         .todo-input input {
             flex: 1;
             padding: 12px 15px;
-            border: none;
+            border: 2px solid transparent;
             border-radius: 24px;
             font-size: 0.95rem;
             font-family: inherit;
+            transition: all 0.2s;
         }
 
         .light .todo-input input {
@@ -1532,6 +1558,23 @@
         .dark .todo-input input {
             background-color: var(--panel-dark);
             color: #e8e8e8;
+        }
+
+        .light .todo-input input::placeholder {
+            color: #8a8a8a;
+        }
+
+        .dark .todo-input input::placeholder {
+            color: #a8a8a8;
+        }
+
+        .todo-input input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .dark .todo-input input:focus {
+            border-color: var(--primary-color-dark);
         }
 
         .todo-items {
@@ -2235,10 +2278,11 @@
             flex: 1;
             min-width: 180px;
             padding: 12px 15px;
-            border: none;
+            border: 2px solid transparent;
             border-radius: 24px;
             font-size: 0.95rem;
             font-family: inherit;
+            transition: all 0.2s;
         }
 
         .light .group-management-controls input {
@@ -2249,6 +2293,24 @@
         .dark .group-management-controls input {
             background-color: var(--panel-dark);
             color: #e8e8e8;
+        }
+
+        .light .group-management-controls input::placeholder {
+            color: #8a8a8a;
+        }
+
+        .dark .group-management-controls input::placeholder {
+            color: #a8a8a8;
+        }
+
+        .light .group-management-controls input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .dark .group-management-controls input:focus {
+            outline: none;
+            border-color: var(--primary-color-dark);
         }
 
         .group-manage-actions {
@@ -2363,59 +2425,70 @@
             display: block;
         }
 
+        .tutorial-overlay.hidden {
+            display: none !important;
+        }
+
         .tutorial-welcome {
             position: fixed;
-            top: 80px;
-            right: 20px;
-            width: 320px;
-            max-width: calc(100vw - 40px);
-            background: var(--panel-light);
-            color: inherit;
-            border-radius: 24px;
-            padding: 20px;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: transparent;
+            background-image: none;
             z-index: 10001;
-            animation: slideInRight 0.3s ease-out;
+            animation: fadeIn 0.3s ease-out;
             pointer-events: auto;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tutorial-welcome.show {
+            display: flex;
+        }
+
+        .tutorial-welcome-content {
+            background: transparent;
+            color: #1a1a1a;
+            text-align: center;
+            max-width: 600px;
+            padding: 60px 40px;
+            z-index: 10001;
+            position: relative;
+        }
+
+        .dark .tutorial-welcome-content {
+            color: #ffffff;
         }
 
         .dark .tutorial-welcome {
-            background: var(--panel-dark);
-        }
-
-        @keyframes slideInRight {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+            background: transparent;
         }
 
         .tutorial-welcome h3 {
-            font-size: 1.1rem;
-            margin-bottom: 12px;
-            font-weight: 600;
+            font-size: 2rem;
+            margin-bottom: 15px;
+            font-weight: 400;
         }
 
         .tutorial-welcome p {
-            font-size: 0.9rem;
+            font-size: 1rem;
             line-height: 1.6;
-            margin-bottom: 16px;
-            opacity: 0.9;
+            margin-bottom: 40px;
+            opacity: 0.85;
         }
 
         .tutorial-welcome-buttons {
             display: flex;
-            gap: 10px;
+            gap: 20px;
+            justify-content: center;
         }
 
         .tutorial-welcome-buttons button {
-            flex: 1;
-            padding: 10px 16px;
-            font-size: 0.9rem;
+            padding: 12px 40px;
+            font-size: 1rem;
             border-radius: 24px;
         }
 
@@ -2825,11 +2898,14 @@
 
         .priority-color-hex {
             width: 100%;
-            border: none;
+            border: 2px solid transparent;
             border-radius: 24px;
             padding: 10px 12px;
             text-transform: uppercase;
             margin-top: 10px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: all 0.2s;
         }
 
         .light .priority-color-hex {
@@ -2840,6 +2916,24 @@
         .dark .priority-color-hex {
             background: var(--panel-dark-2);
             color: #e8e8e8;
+        }
+
+        .light .priority-color-hex::placeholder {
+            color: #8a8a8a;
+        }
+
+        .dark .priority-color-hex::placeholder {
+            color: #a8a8a8;
+        }
+
+        .light .priority-color-hex:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .dark .priority-color-hex:focus {
+            outline: none;
+            border-color: var(--primary-color-dark);
         }
 
         @media (max-width: 640px) {
@@ -2860,54 +2954,93 @@
             white-space: nowrap;
         }
 
-        @media (max-width: 640px) {
-            .priority-color-dialog {
-                border-radius: 18px;
-                padding: 14px;
-                max-height: calc(100dvh - 12px);
-            }
-
-            .priority-color-targets {
-                gap: 6px;
-                margin-bottom: 10px;
-            }
-
-            .priority-color-target {
-                gap: 6px;
-                padding: 6px 8px;
-                min-height: 42px;
-            }
-
-            .priority-color-target-swatch {
-                width: 22px;
-                height: 22px;
-            }
-
-            .priority-color-target-name {
-                font-size: 0.8rem;
-            }
-
-            .priority-color-picker-wrap {
-                grid-template-columns: 1fr;
-                gap: 8px;
-                margin-bottom: 8px;
-            }
-
-            .priority-color-preview {
-                min-height: 84px;
-                height: 84px;
-            }
-
-            .priority-color-board {
-                height: clamp(130px, 30dvh, 180px);
-            }
-
-            .priority-color-actions {
-                grid-template-columns: 1fr;
-                gap: 8px;
-                margin-top: 10px;
-            }
+        /* 汎用入力フィールドスタイル - すべてのテキスト入力欄を統一 */
+        .custom-confirm-dialog input[type="text"],
+        .calendar-day-add-form input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid transparent;
+            border-radius: 24px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: all 0.2s;
         }
+
+        .light .custom-confirm-dialog input[type="text"],
+        .light .calendar-day-add-form input[type="text"] {
+            background-color: var(--panel-light);
+            color: #323232;
+        }
+
+        .dark .custom-confirm-dialog input[type="text"],
+        .dark .calendar-day-add-form input[type="text"] {
+            background-color: var(--panel-dark);
+            color: #e8e8e8;
+        }
+
+        .light .custom-confirm-dialog input[type="text"]::placeholder,
+        .light .calendar-day-add-form input[type="text"]::placeholder {
+            color: #8a8a8a;
+        }
+
+        .dark .custom-confirm-dialog input[type="text"]::placeholder,
+        .dark .calendar-day-add-form input[type="text"]::placeholder {
+            color: #a8a8a8;
+        }
+
+        .light .custom-confirm-dialog input[type="text"]:focus,
+        .light .calendar-day-add-form input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .dark .custom-confirm-dialog input[type="text"]:focus,
+        .dark .calendar-day-add-form input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary-color-dark);
+        }
+
+        .priority-color-targets {
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .priority-color-target {
+            gap: 6px;
+            padding: 6px 8px;
+            min-height: 42px;
+        }
+
+        .priority-color-target-swatch {
+            width: 22px;
+            height: 22px;
+        }
+
+        .priority-color-target-name {
+            font-size: 0.8rem;
+        }
+
+        .priority-color-picker-wrap {
+            grid-template-columns: 1fr;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .priority-color-preview {
+            min-height: 84px;
+            height: 84px;
+        }
+
+        .priority-color-board {
+            height: clamp(130px, 30dvh, 180px);
+        }
+
+        .priority-color-actions {
+            grid-template-columns: 1fr;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
 
         .todo-repeat-badge {
             display: inline-block;
@@ -3214,9 +3347,11 @@
             flex: 1;
             min-width: 0;
             padding: 10px 12px;
-            border: none;
+            border: 2px solid transparent;
             border-radius: 24px;
             font-size: 0.9rem;
+            font-family: inherit;
+            transition: all 0.2s;
         }
 
         .light .playlist-manager-add-row input {
@@ -3227,6 +3362,24 @@
         .dark .playlist-manager-add-row input {
             background: var(--panel-dark);
             color: #e8e8e8;
+        }
+
+        .light .playlist-manager-add-row input::placeholder {
+            color: #8a8a8a;
+        }
+
+        .dark .playlist-manager-add-row input::placeholder {
+            color: #a8a8a8;
+        }
+
+        .light .playlist-manager-add-row input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .dark .playlist-manager-add-row input:focus {
+            outline: none;
+            border-color: var(--primary-color-dark);
         }
 
         .playlist-manager-add-row button {
@@ -3372,79 +3525,80 @@
             }
         }
 
-        /* ToDo Ver.2 スタイル */
-        .todo-v2-popup-overlay {
+        /* 言語選択画面 */
+        .language-selector-overlay {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: rgba(0, 0, 0, 0.6);
+            background: var(--bg-light);
+            z-index: 9999;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .dark .language-selector-overlay {
+            background: var(--bg-dark);
+        }
+
+        .language-selector-overlay.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* チュートリアル表示時の背景 */
+        .language-selector-overlay.tutorial-active {
+            background: transparent;
+        }
+
+        .language-selector-overlay.tutorial-active::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.45), rgba(226, 238, 255, 0.45));
+            backdrop-filter: blur(20px) saturate(160%);
+            -webkit-backdrop-filter: blur(20px) saturate(160%);
+            z-index: 0;
+        }
+
+        .dark .language-selector-overlay.tutorial-active::before {
+            background: linear-gradient(135deg, rgba(30, 30, 40, 0.6), rgba(15, 15, 25, 0.6));
+        }
+
+        .language-selector {
+            display: none;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
             z-index: 10000;
-            backdrop-filter: blur(4px);
-            animation: fadeIn 0.2s ease-out;
+            font-size: 1.6rem;
+            font-weight: 500;
+            color: #1a1a1a;
+            position: relative;
         }
 
-        .todo-v2-popup-overlay.show {
+        .dark .language-selector {
+            color: #ffffff;
+        }
+
+        .language-selector.show {
             display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
-        .todo-v2-popup {
-            border-radius: 24px;
-            padding: 40px;
-            max-width: 500px;
-            width: 90%;
-            animation: slideUp 0.3s ease-out;
-            text-align: center;
+        .language-choice {
+            cursor: pointer;
+            transition: opacity 0.2s ease;
         }
 
-        .light .todo-v2-popup {
-            background-color: var(--bg-light);
-            color: #323232;
+        .language-choice:hover {
+            opacity: 0.7;
         }
 
-        .dark .todo-v2-popup {
-            background-color: var(--panel-dark);
-            color: #e8e8e8;
-        }
-
-        .todo-v2-popup-title {
-            font-size: 1.5rem;
-            font-weight: 400;
-            margin-bottom: 20px;
-        }
-
-        .todo-v2-popup-message {
-            font-size: 1rem;
-            line-height: 1.6;
-            opacity: 0.9;
-            margin-bottom: 30px;
-        }
-
-        .todo-v2-popup-toggle {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .todo-v2-popup-toggle-label {
-            font-size: 1.1rem;
-        }
-
-        .todo-v2-popup-buttons {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-        }
-
-        .todo-v2-popup-buttons button {
-            padding: 12px 30px;
-            font-size: 1rem;
+        .language-separator {
+            opacity: 0.5;
         }
 
         .todo-v2-details {
@@ -3822,7 +3976,7 @@
         .custom-date-input {
             width: 100%;
             padding: 12px 15px;
-            border: none;
+            border: 2px solid transparent;
             border-radius: 24px;
             font-size: 0.95rem;
             font-family: inherit;
@@ -3840,8 +3994,26 @@
             color: #e8e8e8;
         }
 
+        .light .custom-date-input::placeholder {
+            color: #8a8a8a;
+        }
+
+        .dark .custom-date-input::placeholder {
+            color: #a8a8a8;
+        }
+
         .custom-date-input:hover {
             opacity: 0.9;
+        }
+
+        .light .custom-date-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .dark .custom-date-input:focus {
+            outline: none;
+            border-color: var(--primary-color-dark);
         }
 
         .date-picker-dropdown {
@@ -3852,7 +4024,7 @@
             transform: translate(-50%, -50%);
             border-radius: 24px;
             padding: 25px;
-            z-index: 10001;
+            z-index: 10003;
             width: 90%;
             max-width: 380px;
             animation: slideUpCentered 0.3s ease-out;
@@ -3867,7 +4039,7 @@
             right: 0;
             bottom: 0;
             background-color: rgba(0, 0, 0, 0.6);
-            z-index: 10000;
+            z-index: 10002;
             backdrop-filter: blur(4px);
             animation: fadeIn 0.2s ease-out;
         }
@@ -3887,13 +4059,11 @@
 
         .light .date-picker-dropdown {
             background-color: var(--bg-light);
-            border: 1px solid rgba(0, 0, 0, 0.1);
             color: #323232;
         }
 
         .dark .date-picker-dropdown {
             background-color: var(--panel-dark);
-            border: 1px solid rgba(255, 255, 255, 0.1);
             color: #e8e8e8;
         }
 
@@ -4090,6 +4260,67 @@
 
         .dark .calendar-day-add-form {
             border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* カレンダー内ToDo追加フォーム統一スタイル */
+        #calendarAddTodoInput {
+            flex: 1;
+            padding: 12px 15px !important;
+            border: 2px solid transparent !important;
+            border-radius: 24px !important;
+            font-size: 0.95rem !important;
+            font-family: inherit !important;
+            transition: all 0.2s !important;
+            height: 44px;
+            box-sizing: border-box;
+        }
+
+        .calendar-day-add-form button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            white-space: nowrap;
+            height: 44px;
+            padding: 12px 20px;
+            line-height: 1;
+            font-family: inherit;
+            font-size: 0.95rem;
+        }
+
+        .calendar-day-date-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .light #calendarAddTodoInput {
+            background-color: var(--panel-light) !important;
+            color: #323232;
+        }
+
+        .dark #calendarAddTodoInput {
+            background-color: var(--panel-dark) !important;
+            color: #e8e8e8;
+        }
+
+        .light #calendarAddTodoInput::placeholder {
+            color: #8a8a8a;
+        }
+
+        .dark #calendarAddTodoInput::placeholder {
+            color: #a8a8a8;
+        }
+
+        .light #calendarAddTodoInput:focus {
+            outline: none;
+            border-color: var(--primary-color) !important;
+        }
+
+        .dark #calendarAddTodoInput:focus {
+            outline: none;
+            border-color: var(--primary-color-dark) !important;
         }
 
         /* カスタムチェックボックス (全般) */
@@ -4394,22 +4625,12 @@
         </div>
     </div>
 
-    <!-- ToDo Ver.2 ポップアップ -->
-    <div class="todo-v2-popup-overlay" id="todoV2PopupOverlay">
-        <div class="todo-v2-popup">
-            <div class="todo-v2-popup-title" data-i18n="todoV2PopupTitle">ToDo Ver.2を有効にしますか?</div>
-            <div class="todo-v2-popup-message" data-i18n="todoV2PopupMessage">
-                新しいToDo Ver.2では、段階的完了機能、期間設定、カレンダービューなどの高度な機能が利用できます。
-            </div>
-            <div class="todo-v2-popup-toggle">
-                <span class="todo-v2-popup-toggle-label" data-i18n="todoV2ToggleLabel">ToDo Ver.2を有効にする</span>
-                <div class="toggle-switch" id="todoV2Toggle" onclick="toggleTodoV2Popup()">
-                    <div class="toggle-slider"></div>
-                </div>
-            </div>
-            <div class="todo-v2-popup-buttons">
-                <button class="secondary" onclick="closeTodoV2Popup()" data-i18n="todoV2Confirm">決定</button>
-            </div>
+    <!-- 言語選択画面 -->
+    <div class="language-selector-overlay" id="languageSelectorOverlay">
+        <div class="language-selector" id="languageSelector">
+            <span class="language-choice" onclick="setLanguage('ja')">日本語</span>
+            <span class="language-separator">|</span>
+            <span class="language-choice" onclick="setLanguage('en')">English</span>
         </div>
     </div>
 
@@ -4430,45 +4651,53 @@
             <div class="calendar-day-add-form">
                 <h4 style="margin: 0 0 15px 0; font-size: 1rem;" data-i18n="calendarAddTodoTitle">新しいToDoを追加</h4>
                 <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-                    <input type="text" id="calendarAddTodoInput" placeholder="タスクを入力"
-                        data-i18n="calendarAddTodoPlaceholder"
-                        style="flex: 1; padding: 10px; border: none; border-radius: 24px; font-family: inherit;">
+                    <input type="text" id="calendarAddTodoInput" placeholder="タスクを入力" class="todo-input"
+                        data-i18n="calendarAddTodoPlaceholder">
                     <button class="primary" onclick="addTodoFromCalendar()" data-i18n="addButton">追加</button>
+                </div>
+                <div class="calendar-day-date-row">
+                    <div style="flex: 1; min-width: 140px;">
+                        <label style="font-size: 0.85rem; opacity: 0.8; display: block; margin-bottom: 6px;"
+                            data-i18n="endOptional">終了日(任意)</label>
+                        <div class="custom-date-picker">
+                            <input type="text" id="calendarTodoEndDate" class="custom-date-input" placeholder="日付を選択"
+                                data-i18n="selectEndDate" readonly onclick="openDatePicker('calendarEnd')">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="top-buttons">
-        <!-- チュートリアル -->
-        <div class="tutorial-overlay" id="tutorialOverlay"></div>
-        <div class="tutorial-welcome" id="tutorialWelcome" style="display: none;">
-            <h3>
-                <img src="guide.png" alt="ガイド" data-i18n-alt="guideAlt"
-                    style="width:20px;height:20px;margin-right:6px;vertical-align:middle;">
-                <span data-i18n="tutorialWelcome">使い方を説明しますか?</span>
-            </h3>
-            <p data-i18n="tutorialWelcomeMessage">初めての方向けに、このサイトの使い方を順番に説明します。</p>
+    <!-- チュートリアル -->
+    <div class="tutorial-overlay" id="tutorialOverlay"></div>
+    <div class="tutorial-welcome" id="tutorialWelcome">
+        <div class="tutorial-welcome-content">
+            <h3 data-i18n="tutorialWelcome">チュートリアルを開始しますか?</h3>
+            <p data-i18n="tutorialWelcomeMessage">初めてですよね?</p>
             <div class="tutorial-welcome-buttons">
-                <button class="secondary" onclick="closeTutorial()" data-i18n="closeButton">閉じる</button>
+                <button class="secondary" onclick="closeTutorial()" data-i18n="closeButton">いいえ</button>
                 <button class="primary" onclick="startTutorial()" data-i18n="tutorialYes">はい</button>
             </div>
         </div>
-        <div class="tutorial-box" id="tutorialBox" style="display: none;">
-            <div class="tutorial-step-info" id="tutorialStepInfo"></div>
-            <h3 id="tutorialTitle" data-i18n="tutorialPlaceholderTitle">タイトル</h3>
-            <p id="tutorialMessage" data-i18n="tutorialPlaceholderMessage">メッセージ</p>
-            <div class="tutorial-buttons">
-                <button class="secondary" onclick="skipTutorial()" data-i18n="skipButton">スキップ</button>
-                <div style="display: flex; gap: 10px;">
-                    <button class="secondary" id="tutorialPrevBtn" onclick="prevTutorialStep()"
-                        data-i18n="tutorialPrev">戻る</button>
-                    <button class="primary" id="tutorialNextBtn" onclick="nextTutorialStep()"
-                        data-i18n="tutorialNext">次へ</button>
-                </div>
+    </div>
+    <div class="tutorial-box" id="tutorialBox" style="display: none;">
+        <div class="tutorial-step-info" id="tutorialStepInfo"></div>
+        <h3 id="tutorialTitle" data-i18n="tutorialPlaceholderTitle">タイトル</h3>
+        <p id="tutorialMessage" data-i18n="tutorialPlaceholderMessage">メッセージ</p>
+        <div class="tutorial-buttons">
+            <button class="secondary" onclick="skipTutorial()" data-i18n="skipButton">スキップ</button>
+            <div style="display: flex; gap: 10px;">
+                <button class="secondary" id="tutorialPrevBtn" onclick="prevTutorialStep()"
+                    data-i18n="tutorialPrev">戻る</button>
+                <button class="primary" id="tutorialNextBtn" onclick="nextTutorialStep()"
+                    data-i18n="tutorialNext">次へ</button>
             </div>
         </div>
-        <div class="tutorial-arrow" id="tutorialArrow"></div>
+    </div>
+    <div class="tutorial-arrow" id="tutorialArrow"></div>
+
+    <div class="top-buttons">
         <button class="theme-toggle" onclick="toggleTheme()" aria-label="テーマ切り替え" data-i18n-aria="themeToggleAlt">
             <img id="themeIcon" src="moon.webp" alt="テーマ切り替え" data-i18n-alt="themeToggleAlt">
         </button>
@@ -4604,7 +4833,7 @@
 
                 <div class="music-display-panel">
                     <div class="music-info-header">
-                        <div class="music-title-display" id="musicTitleDisplay">楽曲を選択してください</div>
+                        <div class="music-title-display" id="musicTitleDisplay"  data-i18n="musicSelectPrompt">楽曲を選択してください</div>
                         <div class="music-progress-section">
                             <div class="time-display" id="timeDisplay">0:00 / 0:00</div>
                             <div class="progress-wrapper">
@@ -5133,9 +5362,6 @@
                 <a href="https://about.tsumiki.app">
                 <button class="about-button"aria-label="このサイトについて"
                     data-i18n-aria="aboutButton">
-                    <span class="about-icon" aria-hidden="true">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M240-200h156v-234h168v234h156v-360L480-742 240-560v360Zm-28 28v-402l268-203 268 203v402H536v-234H424v234H212Zm268-299Z"/></svg>
-                    </span>
                     <span class="about-text" data-i18n="homePage">ホームページ</span>
                 </button>
                 </a>
@@ -5355,7 +5581,7 @@
                 // 多言語対応システム
                 let currentLanguage = 'ja'; // デフォルトは日本語
 
-                const translations = {
+const translations = {
                     ja: {
                         // メタ
                         title: 'ツミキapp',
@@ -5413,7 +5639,7 @@
 
                         // リストページ
                         allGroupsFilter: 'すべてのグループ',
-                        searchPlaceholder: '日付や時刻で検索(例:2025年12月11日や14:30)',
+                        searchPlaceholder: '日付や時刻で検索(例: 2025年12月11日 や 14:30)',
                         sortNewest: '新しい順',
                         sortOldest: '古い順',
                         sortLongest: '時間が長い順',
@@ -5457,7 +5683,7 @@
                         musicSelectPrompt: '楽曲を選択してください',
                         volume: '音量',
                         playlist: 'プレイリスト',
-                        playlistSaveFailedStorage: 'プレイリストの保存に失敗しました。ブラウザ容量不足、または保存制限の可能性があります。',
+                        playlistSaveFailedStorage: 'プレイリストの保存に失敗しました。ブラウザの容量不足、または保存制限の可能性があります。',
                         playlistLoadCorrupted: 'プレイリストデータの読み込みに失敗したため、初期状態で表示しています。',
                         playlistMissingFileData: '一部の曲データが見つからないため、表示できない曲があります。',
                         playlistSelectMode: '選択',
@@ -5473,10 +5699,10 @@
                         addButton: '追加',
                         // 追加翻訳: ToDo Ver2 / カレンダー関連
                         todoV2PopupTitle: 'ToDo Ver.2を有効にしますか?',
-                        todoV2PopupMessage: '新しいToDo Ver.2では、段階的な完了機能、期間設定、カレンダービューなどの高度な機能が利用できます。',
+                        todoV2PopupMessage: '新しい ToDo Ver.2 では、段階的な完了機能、期間設定、カレンダービューなどの高度な機能が利用できます。',
                         todoV2ToggleLabel: 'ToDo Ver.2を有効にする',
                         todoV2Confirm: '決定',
-                        calendarAddTodoTitle: '新しいToDoを追加',
+                        calendarAddTodoTitle: '新しい ToDo を追加',
                         calendarAddTodoPlaceholder: 'タスクを入力',
                         todoViewList: 'ToDoリスト',
                         todoViewCalendar: 'カレンダー',
@@ -5491,7 +5717,7 @@
                         endOptional: '終了日(任意)',
                         tutorialPlaceholderTitle: 'タイトル',
                         tutorialPlaceholderMessage: 'メッセージ',
-                        playPause: '再生や一時停止',
+                        playPause: '再生 / 一時停止',
                         guideAlt: 'ガイド',
                         themeToggleAlt: 'テーマ切替',
                         settingsAlt: '設定',
@@ -5503,7 +5729,7 @@
                         priority: '優先度',
                         todoPriorityColorSettingsButton: 'ToDo優先度カラーを設定',
                         todoPriorityColorSettingsTitle: 'ToDo優先度カラー設定',
-                        resetButton: '初期値',
+                        resetButton: '初期値に戻す',
                         priorityLow: '低',
                         priorityNormal: '通常',
                         priorityHigh: '高',
@@ -5599,7 +5825,7 @@
                         tutorialFinish: '終了',
                         tutorialStep: 'ステップ',
                         tutorialComplete: 'チュートリアル完了!',
-                        tutorialCompleteMessage: 'お疲れ様でした!これで基本的な使い方の説明は終了です。また分からなくなったら、設定画面の「使い方ガイドを再表示」からいつでも確認できます。もっと詳しく知りたかったらホームページを覗いてみてください! <a href="https://about.tsumiki.app">about.tsumiki.app</a>',
+                        tutorialCompleteMessage: 'お疲れ様でした! これで基本的な使い方の説明は終了です。また分からなくなったら、設定画面の「使い方ガイドを再表示」からいつでも確認できます。もっと詳しく知りたかったらホームページを覗いてみてください! <a href="https://about.tsumiki.app">about.tsumiki.app</a>',
                         // アクセシビリティ用ラベル
                         dragHandle: '並べ替えハンドル',
                         playlistManagerTitle: 'プレイリスト管理',
@@ -5619,25 +5845,33 @@
                         tutorialEndTitle: '記録の終了',
                         tutorialEndMessage: '勉強が完全に終わったら「終了」ボタンを押します。これで学習時間が自動的に記録されます。クリックしてみましょう。',
                         tutorialGroupTitle: 'グループ分け',
-                        tutorialGroupMessage: 'グループ名を入力すると、後で科目別や分野別に記録を分類できます。例えば、「数学」や「英語」など',
+                        tutorialGroupMessage: 'グループ名を入力すると、後で科目別や分野別に記録を分類できます。例えば「数学」や「英語」など。',
                         tutorialStatsTitle: '統計の確認',
                         tutorialStatsMessage: 'ここをクリックして統計画面に移動してみましょう。累計の勉強時間、連続日数、グループ別の集計などが確認できます。',
                         tutorialHistoryTitle: '履歴の確認',
                         tutorialHistoryMessage: 'ここをクリックしてリスト画面に移動してみましょう。過去の学習記録を一覧で見ることができます。検索、ソート、グループ移動などの機能があります。',
+                        tutorialStatsSummaryTitle: '統計の概要',
+                        tutorialStatsSummaryMessage: 'ここでは、今日・今週・今月の累計勉強時間や、1日の平均勉強時間を確認できます。',
+                        tutorialStatsGraphTitle: '勉強時間のグラフ',
+                        tutorialStatsGraphMessage: '過去1週間の勉強時間の推移をグラフで視覚的に確認できます。',
+                        tutorialListFilterTitle: '記録の絞り込み',
+                        tutorialListFilterMessage: 'グループで絞り込んだり、特定の日時を検索したりして、過去の記録をすぐに見つけることができます。',
+                        tutorialListItemTitle: '記録の管理',
+                        tutorialListItemMessage: 'それぞれの記録を個別に削除したり、後から別のグループに移動したりすることができます。',
                         tutorialDarkModeTitle: 'ダークモード',
-                        tutorialDarkModeMessage: 'このボタンをクリックするとライト/ダークモードを切り替えられます。目に優しい表示で集中できます。試しに切り替えてみましょう。',
+                        tutorialDarkModeMessage: 'このボタンをクリックするとライト / ダークモードを切り替えられます。目に優しい表示で集中できます。試しに切り替えてみましょう。',
                         tutorialSettingsTitle: '設定画面',
-                        tutorialSettingsMessage: 'ここから設定画面を開けます。テーマカラーの変更、音楽プレイヤーやToDoリストの表示切替、データのバックアップなどができます。クリックして確認してみましょう!',
+                        tutorialSettingsMessage: 'ここから設定画面を開けます。テーマカラーの変更、音楽プレイヤーや ToDo リストの表示切替、データのバックアップなどができます。クリックして確認してみましょう!',
                         tutorialDisplaySettingsTitle: '表示設定',
-                        tutorialDisplaySettingsMessage: 'ここで音楽プレイヤーやToDoリストの表示や非表示を切り替えられます。必要な機能だけを表示してシンプルに使えます。',
+                        tutorialDisplaySettingsMessage: 'ここで音楽プレイヤーや ToDo リストの表示 / 非表示を切り替えられます。必要な機能だけを表示してシンプルに使えます。',
                         tutorialThemeColorTitle: 'テーマカラー',
                         tutorialThemeColorMessage: 'お好みのテーマカラーを選択できます。ブルー、グリーン、パープル、オレンジ、ピンク、ティールの6色から選べます。',
                         tutorialGraphDisplayTitle: 'グラフ表示',
                         tutorialGraphDisplayMessage: '勉強時間のグラフの種類や表示期間、表示場所をカスタマイズできます。',
                         tutorialDataManagementTitle: 'データ管理',
-                        tutorialDataManagementMessage: 'データのエクスポート/インポート機能です。バックアップを取ったり、他のデバイスにデータを移行できます。',
+                        tutorialDataManagementMessage: 'データのエクスポート / インポート機能です。バックアップを取ったり、他のデバイスにデータを移行できます。',
                         tutorialCompletedTitle: 'チュートリアル完了!',
-                        tutorialCompletedMessage: 'お疲れ様でした!これで基本的な使い方の説明は終了です。また分からなくなったら、設定画面の「使い方ガイドを再表示」からいつでも確認できます。お疲れ様でした!これで基本的な使い方の説明は終了です。また分からなくなったら、設定画面の「使い方ガイドを再表示」からいつでも確認できます。もっと詳しく知りたかったらホームページを覗いてみてください! <a href="https://about.tsumiki.app">about.tsumiki.app</a>',
+                        tutorialCompletedMessage: 'お疲れ様でした! これで基本的な使い方の説明は終了です。また分からなくなったら、設定画面の「使い方ガイドを再表示」からいつでも確認できます。',
                         skipButton: 'スキップ',
                         step: 'ステップ',
 
@@ -5659,27 +5893,27 @@
                                 data-dark-src="tsumiki_logo_akarui.svg" alt="Tsumiki app">
                         </div>
                         <p>シンプルで使いやすい勉強時間管理ツール。</p>
-                        このサイトは<a href="https://kokyujene.super-hiko14.com/members/super-hiko14/">Super Hiko14</a>が開発しました。<div class="tyuui-mini-text">※ 一部AIが使用されています。</div>
+                        このサイトは<a href="https://kokyujene.super-hiko14.com/members/super-hiko14/">Super Hiko14</a>が開発しました。<div class="tyuui-mini-text">※ 一部 AI が使用されています。</div>
                         </div>`,
                         qaContent: `<div style="text-align: left;">
                             <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. ツミキappの記録等の保存方法は?</h3>
                             <p style="margin-left: 15px;">A. すべてのデータはブラウザのローカルストレージに保存されます。サーバーには一切送信されません。</p>
-                            <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. 他のデバイスでデータへ移行やバックアップを取りたい。</h3>
-                            <p style="margin-left: 15px;">A. エクスポートからJsonファイルをダウンロードできます。インポートで他デバイスに移行やバックアップとして保存できます。</p>
+                            <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. 他のデバイスへデータを移行したい、バックアップを取りたい。</h3>
+                            <p style="margin-left: 15px;">A. エクスポートから JSON ファイルをダウンロードできます。インポートで他のデバイスへの移行やバックアップとして保存できます。</p>
                             <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. 音楽プレイヤーで再生できるファイル形式は?</h3>
-                            <p style="margin-left: 15px;">A. mp3, wav, flac, m4a, aac, ogg, webmなどの一般的な音楽ファイルに対応しています。</p>
-                            <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. タイマーを一時停止したまま閉じてしまった場合は?</h3>
-                            <p style="margin-left: 15px;">A. 大丈夫です。再度サイトを閉じてもタイマーは作動し続けます。</p>
-                            <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. 音楽プレイヤーにYoutube動画とかを追加する予定ってないの?</h3>
-                            <p style="margin-left: 15px;">A. する予定はないです。各サービスの利用規約に違反する可能性があるからです。</p>
+                            <p style="margin-left: 15px;">A. mp3, wav, flac, m4a, aac, ogg, webm などの一般的な音楽ファイルに対応しています。</p>
+                            <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. タイマーを一時停止したままサイトを閉じてしまった場合は?</h3>
+                            <p style="margin-left: 15px;">A. 大丈夫です。サイトを閉じてもタイマーは作動し続けます。</p>
+                            <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. 音楽プレイヤーに YouTube 動画などを追加する予定はある?</h3>
+                            <p style="margin-left: 15px;">A. する予定はないです。各サービスの利用規約に違反する可能性があるためです。</p>
                             <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. 今後も機能を追加する予定は?</h3>
-                            <p style="margin-left: 15px;">A. 決まってはいません。ただし、最低限に使用したい方もいらっしゃると思うので追加する場合はその機能を設定のON/OFFなどで表示を切り替えられるようにする予定です。</p>
-                            <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. 収益化などの広告導入のつもりはある?</h3>
+                            <p style="margin-left: 15px;">A. 決まってはいません。ただし、最低限の機能のみ使いたい方もいると思うので、追加する場合はその機能を設定の ON/OFF などで表示を切り替えられるようにする予定です。</p>
+                            <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. 収益化や広告導入のつもりはある?</h3>
                             <p style="margin-left: 15px;">A. な い で す ( 断 言 )</p>
-                            <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. アプリとかリリースする?</h3>
-                            <p style="margin-left: 15px;">A. 逆にリリースしたいです...。技術的にまだ足りないので無理ですね。</p>
-                            <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. にゃにゃにゃにゃぁ?(Q&A増える?)</h3>
-                            <p style="margin-left: 15px;">A. にゃにゃにゃにゃぁ。(Q&Aは今後多分増えます。)</p>
+                            <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. アプリをリリースする予定は?</h3>
+                            <p style="margin-left: 15px;">A. 逆にリリースしたいです...。技術的にまだ足りないので難しいですね。</p>
+                            <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. にゃにゃにゃにゃぁ?(Q&A は増える?)</h3>
+                            <p style="margin-left: 15px;">A. にゃにゃにゃにゃぁ。(Q&A は今後多分増えます。)</p>
                             <h3 style="font-size: 0.9rem; margin-top: 20px; margin-bottom: 10px;">こんなもんですかね...</h3>
                         </div>`,
 
@@ -5700,7 +5934,7 @@
                         weekday_thu: '木',
                         weekday_fri: '金',
                         weekday_sat: '土',
-                        noTodosOnThisDay: 'この日にToDoはありません',
+                        noTodosOnThisDay: 'この日に ToDo はありません',
 
                         // 統計ページ - 追加
                         totalStudyTime: '総勉強時間',
@@ -5749,7 +5983,7 @@
                         tutorialStep6Title: '履歴リスト',
                         tutorialStep6Desc: 'これまでの学習履歴を一覧で確認できます。検索やソート、グループでの絞り込みも可能です。',
                         tutorialStep7Title: '設定',
-                        tutorialStep7Desc: 'ここでテーマの変更、音楽プレイヤーやToDoリストの有効化、データのエクスポート/インポートができます。',
+                        tutorialStep7Desc: 'ここでテーマの変更、音楽プレイヤーや ToDo リストの有効化、データのエクスポート / インポートができます。',
                         tutorialStep8Title: 'テーマ切り替え',
                         tutorialStep8Desc: 'このボタンでダークモードとライトモードを切り替えられます。',
                         toggleLightMode: 'ライトモードに切り替え',
@@ -5806,9 +6040,9 @@
 
                         // Stats Page
                         totalTime: 'Total Study Time',
-                        todayTime: 'Today\'s Study Time',
-                        weekTime: 'This Week\'s Study Time',
-                        monthTime: 'This Month\'s Study Time',
+                        todayTime: "Today's Study Time",
+                        weekTime: "This Week's Study Time",
+                        monthTime: "This Month's Study Time",
                         averageTime: 'Average Study Time/Day',
                         selectGroup: 'Select Group',
                         filterByGroup: 'Filter by group',
@@ -5963,7 +6197,7 @@
 
                         // Tutorial
                         tutorialWelcome: 'Would you like a tutorial?',
-                        tutorialWelcomeMessage: 'For first-time users, we\'ll guide you through how to use this site step by step.',
+                        tutorialWelcomeMessage: "For first-time users, we'll guide you through how to use this site step by step.",
                         tutorialClose: 'Close',
                         tutorialYes: 'Yes',
                         tutorialSkip: 'Skip',
@@ -5972,7 +6206,7 @@
                         tutorialFinish: 'Finish',
                         tutorialStep: 'Step',
                         tutorialComplete: 'Tutorial Complete!',
-                        tutorialCompleteMessage: 'Great job! You\'ve completed the basic tutorial. If you need help again, you can access the guide anytime from "Show User Guide" in the settings.If you\'d like to learn more, please check out our website! <a href="https://about.tsumiki.app">about.tsumiki.app</a>',
+                        tutorialCompleteMessage: "Great job! You've completed the basic tutorial. If you need help again, you can access the guide anytime from \"Show User Guide\" in the settings. If you'd like to learn more, please check out our website! <a href=\"https://about.tsumiki.app\">about.tsumiki.app</a>",
                         // Accessibility labels
                         dragHandle: 'Drag handle',
                         playlistManagerTitle: 'Playlist manager',
@@ -6066,7 +6300,7 @@
                         tutorialStep7Title: 'Settings',
                         tutorialStep7Desc: 'Change themes, enable music player and todo list, export/import data.',
                         tutorialStep8Title: 'Theme Toggle',
-                        tutorialStep8Desc: 'Switch between Dark mode and Light mode with this button.',
+                        tutorialStep8Desc: 'Switch between dark mode and light mode with this button.',
 
                         // Tutorial
                         tutorialStartTitle: 'Start Stopwatch',
@@ -6074,31 +6308,39 @@
                         tutorialTimerStartedTitle: 'Timer Started',
                         tutorialTimerStartedMessage: 'In actual study, focus on your work from here.',
                         tutorialPauseTitle: 'Pause',
-                        tutorialPauseMessage: 'Click "Pause" button to take a break.',
+                        tutorialPauseMessage: 'Click the "Pause" button to take a break.',
                         tutorialPausedTitle: 'Paused',
                         tutorialPausedMessage: 'Timer is paused. Click again to resume.',
                         tutorialEndTitle: 'Finish Recording',
-                        tutorialEndMessage: 'Click "Finish" when you are done. Time will be recorded.',
+                        tutorialEndMessage: 'Click "End" when you are done. Your time will be recorded.',
                         tutorialGroupTitle: 'Grouping',
-                        tutorialGroupMessage: 'Enter group name to categorize your study (e.g., Math, English).',
+                        tutorialGroupMessage: 'Enter a group name to categorize your study sessions (e.g., Math, English).',
                         tutorialStatsTitle: 'Check Statistics',
                         tutorialStatsMessage: 'Click here to see total time, consecutive days, and group stats.',
                         tutorialHistoryTitle: 'Check History',
                         tutorialHistoryMessage: 'Click here to view past study records. Search, sort, and edit.',
+                        tutorialStatsSummaryTitle: 'Stats Summary',
+                        tutorialStatsSummaryMessage: "Here you can see your total study time for today, this week, this month, and your daily average.",
+                        tutorialStatsGraphTitle: 'Activity Graph',
+                        tutorialStatsGraphMessage: 'Visualize your study progress over the past week with this graph.',
+                        tutorialListFilterTitle: 'Filtering Records',
+                        tutorialListFilterMessage: 'Filter by group or search for specific dates to find exactly what you are looking for.',
+                        tutorialListItemTitle: 'Managing Records',
+                        tutorialListItemMessage: 'You can delete individual records or move them to a different group later.',
                         tutorialDarkModeTitle: 'Dark Mode',
-                        tutorialDarkModeMessage: 'Toggle light/dark mode for eye comfort.',
+                        tutorialDarkModeMessage: 'Toggle light/dark mode for a more comfortable viewing experience.',
                         tutorialSettingsTitle: 'Settings',
-                        tutorialSettingsMessage: 'Open settings for themes, data backup, and feature toggles.',
+                        tutorialSettingsMessage: 'Open settings for themes, data backup, and feature toggles. Click to check it out!',
                         tutorialDisplaySettingsTitle: 'Display Settings',
-                        tutorialDisplaySettingsMessage: 'Toggle features like Music Player or ToDo list on/off.',
+                        tutorialDisplaySettingsMessage: 'Toggle features like Music Player or ToDo List on/off to keep things simple.',
                         tutorialThemeColorTitle: 'Theme Color',
                         tutorialThemeColorMessage: 'Choose your favorite theme color from 6 options.',
                         tutorialGraphDisplayTitle: 'Graph Settings',
-                        tutorialGraphDisplayMessage: 'Customize graph type and display period.',
+                        tutorialGraphDisplayMessage: 'Customize graph type, display period, and location.',
                         tutorialDataManagementTitle: 'Data Management',
-                        tutorialDataManagementMessage: 'Export/Import data for backup or migration.',
+                        tutorialDataManagementMessage: 'Export/Import data for backup or device migration.',
                         tutorialCompletedTitle: 'Tutorial Completed!',
-                        tutorialCompletedMessage: 'That\'s it! You can review this guide anytime from Settings.If you\'d like to learn more, please check out our website! <a href="https://about.tsumiki.app">about.tsumiki.app</a>',
+                        tutorialCompletedMessage: "That's it! You can review this guide anytime from Settings.",
                         skipButton: 'Skip',
                         step: 'step',
 
@@ -6119,21 +6361,21 @@
                         </div>`,
                         qaContent: `<div style="text-align: left;">
                             <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. Where is data saved?</h3>
-                            <p style="margin-left: 15px;">A. All data is saved in your browser's local storage. Not sent to any server.</p>
-                            <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. I want to migrate/backup data.</h3>
-                            <p style="margin-left: 15px;">A. You can download a JSON file from Export. Use Import to restore or migrate.</p>
-                            <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. What music files are supported?</h3>
-                            <p style="margin-left: 15px;">A. Supports mp3, wav, flac, m4a, aac, ogg, webm etc.</p>
-                            <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. If I close while timer paused?</h3>
-                            <p style="margin-left: 15px;">A. Timer continues running even if site is closed.</p>
-                            <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. Do you have any plans to add YouTube videos or anything like that to the music player?</h3>
-                            <p style="margin-left: 15px;">A. No plans due to Terms of Service compliance.</p>
-                            <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. Future features?</h3>
-                            <p style="margin-left: 15px;">A. Undecided. If added, will be togglable in settings.</p>
+                            <p style="margin-left: 15px;">A. All data is saved in your browser's local storage. Nothing is sent to any server.</p>
+                            <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. I want to migrate or back up my data.</h3>
+                            <p style="margin-left: 15px;">A. You can download a JSON file from Export. Use Import to restore or migrate to another device.</p>
+                            <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. What music file formats are supported?</h3>
+                            <p style="margin-left: 15px;">A. Supports mp3, wav, flac, m4a, aac, ogg, webm, and more.</p>
+                            <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. What if I close the site while the timer is paused?</h3>
+                            <p style="margin-left: 15px;">A. No worries. The timer continues running even if the site is closed.</p>
+                            <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. Any plans to add YouTube videos to the music player?</h3>
+                            <p style="margin-left: 15px;">A. No plans — it may violate each service's terms of use.</p>
+                            <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. Any plans to add more features?</h3>
+                            <p style="margin-left: 15px;">A. Undecided. If added, they will be togglable in settings.</p>
                             <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. Monetization/Ads?</h3>
                             <p style="margin-left: 15px;">A. N O (Assertive)</p>
                             <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. App release?</h3>
-                            <p style="margin-left: 15px;">A. I want to... but not technically capable yet.</p>
+                            <p style="margin-left: 15px;">A. I'd love to... but not technically capable yet.</p>
                             <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. Meow meow? (More Q&A?)</h3>
                             <p style="margin-left: 15px;">A. Meow meow. (More Q&A maybe later.)</p>
                             <h3 style="font-size: 0.9rem; margin-top: 20px; margin-bottom: 10px;">That's about it...</h3>
@@ -9042,64 +9284,9 @@
                     gridDiv.innerHTML = html;
                 }
 
-                // ToDo Ver.2 ポップアップ管理
-                let todoV2PopupState = false;
-
-                function showTodoV2Popup() {
-                    // 既存データの有無を確認
-                    let todos = getData('todos');
-                    todos = todos ? JSON.parse(todos) : [];
-
-                    // 新規ユーザー(ToDoが一つもない場合)は確認なしで自動的にV2をONにする
-                    if (todos.length === 0 && getData('todo_v2_prompt_shown') !== 'true') {
-                        saveData('todo_v2_enabled', 'true');
-                        saveData('todo_v2_prompt_shown', 'true');
-                        syncTodoV2UI();
-                        return;
-                    }
-
-                    // 初回表示チェック(既存ユーザー向け)
-                    if (getData('todo_v2_prompt_shown') === 'true') return;
-
-                    const overlay = document.getElementById('todoV2PopupOverlay');
-                    const toggle = document.getElementById('todoV2Toggle');
-
-                    // デフォルトはOFF
-                    const currentState = getData('todo_v2_enabled') === 'true';
-                    if (currentState) {
-                        toggle.classList.add('active');
-                    }
-                    todoV2PopupState = currentState;
-
-                    overlay.classList.add('show');
-                }
-
-                function toggleTodoV2Popup() {
-                    todoV2PopupState = !todoV2PopupState;
-                    const toggle = document.getElementById('todoV2Toggle');
-                    if (toggle) {
-                        toggle.classList.toggle('active', todoV2PopupState);
-                    }
-                }
-
-                function closeTodoV2Popup() {
-                    const overlay = document.getElementById('todoV2PopupOverlay');
-                    overlay.classList.remove('show');
-
-                    // 設定を保存
-                    saveData('todo_v2_enabled', todoV2PopupState ? 'true' : 'false');
-                    saveData('todo_v2_prompt_shown', 'true');
-
-                    // UI同期
-                    syncTodoV2UI();
-
-                    // ToDoをリロードしてVer.2を反映
-                    loadTodos();
-                }
-
                 // カスタム日付ピッカー
                 let currentDatePicker = null;  // 'start' or 'end'
-                let selectedDate = { start: null, end: null };
+                let selectedDate = { start: null, end: null, calendarEnd: null };
 
                 function openDatePicker(type) {
                     currentDatePicker = type;
@@ -9125,6 +9312,7 @@
 
                 function renderDatePicker(type, date) {
                     const dropdown = document.getElementById('commonDatePicker');
+                    const headingKey = type === 'start' ? 'selectStartDate' : 'selectEndDate';
 
                     const year = date.getFullYear();
                     const month = date.getMonth();
@@ -9141,7 +9329,7 @@
 
                     let html = `
                         <div class="date-picker-header">
-                            <h3 style="margin: 0; font-size: 1rem;">${type === 'start' ? getText('selectStartDate') : getText('selectEndDate')}</h3>
+                            <h3 style="margin: 0; font-size: 1rem;">${getText(headingKey)}</h3>
                             <button type="button" class="secondary" onclick="closeAllDatePickers()" style="padding: 4px 10px; font-size: 0.8rem;">${getText('closeButton')}</button>
                         </div>
                         <div class="date-picker-month-selector" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
@@ -9181,7 +9369,7 @@
                     dropdown.innerHTML = html;
                 }
 
-                let datePickerCurrentDate = { start: new Date(), end: new Date() };
+                let datePickerCurrentDate = { start: new Date(), end: new Date(), calendarEnd: new Date() };
 
                 // 文字列からローカル日付を復元するヘルパー('YYYY-MM-DD' または ISO 全体を扱う)
                 function parseLocalDate(dateStr) {
@@ -9201,8 +9389,13 @@
 
                 function selectDate(type, dateStr) {
                     selectedDate[type] = dateStr;
-                    const inputId = type === 'start' ? 'todoPeriodStart' : 'todoPeriodEnd';
-                    document.getElementById(inputId).value = dateStr;
+                    const inputIdMap = {
+                        start: 'todoPeriodStart',
+                        end: 'todoPeriodEnd',
+                        calendarEnd: 'calendarTodoEndDate'
+                    };
+                    const inputId = inputIdMap[type];
+                    if (inputId) document.getElementById(inputId).value = dateStr;
 
                     // ピッカーを閉じる
                     closeAllDatePickers();
@@ -9222,6 +9415,9 @@
                     currentCalendarDate = date;
                     const dialog = document.getElementById('calendarDayDialog');
                     const titleDiv = document.getElementById('calendarDayDialogTitle');
+                    const calendarEndInput = document.getElementById('calendarTodoEndDate');
+                    if (calendarEndInput) calendarEndInput.value = '';
+                    selectedDate.calendarEnd = null;
 
                     // 日付フォーマット(言語対応)
                     titleDiv.textContent = `${date.getFullYear()}${getText('year')}${date.getMonth() + 1}${getText('month')}${date.getDate()}${getText('day')}`;
@@ -9236,6 +9432,9 @@
                     const dialog = document.getElementById('calendarDayDialog');
                     dialog.classList.remove('show');
                     document.getElementById('calendarAddTodoInput').value = '';
+                    const calendarEndInput = document.getElementById('calendarTodoEndDate');
+                    if (calendarEndInput) calendarEndInput.value = '';
+                    selectedDate.calendarEnd = null;
                 }
 
                 function renderCalendarDayTodos(date) {
@@ -9286,10 +9485,12 @@
 
                 function addTodoFromCalendar() {
                     const input = document.getElementById('calendarAddTodoInput');
+                    const endInput = document.getElementById('calendarTodoEndDate');
                     const text = input.value.trim();
                     if (!text || !currentCalendarDate) return;
 
                     const dateStr = `${currentCalendarDate.getFullYear()}-${String(currentCalendarDate.getMonth() + 1).padStart(2, '0')}-${String(currentCalendarDate.getDate()).padStart(2, '0')}`;
+                    const endDateStr = endInput && endInput.value ? endInput.value : dateStr;
 
                     let todos = getData('todos');
                     todos = todos ? JSON.parse(todos) : [];
@@ -9308,7 +9509,7 @@
                         },
                         period: {
                             start: dateStr,
-                            end: dateStr
+                            end: endDateStr
                         }
                     };
 
@@ -10393,12 +10594,44 @@
                         page: 'timer'
                     },
                     {
+                        titleKey: 'tutorialStatsSummaryTitle',
+                        messageKey: 'tutorialStatsSummaryMessage',
+                        target: '#statsContainer',
+                        position: 'bottom',
+                        action: 'view',
+                        page: 'stats'
+                    },
+                    {
+                        titleKey: 'tutorialStatsGraphTitle',
+                        messageKey: 'tutorialStatsGraphMessage',
+                        target: '#statsGraphContainer',
+                        position: 'top',
+                        action: 'view',
+                        page: 'stats'
+                    },
+                    {
                         titleKey: 'tutorialHistoryTitle',
                         messageKey: 'tutorialHistoryMessage',
                         target: '.menu button:nth-child(3)',
                         position: 'bottom',
                         action: 'click',
                         page: 'stats'
+                    },
+                    {
+                        titleKey: 'tutorialListFilterTitle',
+                        messageKey: 'tutorialListFilterMessage',
+                        target: '.search-box',
+                        position: 'bottom',
+                        action: 'view',
+                        page: 'list'
+                    },
+                    {
+                        titleKey: 'tutorialListItemTitle',
+                        messageKey: 'tutorialListItemMessage',
+                        target: '#historyList',
+                        position: 'top',
+                        action: 'view',
+                        page: 'list'
                     },
                     {
                         titleKey: 'tutorialDarkModeTitle',
@@ -10459,21 +10692,58 @@
                 ];
 
                 function showTutorialWelcome() {
+                    const savedLanguage = String(getData('app_language') || '').trim().toLowerCase();
+                    if (!savedLanguage || (savedLanguage !== 'ja' && savedLanguage !== 'en')) return;
                     const completed = getData('tutorial_completed') === 'true';
-                    if (!completed) {
-                        document.getElementById('tutorialWelcome').style.display = 'block';
+                    const dismissed = getData('tutorial_welcome_dismissed') === 'true';
+                    if (completed || dismissed) return;
+
+                    const overlay = document.getElementById('languageSelectorOverlay');
+                    const selector = document.getElementById('languageSelector');
+                    const tutorialOverlay = document.getElementById('tutorialOverlay');
+                    if (overlay) {
+                        overlay.classList.add('show');
+                        overlay.classList.add('tutorial-active');
                     }
+                    if (selector) selector.classList.remove('show');
+                    if (tutorialOverlay) tutorialOverlay.classList.add('hidden');
+                    document.getElementById('tutorialWelcome').classList.add('show');
                 }
 
                 function closeTutorial() {
-                    document.getElementById('tutorialWelcome').style.display = 'none';
+                    document.getElementById('tutorialWelcome').classList.remove('show');
+                    const overlay = document.getElementById('languageSelectorOverlay');
+                    const tutorialOverlay = document.getElementById('tutorialOverlay');
+                    if (overlay) {
+                        overlay.classList.remove('show');
+                        overlay.classList.remove('tutorial-active');
+                    }
+                    if (tutorialOverlay) tutorialOverlay.classList.remove('hidden');
                     saveData('tutorial_completed', 'true');
+                    saveData('tutorial_welcome_dismissed', 'true');
+                    
+                    // アプリ初期化を実行
+                    initializeRemainingApp();
                 }
 
                 function startTutorial() {
-                    document.getElementById('tutorialWelcome').style.display = 'none';
+                    document.getElementById('tutorialWelcome').classList.remove('show');
+                    const overlay = document.getElementById('languageSelectorOverlay');
+                    const tutorialOverlay = document.getElementById('tutorialOverlay');
+                    if (overlay) {
+                        overlay.classList.remove('show');
+                        overlay.classList.remove('tutorial-active');
+                    }
+                    if (tutorialOverlay) tutorialOverlay.classList.remove('hidden');
                     currentTutorialStep = 0;
-                    showTutorialStep();
+                    saveData('tutorial_welcome_dismissed', 'true');
+                    
+                    // アプリ初期化してからチュートリアル開始
+                    initializeRemainingApp().then(() => {
+                        setTimeout(() => {
+                            showTutorialStep();
+                        }, 500);
+                    });
                 }
 
                 function restartTutorial() {
@@ -10850,13 +11120,57 @@
 
                 window.onload = async function () {
 
+                    // 言語未設定の場合は言語選択画面を表示
+                    const savedLanguage = String(getData('app_language') || '').trim().toLowerCase();
+                    if (!savedLanguage || (savedLanguage !== 'ja' && savedLanguage !== 'en')) {
+                        showLanguageSelector();
+                        return;
+                    }
+
                     // 言語設定を読み込んで適用
-                    const savedLanguage = String(getData('app_language') || 'ja').trim().toLowerCase();
-                    currentLanguage = (savedLanguage === 'ja' || savedLanguage === 'en') ? savedLanguage : 'ja';
+                    currentLanguage = savedLanguage;
                     applyTranslations();
                     applyFonts();
                     applyTodoPriorityColors();
                     updateGroupFilter();
+                    await initializeRemainingApp();
+                };
+
+                function showLanguageSelector() {
+                    const overlay = document.getElementById('languageSelectorOverlay');
+                    const selector = document.getElementById('languageSelector');
+                    if (overlay && selector) {
+                        overlay.classList.remove('tutorial-active');
+                        overlay.classList.add('show');
+                        selector.classList.add('show');
+                    }
+                    
+                    // ローディング画面を終了
+                    finishLoading();
+                }
+
+                function setLanguage(lang) {
+                    saveData('app_language', lang);
+                    currentLanguage = lang;
+
+                    const overlay = document.getElementById('languageSelectorOverlay');
+                    const selector = document.getElementById('languageSelector');
+                    if (overlay) {
+                        overlay.classList.add('show');
+                        overlay.classList.add('tutorial-active');
+                    }
+                    if (selector) selector.classList.remove('show');
+
+                    applyTranslations();
+                    applyFonts();
+                    applyTodoPriorityColors();
+                    updateGroupFilter();
+                    setTimeout(() => {
+                        showTutorialWelcome();
+                    }, 150);
+                }
+
+                async function initializeRemainingApp() {
 
                     // Debug helpers for theme persistence (enable to trace where theme changes come from)
                     const DEBUG_THEME = true;
@@ -11331,6 +11645,14 @@
 
                     // Finish loading after all initializations
                     finishLoading();
+
+                    // チュートリアル初期化（言語選択後に）
+                    const savedLanguage = String(getData('app_language') || '').trim().toLowerCase();
+                    if (savedLanguage === 'ja' || savedLanguage === 'en') {
+                        setTimeout(() => {
+                            initTutorial();
+                        }, 1000); // ローディングアニメーション後に表示
+                    }
                 };
                 document.getElementById('priorityColorHue')?.addEventListener('input', (e) => {
                     todoPickerState.h = Math.max(0, Math.min(360, parseInt(e.target.value, 10) || 0));
@@ -11666,19 +11988,10 @@
                     });
                 }
 
-                // ToDo Ver.2 初期化
-                function initTodoV2() {
-                    // 初回ポップアップ表示
-                    showTodoV2Popup();
-
-                    // UI同期 (設定画面など)
-                    syncTodoV2UI();
+                // チュートリアル初期化
+                function initTutorial() {
+                    showTutorialWelcome();
                 }
-
-                // ページ読み込み時にToDo Ver.2を初期化
-                setTimeout(() => {
-                    initTodoV2();
-                }, 1000); // ローディングアニメーション後に表示
 
                 // Trigger loading overlay wipe animation
                 // Trigger loading overlay wipe animation (Moved to window.onload)

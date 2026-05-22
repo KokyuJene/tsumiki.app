@@ -196,6 +196,24 @@
             color: white;
         }
 
+        @media (max-width: 768px) {
+            .menu button {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 24px;
+                padding: 12px 28px;
+                font-size: 1rem;
+                border-radius: 28px;
+            }
+
+            .top-buttons .theme-toggle,
+            .top-buttons button {
+                min-height: 44px;
+                padding: 8px 12px;
+            }
+        }
+
         .page {
             display: none;
         }
@@ -11118,17 +11136,41 @@ const translations = {
                     }
                 }
 
+                const FIRST_VISIT_KEY = 'tsumiki_has_visited';
+
+                function isValidLanguage(lang) {
+                    return lang === 'ja' || lang === 'en';
+                }
+
+                function hasExistingUserData() {
+                    const history = safeJsonParse(getData('studyHistory'), []);
+                    if (Array.isArray(history) && history.length > 0) return true;
+
+                    const todos = safeJsonParse(getData('todos'), []);
+                    if (Array.isArray(todos) && todos.length > 0) return true;
+
+                    if (getData('music_playlists_v2')) return true;
+                    if (getData('musicPlaylist')) return true;
+
+                    return BACKUP_SETTING_KEYS.some((key) => key !== 'app_language' && !!getData(key));
+                }
+
                 window.onload = async function () {
 
-                    // 言語未設定の場合は言語選択画面を表示
+                    // 一番最初のアクセス時だけ言語選択画面を出す
                     const savedLanguage = String(getData('app_language') || '').trim().toLowerCase();
-                    if (!savedLanguage || (savedLanguage !== 'ja' && savedLanguage !== 'en')) {
+                    const hasVisited = getData(FIRST_VISIT_KEY) === 'true';
+                    const hasUserData = hasExistingUserData();
+                    if (!hasVisited && !hasUserData && !isValidLanguage(savedLanguage)) {
                         showLanguageSelector();
                         return;
                     }
 
                     // 言語設定を読み込んで適用
-                    currentLanguage = savedLanguage;
+                    const resolvedLanguage = isValidLanguage(savedLanguage) ? savedLanguage : 'ja';
+                    saveData('app_language', resolvedLanguage);
+                    saveData(FIRST_VISIT_KEY, 'true');
+                    currentLanguage = resolvedLanguage;
                     applyTranslations();
                     applyFonts();
                     applyTodoPriorityColors();
@@ -11151,6 +11193,7 @@ const translations = {
 
                 function setLanguage(lang) {
                     saveData('app_language', lang);
+                    saveData(FIRST_VISIT_KEY, 'true');
                     currentLanguage = lang;
 
                     const overlay = document.getElementById('languageSelectorOverlay');

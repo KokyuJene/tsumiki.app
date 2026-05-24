@@ -176,6 +176,10 @@
             font-weight: 400;
         }
 
+        .startButton {
+            padding: 14px 28px;
+        }
+
         .light .menu button {
             background-color: var(--panel-light);
             color: #323232;
@@ -244,7 +248,7 @@
         }
 
         button {
-            padding: 15px 20px;
+            padding: 12px 20px;
             font-size: 1rem;
             border: none;
             border-radius: 24px;
@@ -2108,14 +2112,14 @@
             -moz-appearance: none;
             width: 100%;
             padding: 10px 40px 10px 14px;
-            border-radius: 10px;
-            border: 1px solid rgba(0, 0, 0, 0.06);
+            border-radius: 24px;
             background: var(--panel-light);
             color: inherit;
             box-shadow: none;
             cursor: pointer;
             transition: box-shadow 120ms ease, transform 120ms ease;
             border-radius: 24px;
+            border: none;
         }
 
         .custom-select:focus-within select {
@@ -2134,7 +2138,7 @@
 
         .dark .custom-select select {
             background: var(--panel-dark);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: none;
         }
 
         .dark .custom-select .select-arrow {
@@ -4691,11 +4695,11 @@
     <div class="tutorial-overlay" id="tutorialOverlay"></div>
     <div class="tutorial-welcome" id="tutorialWelcome">
         <div class="tutorial-welcome-content">
-            <h3 data-i18n="tutorialWelcome">チュートリアルを開始しますか?</h3>
-            <p data-i18n="tutorialWelcomeMessage">初めてですよね?</p>
+            <h3 data-i18n="tutorialWelcome"></h3>
+            <p data-i18n="tutorialWelcomeMessage"></p>
             <div class="tutorial-welcome-buttons">
-                <button class="secondary" onclick="closeTutorial()" data-i18n="closeButton">いいえ</button>
                 <button class="primary" onclick="startTutorial()" data-i18n="tutorialYes">はい</button>
+                <button class="secondary" onclick="closeTutorial()" data-i18n="tutorialClose">いいえ</button>
             </div>
         </div>
     </div>
@@ -4755,7 +4759,7 @@
                 </div>
             </div>
             <div class="controls">
-                <button id="startBtn" class="primary" onclick="startStudy()" data-i18n="startButton">勉強開始</button>
+                <button id="startBtn" class="startButton primary" onclick="startStudy()" data-i18n="startButton">勉強開始</button>
                 <button id="pauseBtn" class="secondary hidden" onclick="pauseStudy()"
                     data-i18n="pauseButton">一時停止</button>
                 <button id="endBtn" class="secondary hidden" onclick="endStudy()" data-i18n="endButton">終了</button>
@@ -5835,7 +5839,7 @@ const translations = {
                         // チュートリアル
                         tutorialWelcome: '使い方を説明しますか?',
                         tutorialWelcomeMessage: '初めての方向けに、このサイトの使い方を順番に説明します。',
-                        tutorialClose: '閉じる',
+                        tutorialClose: 'いいえ',
                         tutorialYes: 'はい',
                         tutorialSkip: 'スキップ',
                         tutorialPrev: '戻る',
@@ -6216,7 +6220,7 @@ const translations = {
                         // Tutorial
                         tutorialWelcome: 'Would you like a tutorial?',
                         tutorialWelcomeMessage: "For first-time users, we'll guide you through how to use this site step by step.",
-                        tutorialClose: 'Close',
+                        tutorialClose: 'No',
                         tutorialYes: 'Yes',
                         tutorialSkip: 'Skip',
                         tutorialPrev: 'Back',

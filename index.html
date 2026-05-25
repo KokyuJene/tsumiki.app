@@ -1419,6 +1419,7 @@
             display: flex;
             flex-direction: column;
             gap: 6px;
+            position: relative;
         }
 
         /* Scrollbar styling */
@@ -1602,6 +1603,7 @@
         .todo-items {
             max-height: 400px;
             overflow-y: auto;
+            position: relative;
         }
 
         .todo-item {
@@ -3356,6 +3358,21 @@
 
         .dark .todo-item.drag-over-top::before,
         .dark .todo-item.drag-over-bottom::after {
+            background: var(--primary-color-dark);
+        }
+
+        .drag-insert-line {
+            position: absolute;
+            left: 8px;
+            right: 8px;
+            height: 3px;
+            border-radius: 24px;
+            background: var(--primary-color);
+            pointer-events: none;
+            z-index: 4;
+        }
+
+        .dark .drag-insert-line {
             background: var(--primary-color-dark);
         }
 
@@ -7720,6 +7737,54 @@ const translations = {
                     return String(s).replace(/[&<>"']/g, function (m) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]; });
                 }
 
+                function getInsertIndexByClientY(items, clientY) {
+                    for (let i = 0; i < items.length; i += 1) {
+                        const rect = items[i].getBoundingClientRect();
+                        const midpoint = rect.top + (rect.height / 2);
+                        if (clientY < midpoint) return i;
+                    }
+                    return items.length;
+                }
+
+                function clearInsertIndicator(container, items) {
+                    if (items) {
+                        items.forEach(el => {
+                            el.classList.remove('drag-over-top', 'drag-over-bottom');
+                        });
+                    }
+                    if (!container) return;
+                    const line = container.querySelector(':scope > .drag-insert-line');
+                    if (line) line.remove();
+                }
+
+                function setInsertIndicator(container, items, insertIndex) {
+                    clearInsertIndicator(container, items);
+                    if (!container || !items.length) return;
+
+                    const containerRect = container.getBoundingClientRect();
+                    let y = 0;
+                    if (insertIndex <= 0) {
+                        const firstRect = items[0].getBoundingClientRect();
+                        y = firstRect.top - containerRect.top;
+                    } else if (insertIndex >= items.length) {
+                        const lastRect = items[items.length - 1].getBoundingClientRect();
+                        y = lastRect.bottom - containerRect.top;
+                    } else {
+                        const prevRect = items[insertIndex - 1].getBoundingClientRect();
+                        const nextRect = items[insertIndex].getBoundingClientRect();
+                        y = ((prevRect.bottom + nextRect.top) / 2) - containerRect.top;
+                    }
+
+                    let line = container.querySelector(':scope > .drag-insert-line');
+                    if (!line) {
+                        line = document.createElement('div');
+                        line.className = 'drag-insert-line';
+                        container.appendChild(line);
+                    }
+                    const lineHeight = 3;
+                    line.style.top = `${y - (lineHeight / 2)}px`;
+                }
+
                 // ドラッグ & 長押しで並べ替えモード
                 let _dragSrcIndex = null;
                 let _touchDragTimer = null;
@@ -7727,11 +7792,14 @@ const translations = {
                     const playlist = document.getElementById('playlist');
                     if (!playlist) return;
 
+                    const getPlaylistItems = () => Array.from(playlist.querySelectorAll('.playlist-item'));
+
                     const clearIndicators = () => {
                         playlist.querySelectorAll('.playlist-item').forEach(el => {
                             el.classList.remove('drag-over-top');
                             el.classList.remove('drag-over-bottom');
                         });
+                        clearInsertIndicator(playlist, null);
                     };
 
                     const clearDragState = () => {
@@ -7746,6 +7814,38 @@ const translations = {
                         });
                         clearIndicators();
                     };
+
+                    if (!playlist.dataset.dragBound) {
+                        playlist.dataset.dragBound = 'true';
+                        playlist.addEventListener('dragover', (e) => {
+                            if (playlistSelectMode) return;
+                            if (_dragSrcIndex === null) return;
+                            e.preventDefault();
+                            e.dataTransfer.dropEffect = 'move';
+                            const items = getPlaylistItems();
+                            const insertIndex = getInsertIndexByClientY(items, e.clientY);
+                            setInsertIndicator(playlist, items, insertIndex);
+                        });
+
+                        playlist.addEventListener('drop', (e) => {
+                            if (playlistSelectMode) return;
+                            if (_dragSrcIndex === null) return;
+                            e.preventDefault();
+                            e.stopPropagation();
+                            const items = getPlaylistItems();
+                            if (!items.length) {
+                                clearDragState();
+                                return;
+                            }
+                            let insertIndex = getInsertIndexByClientY(items, e.clientY);
+                            const src = _dragSrcIndex;
+                            if (src < insertIndex) insertIndex -= 1;
+                            clearDragState();
+                            if (!isNaN(src) && src >= 0 && src !== insertIndex) {
+                                reorderMusicToIndex(src, insertIndex);
+                            }
+                        });
+                    }
 
                     playlist.querySelectorAll('.playlist-item').forEach(item => {
                         const index = parseInt(item.getAttribute('data-index'), 10);
@@ -7768,11 +7868,9 @@ const translations = {
                             if (_dragSrcIndex === null) return;
                             e.preventDefault();
                             e.dataTransfer.dropEffect = 'move';
-                            clearIndicators();
-                            const rect = item.getBoundingClientRect();
-                            const isTopHalf = (e.clientY - rect.top) < (rect.height / 2);
-                            item.classList.toggle('drag-over-top', isTopHalf);
-                            item.classList.toggle('drag-over-bottom', !isTopHalf);
+                            const items = getPlaylistItems();
+                            const insertIndex = getInsertIndexByClientY(items, e.clientY);
+                            setInsertIndicator(playlist, items, insertIndex);
                         });
 
                         item.addEventListener('dragleave', () => {
@@ -7786,10 +7884,8 @@ const translations = {
                             if (_dragSrcIndex === null) return;
                             e.preventDefault();
                             e.stopPropagation();
-                            const targetIndex = parseInt(item.getAttribute('data-index'), 10);
-                            const rect = item.getBoundingClientRect();
-                            const isTopHalf = (e.clientY - rect.top) < (rect.height / 2);
-                            let insertIndex = isTopHalf ? targetIndex : targetIndex + 1;
+                            const items = getPlaylistItems();
+                            let insertIndex = getInsertIndexByClientY(items, e.clientY);
                             const src = _dragSrcIndex;
                             if (src < insertIndex) insertIndex -= 1;
                             clearDragState();
@@ -7835,8 +7931,7 @@ const translations = {
                             }
                             _touchDragState = {
                                 srcIndex: index,
-                                targetIndex: index,
-                                insertTop: true,
+                                insertIndex: index,
                                 active: false,
                                 startX: touch.clientX,
                                 startY: touch.clientY
@@ -7866,17 +7961,13 @@ const translations = {
                                 return;
                             }
                             const target = document.elementFromPoint(touch.clientX, touch.clientY);
-                            const targetItem = target ? target.closest('.playlist-item') : null;
-                            if (!targetItem) return;
+                            if (!target) return;
                             if (e.cancelable) e.preventDefault();
-                            const targetIdx = parseInt(targetItem.getAttribute('data-index'), 10);
-                            const rect = targetItem.getBoundingClientRect();
-                            const isTopHalf = (touch.clientY - rect.top) < (rect.height / 2);
-                            clearIndicators();
-                            targetItem.classList.toggle('drag-over-top', isTopHalf);
-                            targetItem.classList.toggle('drag-over-bottom', !isTopHalf);
-                            _touchDragState.targetIndex = targetIdx;
-                            _touchDragState.insertTop = isTopHalf;
+                            const items = getPlaylistItems();
+                            if (!items.length) return;
+                            const insertIndex = getInsertIndexByClientY(items, touch.clientY);
+                            setInsertIndicator(playlist, items, insertIndex);
+                            _touchDragState.insertIndex = insertIndex;
                         }, { passive: false });
 
                         handle.addEventListener('touchend', () => {
@@ -7894,8 +7985,7 @@ const translations = {
                             item.classList.remove('dragging');
                             if (!state.active) return;
                             const src = state.srcIndex;
-                            const targetIndex = state.targetIndex;
-                            let insertIndex = state.insertTop ? targetIndex : targetIndex + 1;
+                            let insertIndex = Number.isFinite(state.insertIndex) ? state.insertIndex : src;
                             if (src < insertIndex) insertIndex -= 1;
                             clearDragState();
                             if (!isNaN(src) && src >= 0 && src !== insertIndex) {
@@ -8931,6 +9021,21 @@ const translations = {
                     document.querySelectorAll('#todoItems .todo-item').forEach(item => {
                         item.classList.remove('drag-over-top', 'drag-over-bottom');
                     });
+                    const todoContainer = document.getElementById('todoItems');
+                    clearInsertIndicator(todoContainer, null);
+                }
+
+                function getTodoTargetByInsertIndex(items, insertIndex) {
+                    if (!items.length) {
+                        return { targetId: '', insertAfter: false };
+                    }
+                    if (insertIndex <= 0) {
+                        return { targetId: items[0].dataset.id || '', insertAfter: false };
+                    }
+                    if (insertIndex >= items.length) {
+                        return { targetId: items[items.length - 1].dataset.id || '', insertAfter: true };
+                    }
+                    return { targetId: items[insertIndex].dataset.id || '', insertAfter: false };
                 }
 
                 function reorderTodoById(srcId, targetId, insertAfter) {
@@ -8959,7 +9064,31 @@ const translations = {
                 }
 
                 function attachTodoDragHandlers() {
+                    const todoContainer = document.getElementById('todoItems');
                     const items = document.querySelectorAll('#todoItems .todo-item');
+
+                    if (todoContainer && !todoContainer.dataset.dragBound) {
+                        todoContainer.dataset.dragBound = 'true';
+                        todoContainer.addEventListener('dragover', (e) => {
+                            if (!_todoDragSrcId) return;
+                            e.preventDefault();
+                            const listItems = Array.from(document.querySelectorAll('#todoItems .todo-item'));
+                            const insertIndex = getInsertIndexByClientY(listItems, e.clientY);
+                            setInsertIndicator(todoContainer, listItems, insertIndex);
+                        });
+
+                        todoContainer.addEventListener('drop', (e) => {
+                            if (!_todoDragSrcId) return;
+                            e.preventDefault();
+                            e.stopPropagation();
+                            const listItems = Array.from(document.querySelectorAll('#todoItems .todo-item'));
+                            const insertIndex = getInsertIndexByClientY(listItems, e.clientY);
+                            const target = getTodoTargetByInsertIndex(listItems, insertIndex);
+                            clearTodoDragIndicators();
+                            reorderTodoById(_todoDragSrcId, target.targetId, target.insertAfter);
+                        });
+                    }
+
                     items.forEach(item => {
                         item.setAttribute('draggable', 'true');
 
@@ -8982,10 +9111,9 @@ const translations = {
                         item.addEventListener('dragover', (e) => {
                             if (!_todoDragSrcId) return;
                             e.preventDefault();
-                            const rect = item.getBoundingClientRect();
-                            const isTopHalf = (e.clientY - rect.top) < rect.height / 2;
-                            item.classList.toggle('drag-over-top', isTopHalf);
-                            item.classList.toggle('drag-over-bottom', !isTopHalf);
+                            const listItems = Array.from(document.querySelectorAll('#todoItems .todo-item'));
+                            const insertIndex = getInsertIndexByClientY(listItems, e.clientY);
+                            setInsertIndicator(todoContainer, listItems, insertIndex);
                         });
 
                         item.addEventListener('dragleave', () => {
@@ -8995,11 +9123,11 @@ const translations = {
                         item.addEventListener('drop', (e) => {
                             if (!_todoDragSrcId) return;
                             e.preventDefault();
-                            const rect = item.getBoundingClientRect();
-                            const isTopHalf = (e.clientY - rect.top) < rect.height / 2;
-                            const targetId = item.dataset.id || '';
+                            const listItems = Array.from(document.querySelectorAll('#todoItems .todo-item'));
+                            const insertIndex = getInsertIndexByClientY(listItems, e.clientY);
+                            const target = getTodoTargetByInsertIndex(listItems, insertIndex);
                             clearTodoDragIndicators();
-                            reorderTodoById(_todoDragSrcId, targetId, !isTopHalf);
+                            reorderTodoById(_todoDragSrcId, target.targetId, target.insertAfter);
                         });
 
                         const handle = item.querySelector('.todo-drag-handle');
@@ -9007,10 +9135,11 @@ const translations = {
 
                         handle.addEventListener('touchstart', (e) => {
                             if (e.cancelable) e.preventDefault();
+                            const listItems = Array.from(document.querySelectorAll('#todoItems .todo-item'));
+                            const currentIndex = listItems.indexOf(item);
                             _todoTouchDragState = {
                                 srcId: item.dataset.id || '',
-                                targetId: item.dataset.id || '',
-                                insertTop: true
+                                insertIndex: currentIndex >= 0 ? currentIndex : 0
                             };
                             item.classList.add('dragging');
                         }, { passive: false });
@@ -9020,19 +9149,11 @@ const translations = {
                             const touch = e.touches[0];
                             if (!touch) return;
                             if (e.cancelable) e.preventDefault();
-
-                            const target = document.elementFromPoint(touch.clientX, touch.clientY);
-                            const targetItem = target ? target.closest('.todo-item') : null;
-                            if (!targetItem) return;
-
-                            const rect = targetItem.getBoundingClientRect();
-                            const isTopHalf = (touch.clientY - rect.top) < rect.height / 2;
-                            _todoTouchDragState.targetId = targetItem.dataset.id || '';
-                            _todoTouchDragState.insertTop = isTopHalf;
-
-                            clearTodoDragIndicators();
-                            targetItem.classList.toggle('drag-over-top', isTopHalf);
-                            targetItem.classList.toggle('drag-over-bottom', !isTopHalf);
+                            const listItems = Array.from(document.querySelectorAll('#todoItems .todo-item'));
+                            if (!listItems.length) return;
+                            const insertIndex = getInsertIndexByClientY(listItems, touch.clientY);
+                            _todoTouchDragState.insertIndex = insertIndex;
+                            setInsertIndicator(todoContainer, listItems, insertIndex);
                         }, { passive: false });
 
                         handle.addEventListener('touchend', () => {
@@ -9041,9 +9162,11 @@ const translations = {
                             _todoTouchDragState = null;
                             item.classList.remove('dragging');
                             clearTodoDragIndicators();
-                            if (state.srcId && state.targetId) {
-                                reorderTodoById(state.srcId, state.targetId, !state.insertTop);
-                            }
+                            if (!state.srcId) return;
+                            const listItems = Array.from(document.querySelectorAll('#todoItems .todo-item'));
+                            const insertIndex = Number.isFinite(state.insertIndex) ? state.insertIndex : 0;
+                            const target = getTodoTargetByInsertIndex(listItems, insertIndex);
+                            reorderTodoById(state.srcId, target.targetId, target.insertAfter);
                         });
                     });
                 }

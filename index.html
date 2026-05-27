@@ -3391,12 +3391,39 @@
             pointer-events: none;
             z-index: 4;
             transform: translateY(-50%);
+            color: #3a3a3a;
+            opacity: 0.9;
+            overflow: visible;
+        }
+
+        .dark .drag-insert-marker {
+            color: #e7e7e7;
         }
 
         .drag-insert-marker svg {
             width: 100%;
             height: 100%;
             display: block;
+        }
+
+        /* 横線をマーカー先端からリスト端まで伸ばす */
+        .drag-insert-marker::after {
+            content: '';
+            position: absolute;
+            left: 30px; /* マーカー右端から始める */
+            right: 8px; /* リストの内側の余白に合わせる */
+            top: 50%;
+            transform: translateY(-50%);
+            height: 3px;
+            background: currentColor;
+            border-radius: 2px;
+            opacity: 0.95;
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        .dark .drag-insert-marker::after {
+            background: currentColor;
         }
 
         .playlist-manager-add-row {
@@ -3725,7 +3752,7 @@
         .calendar-day {
             aspect-ratio: 1;
             border: 1px solid;
-            border-radius: 16px;
+            border-radius: 24px;
             padding: 8px;
             cursor: pointer;
             transition: all 0.2s;
@@ -3974,6 +4001,34 @@
             border-color: var(--primary-color-dark);
         }
 
+        .todo-period-modal-body {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        .todo-period-modal-row {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .todo-period-modal-row label {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        .todo-period-modal-row button {
+            align-self: flex-start;
+        }
+
+        .todo-period-multi-preview {
+            font-size: 0.85rem;
+            opacity: 0.75;
+            word-break: break-word;
+        }
+
         .date-picker-dropdown {
             display: none;
             position: fixed;
@@ -4115,6 +4170,12 @@
 
         .date-picker-day.selected {
             font-weight: 600;
+        }
+
+        .date-picker-day.range-selected {
+            outline: 2px dashed currentColor;
+            outline-offset: -3px;
+            opacity: 0.9;
         }
 
         .light .date-picker-day.selected {
@@ -4584,6 +4645,38 @@
     <div class="date-picker-overlay" id="datePickerOverlay" onclick="closeAllDatePickers()"></div>
     <div class="date-picker-dropdown" id="commonDatePicker"></div>
 
+    <!-- ToDo 期間設定モーダル -->
+    <div class="custom-confirm-overlay" id="todoPeriodOverlay">
+        <div class="custom-confirm-dialog" style="max-width: 520px; width: min(92vw, 520px);">
+            <div class="custom-confirm-title" data-i18n="todoPeriodModalTitle">日付設定</div>
+            <div class="todo-period-modal-body">
+                <div class="todo-period-modal-row">
+                    <label data-i18n="startOptional">開始日(任意)</label>
+                    <div class="custom-date-picker">
+                        <input type="text" id="todoPeriodStartModal" class="custom-date-input" placeholder="日付を選択"
+                            data-i18n="selectStartDate" readonly onclick="openDatePicker('start')">
+                    </div>
+                </div>
+                <div class="todo-period-modal-row">
+                    <label data-i18n="endOptional">終了日(任意)</label>
+                    <div class="custom-date-picker">
+                        <input type="text" id="todoPeriodEndModal" class="custom-date-input" placeholder="日付を選択"
+                            data-i18n="selectEndDate" readonly onclick="openDatePicker('end')">
+                    </div>
+                </div>
+                <div class="todo-period-modal-row">
+                    <label data-i18n="multiSelectOptional">複数選択(任意)</label>
+                    <button class="secondary" type="button" onclick="openDatePicker('multi')" data-i18n="selectMultiDates">日付を選択</button>
+                    <div id="todoPeriodMultiPreview" class="todo-period-multi-preview"></div>
+                </div>
+            </div>
+            <div class="custom-confirm-buttons">
+                <button class="custom-confirm-cancel" type="button" onclick="closeTodoPeriodModal()" data-i18n="cancelButton">キャンセル</button>
+                <button class="custom-confirm-ok" type="button" onclick="applyTodoPeriodSelection()" data-i18n="okButton">OK</button>
+            </div>
+        </div>
+    </div>
+
     <div class="calendar-day-dialog-overlay" id="calendarDayDialog">
         <div class="calendar-day-dialog">
             <div class="calendar-day-dialog-header">
@@ -4609,6 +4702,14 @@
                             <input type="text" id="calendarTodoEndDate" class="custom-date-input" placeholder="日付を選択"
                                 data-i18n="selectEndDate" readonly onclick="openDatePicker('calendarEnd')">
                         </div>
+                    </div>
+                </div>
+                <div class="calendar-day-date-row" style="margin-top: 10px;">
+                    <div style="flex: 1; min-width: 140px;">
+                        <label style="font-size: 0.85rem; opacity: 0.8; display: block; margin-bottom: 6px;"
+                            data-i18n="multiSelectOptional">複数選択(任意)</label>
+                        <button class="secondary" type="button" onclick="openDatePicker('calendarMulti')" data-i18n="selectMultiDates">日付を選択</button>
+                        <div id="calendarMultiPreview" class="todo-period-multi-preview"></div>
                     </div>
                 </div>
             </div>
@@ -4894,19 +4995,13 @@
                         style="display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;">
                         <div style="flex: 1; min-width: 140px;">
                             <label style="font-size: 0.85rem; opacity: 0.8; display: block; margin-bottom: 6px;"
-                                data-i18n="startOptional">開始日(任意)</label>
+                                data-i18n="todoDateSettings">日付設定</label>
                             <div class="custom-date-picker">
-                                <input type="text" id="todoPeriodStart" class="custom-date-input" placeholder="日付を選択"
-                                    data-i18n="selectStartDate" readonly onclick="openDatePicker('start')">
+                                <input type="text" id="todoPeriodSummary" class="custom-date-input" placeholder="日付を設定"
+                                    data-i18n="todoDateSettingsPlaceholder" readonly onclick="openTodoPeriodModal()">
                             </div>
-                        </div>
-                        <div style="flex: 1; min-width: 140px;">
-                            <label style="font-size: 0.85rem; opacity: 0.8; display: block; margin-bottom: 6px;"
-                                data-i18n="endOptional">終了日(任意)</label>
-                            <div class="custom-date-picker">
-                                <input type="text" id="todoPeriodEnd" class="custom-date-input" placeholder="日付を選択"
-                                    data-i18n="selectEndDate" readonly onclick="openDatePicker('end')">
-                            </div>
+                            <input type="hidden" id="todoPeriodStart">
+                            <input type="hidden" id="todoPeriodEnd">
                         </div>
                     </div>
                 </div>
@@ -5611,7 +5706,8 @@ const translations = {
                         hours: '時間',
                         pauseLog: '一時停止',
                         noPauseRecords: '記録なし',
-                        historyTimelineDayMarker: '{day} - 00:00~',
+                        historyTimelineNextDay: '翌日 0:00~',
+                        historyTimelineDayOffset: '+{n}日 0:00~',
 
                         // 音楽プレイヤー
                         selectFile: 'ファイルを選択',
@@ -5661,6 +5757,15 @@ const translations = {
                         menu: 'メニュー',
                         startOptional: '開始日(任意)',
                         endOptional: '終了日(任意)',
+                        todoDateSettings: '日付設定',
+                        todoDateSettingsPlaceholder: '日付を設定',
+                        todoPeriodModalTitle: '日付設定',
+                        multiSelectOptional: '複数選択(任意)',
+                        selectMultiDates: '日付を選択',
+                        multiLabel: '複数',
+                        noMultiDates: '未選択',
+                        clearButton: 'クリア',
+                        doneButton: '完了',
                         tutorialPlaceholderTitle: 'タイトル',
                         tutorialPlaceholderMessage: 'メッセージ',
                         playPause: '再生 / 一時停止',
@@ -5870,6 +5975,7 @@ const translations = {
 
                         notSet: '未設定',
                         periodLabel: '期間',
+                        dateLabel: '日付',
                         rangeSeparator: '〜',
                         selectStartDate: '開始日を選択',
                         selectEndDate: '終了日を選択',
@@ -6017,7 +6123,8 @@ const translations = {
                         hours: 'hours',
                         pauseLog: 'Pause',
                         noPauseRecords: 'No pause record',
-                        historyTimelineDayMarker: '{day} - 00:00~',
+                        historyTimelineNextDay: 'Next day 00:00~',
+                        historyTimelineDayOffset: '+{n} days 00:00~',
 
                         // Music Player
                         selectFile: 'Select File',
@@ -6171,9 +6278,19 @@ const translations = {
 
                         notSet: 'Not set',
                         periodLabel: 'Period',
+                        dateLabel: 'Dates',
                         rangeSeparator: 'to',
                         selectStartDate: 'Select start date',
                         selectEndDate: 'Select end date',
+                        todoDateSettings: 'Date settings',
+                        todoDateSettingsPlaceholder: 'Set dates',
+                        todoPeriodModalTitle: 'Date settings',
+                        multiSelectOptional: 'Multiple (optional)',
+                        selectMultiDates: 'Select dates',
+                        multiLabel: 'Multiple',
+                        noMultiDates: 'None',
+                        clearButton: 'Clear',
+                        doneButton: 'Done',
                         weekday_sun: 'Sun',
                         weekday_mon: 'Mon',
                         weekday_tue: 'Tue',
@@ -7699,7 +7816,7 @@ const translations = {
                         marker = document.createElement('div');
                         marker.className = 'drag-insert-marker';
                         marker.setAttribute('aria-hidden', 'true');
-                        marker.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3" focusable="false" aria-hidden="true"><path d="M400-280v-400l200 200-200 200Z"/></svg>';
+                        marker.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="none" focusable="false" aria-hidden="true"><path d="M360-240v-480l240 240-240 240Z" fill="currentColor"/><line x1="600" y1="-480" x2="880" y2="-480" stroke="currentColor" stroke-width="80" stroke-linecap="round"/></svg>';
                         container.appendChild(marker);
                     }
                     marker.style.top = `${y}px`;
@@ -8785,6 +8902,7 @@ const translations = {
                     // Ver.2: 期間設定を取得
                     const periodStart = document.getElementById('todoPeriodStart').value;
                     const periodEnd = document.getElementById('todoPeriodEnd').value;
+                    const periodMulti = Array.isArray(selectedDate.multi) ? selectedDate.multi : [];
 
                     let todos = getData('todos');
                     try {
@@ -8810,7 +8928,8 @@ const translations = {
                         // Ver.2: 期間設定
                         period: {
                             start: periodStart || null,
-                            end: periodEnd || null
+                            end: periodEnd || null,
+                            dates: periodMulti.length ? [...periodMulti] : []
                         }
                     };
 
@@ -8826,6 +8945,11 @@ const translations = {
                     document.getElementById('todoPriority').value = 'normal';
                     document.getElementById('todoPeriodStart').value = '';
                     document.getElementById('todoPeriodEnd').value = '';
+                    const summary = document.getElementById('todoPeriodSummary');
+                    if (summary) summary.value = '';
+                    selectedDate.start = null;
+                    selectedDate.end = null;
+                    selectedDate.multi = [];
 
                     loadTodos();
                 }
@@ -8845,7 +8969,9 @@ const translations = {
                     todos.forEach(todo => {
                         // 期間設定がない場合は追加
                         if (!todo.period) {
-                            todo.period = { start: null, end: null };
+                            todo.period = { start: null, end: null, dates: [] };
+                        } else if (!Array.isArray(todo.period.dates)) {
+                            todo.period.dates = [];
                         }
 
                         if (todo.repeat !== 'none' && todo.completed && todo.lastCompleted) {
@@ -8894,10 +9020,26 @@ const translations = {
 
                         // Ver.2: 期間表示
                         let periodDisplay = '';
-                        if (todoV2Enabled && todo.period && (todo.period.start || todo.period.end)) {
-                            const startStr = todo.period.start || getText('notSet');
-                            const endStr = todo.period.end || getText('notSet');
-                            periodDisplay = `<div class="todo-period">${getText('periodLabel')}: ${startStr} ${getText('rangeSeparator')} ${endStr}</div>`;
+                        if (todoV2Enabled && todo.period && (todo.period.start || todo.period.end || (todo.period.dates && todo.period.dates.length))) {
+                            const context = { year: null, month: null };
+                            const dateParts = [];
+                            if (todo.period.start || todo.period.end) {
+                                const startStr = todo.period.start
+                                    ? formatTodoDateShort(todo.period.start, context, { hideYearIfCurrent: true })
+                                    : getText('notSet');
+                                const endStr = todo.period.end
+                                    ? formatTodoDateShort(todo.period.end, context, { hideYearIfCurrent: true })
+                                    : getText('notSet');
+                                dateParts.push(`${startStr}${getText('rangeSeparator')}${endStr}`);
+                            }
+                            if (todo.period.dates && todo.period.dates.length) {
+                                const sortedDates = [...todo.period.dates].sort();
+                                const formattedDates = sortedDates.map((dateStr) =>
+                                    formatTodoDateShort(dateStr, context, { hideYearIfCurrent: true })
+                                );
+                                dateParts.push(formattedDates.join(', '));
+                            }
+                            periodDisplay = `<div class="todo-period">${getText('dateLabel')}: ${dateParts.join(', ')}</div>`;
                         }
 
                         const v2Details = '';
@@ -9222,6 +9364,9 @@ const translations = {
                             // 保存された文字列をローカル日付として復元('YYYY-MM-DD' や ISO を扱う)
                             const start = todo.period.start ? parseLocalDate(todo.period.start) : null;
                             const end = todo.period.end ? parseLocalDate(todo.period.end) : null;
+                            const dates = Array.isArray(todo.period.dates) ? todo.period.dates : [];
+
+                            if (dates.includes(dateStr)) return true;
 
                             if (start && end) {
                                 return currentDate >= start && currentDate <= end;
@@ -9252,8 +9397,8 @@ const translations = {
                 }
 
                 // カスタム日付ピッカー
-                let currentDatePicker = null;  // 'start' or 'end'
-                let selectedDate = { start: null, end: null, calendarEnd: null };
+                let currentDatePicker = null;  // 'start' | 'end' | 'multi' | 'calendarEnd' | 'calendarMulti'
+                let selectedDate = { start: null, end: null, calendarEnd: null, multi: [], calendarMulti: [] };
 
                 function openDatePicker(type) {
                     currentDatePicker = type;
@@ -9279,7 +9424,10 @@ const translations = {
 
                 function renderDatePicker(type, date) {
                     const dropdown = document.getElementById('commonDatePicker');
-                    const headingKey = type === 'start' ? 'selectStartDate' : 'selectEndDate';
+                    const headingKey = type === 'start' ? 'selectStartDate'
+                        : type === 'end' ? 'selectEndDate'
+                            : (type === 'multi' || type === 'calendarMulti') ? 'selectMultiDates'
+                                : 'selectEndDate';
 
                     const year = date.getFullYear();
                     const month = date.getMonth();
@@ -9290,9 +9438,15 @@ const translations = {
 
                     const today = new Date();
                     // selectedDate は 'YYYY-MM-DD' 文字列で保存されるため、UTC解釈を避けてローカル日付として復元する
-                    const currentSelected = selectedDate[type]
+                    const currentSelected = (type !== 'multi' && type !== 'calendarMulti' && selectedDate[type])
                         ? (function () { const parts = selectedDate[type].split('-').map(Number); return new Date(parts[0], parts[1] - 1, parts[2]); })()
                         : null;
+                    const multiSource = type === 'calendarMulti' ? selectedDate.calendarMulti : selectedDate.multi;
+                    const multiSelected = new Set(Array.isArray(multiSource) ? multiSource : []);
+                    const rangeSelected = getRangeDateSet(
+                        type === 'calendarMulti' ? getCalendarStartDateStr() : selectedDate.start,
+                        type === 'calendarMulti' ? selectedDate.calendarEnd : selectedDate.end
+                    );
 
                     let html = `
                         <div class="date-picker-header">
@@ -9323,20 +9477,35 @@ const translations = {
                         // toISOString() は UTC に変換されて日付ズレを起こすため、ローカル日付を手動で組み立てる
                         const dateStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')}`;
                         const isToday = currentDate.toDateString() === today.toDateString();
-                        const isSelected = currentSelected && currentDate.toDateString() === currentSelected.toDateString();
+                        const isSelected = (type === 'multi' || type === 'calendarMulti')
+                            ? (multiSelected.has(dateStr) || rangeSelected.has(dateStr))
+                            : (currentSelected && currentDate.toDateString() === currentSelected.toDateString());
 
                         const classes = ['date-picker-day'];
                         if (isToday) classes.push('today');
                         if (isSelected) classes.push('selected');
+                        if (!multiSelected.has(dateStr) && rangeSelected.has(dateStr)) classes.push('range-selected');
 
-                        html += `<div class="${classes.join(' ')}" onclick="selectDate('${type}', '${dateStr}')">${day}</div>`;
+                        const clickHandler = (type === 'multi' || type === 'calendarMulti')
+                            ? `toggleMultiDate('${type}', '${dateStr}')`
+                            : `selectDate('${type}', '${dateStr}')`;
+                        html += `<div class="${classes.join(' ')}" onclick="${clickHandler}">${day}</div>`;
                     }
 
                     html += `</div>`;
+
+                    if (type === 'multi' || type === 'calendarMulti') {
+                        html += `
+                            <div style="display:flex; justify-content: space-between; align-items:center; margin-top: 14px;">
+                                <button type="button" class="secondary" onclick="clearMultiDates('${type}')" data-i18n="clearButton">${getText('clearButton')}</button>
+                                <button type="button" class="primary" onclick="applyMultiDates('${type}')" data-i18n="doneButton">${getText('doneButton')}</button>
+                            </div>
+                        `;
+                    }
                     dropdown.innerHTML = html;
                 }
 
-                let datePickerCurrentDate = { start: new Date(), end: new Date(), calendarEnd: new Date() };
+                let datePickerCurrentDate = { start: new Date(), end: new Date(), calendarEnd: new Date(), multi: new Date(), calendarMulti: new Date() };
 
                 // 文字列からローカル日付を復元するヘルパー('YYYY-MM-DD' または ISO 全体を扱う)
                 function parseLocalDate(dateStr) {
@@ -9364,7 +9533,45 @@ const translations = {
                     const inputId = inputIdMap[type];
                     if (inputId) document.getElementById(inputId).value = dateStr;
 
+                    if (type === 'start') {
+                        const startModal = document.getElementById('todoPeriodStartModal');
+                        if (startModal) startModal.value = dateStr;
+                    }
+                    if (type === 'end') {
+                        const endModal = document.getElementById('todoPeriodEndModal');
+                        if (endModal) endModal.value = dateStr;
+                    }
+
                     // ピッカーを閉じる
+                    closeAllDatePickers();
+                }
+
+                function toggleMultiDate(type, dateStr) {
+                    const key = type === 'calendarMulti' ? 'calendarMulti' : 'multi';
+                    if (!Array.isArray(selectedDate[key])) selectedDate[key] = [];
+                    const index = selectedDate[key].indexOf(dateStr);
+                    if (index >= 0) {
+                        selectedDate[key].splice(index, 1);
+                    } else {
+                        selectedDate[key].push(dateStr);
+                    }
+                    selectedDate[key].sort();
+                    renderDatePicker(type, datePickerCurrentDate[type] || new Date());
+                    updateMultiPreview();
+                    updateCalendarMultiPreview();
+                }
+
+                function clearMultiDates(type) {
+                    const key = type === 'calendarMulti' ? 'calendarMulti' : 'multi';
+                    selectedDate[key] = [];
+                    renderDatePicker(type, datePickerCurrentDate[type] || new Date());
+                    updateMultiPreview();
+                    updateCalendarMultiPreview();
+                }
+
+                function applyMultiDates(type) {
+                    updateMultiPreview();
+                    updateCalendarMultiPreview();
                     closeAllDatePickers();
                 }
 
@@ -9385,6 +9592,8 @@ const translations = {
                     const calendarEndInput = document.getElementById('calendarTodoEndDate');
                     if (calendarEndInput) calendarEndInput.value = '';
                     selectedDate.calendarEnd = null;
+                    selectedDate.calendarMulti = [];
+                    updateCalendarMultiPreview();
 
                     // 日付フォーマット(言語対応)
                     titleDiv.textContent = `${date.getFullYear()}${getText('year')}${date.getMonth() + 1}${getText('month')}${date.getDate()}${getText('day')}`;
@@ -9395,6 +9604,108 @@ const translations = {
                     dialog.classList.add('show');
                 }
 
+                function openTodoPeriodModal() {
+                    const overlay = document.getElementById('todoPeriodOverlay');
+                    const startModal = document.getElementById('todoPeriodStartModal');
+                    const endModal = document.getElementById('todoPeriodEndModal');
+                    const startInput = document.getElementById('todoPeriodStart');
+                    const endInput = document.getElementById('todoPeriodEnd');
+
+                    if (startInput && startInput.value) selectedDate.start = startInput.value;
+                    if (endInput && endInput.value) selectedDate.end = endInput.value;
+
+                    if (startModal) startModal.value = selectedDate.start || '';
+                    if (endModal) endModal.value = selectedDate.end || '';
+
+                    updateMultiPreview();
+                    if (overlay) overlay.classList.add('show');
+                }
+
+                function closeTodoPeriodModal() {
+                    const overlay = document.getElementById('todoPeriodOverlay');
+                    if (overlay) overlay.classList.remove('show');
+                }
+
+                function formatTodoDateShort(dateStr, context, options = {}) {
+                    const date = parseLocalDate(dateStr);
+                    if (!date) return dateStr || '';
+
+                    const isJa = currentLanguage === 'ja';
+                    const year = date.getFullYear();
+                    const month = date.getMonth() + 1;
+                    const day = date.getDate();
+                    const currentYear = new Date().getFullYear();
+                    let showYear = true;
+                    let showMonth = true;
+
+                    if (context && context.year === year) {
+                        showYear = false;
+                    } else if (options.hideYearIfCurrent && year === currentYear) {
+                        showYear = false;
+                    }
+
+                    if (context && context.month === month && context.year === year) {
+                        showMonth = false;
+                    }
+
+                    if (context) {
+                        context.year = year;
+                        context.month = month;
+                    }
+
+                    if (isJa) {
+                        const parts = [];
+                        if (showYear) parts.push(`${year}${getText('year')}`);
+                        if (showMonth) parts.push(`${month}${getText('month')}`);
+                        parts.push(`${day}${getText('day')}`);
+                        return parts.join('');
+                    }
+
+                    const parts = [];
+                    if (showYear) parts.push(String(year));
+                    if (showMonth) parts.push(String(month));
+                    parts.push(String(day));
+                    return showYear ? parts.join('/') : parts.join('/');
+                }
+
+                function formatMultiDateSummary(dates) {
+                    if (!Array.isArray(dates) || dates.length === 0) return getText('noMultiDates');
+                    const sorted = [...dates].sort();
+                    const context = { year: null, month: null };
+                    const formatted = sorted.map((dateStr) => formatTodoDateShort(dateStr, context, { hideYearIfCurrent: true }));
+                    const head = formatted.slice(0, 3).join(', ');
+                    if (formatted.length <= 3) return head;
+                    return `${head} +${formatted.length - 3}`;
+                }
+
+                function updateMultiPreview() {
+                    const preview = document.getElementById('todoPeriodMultiPreview');
+                    if (!preview) return;
+                    preview.textContent = formatMultiDateSummary(selectedDate.multi);
+                }
+
+                function applyTodoPeriodSelection() {
+                    const startInput = document.getElementById('todoPeriodStart');
+                    const endInput = document.getElementById('todoPeriodEnd');
+                    if (startInput) startInput.value = selectedDate.start || '';
+                    if (endInput) endInput.value = selectedDate.end || '';
+
+                    const summary = document.getElementById('todoPeriodSummary');
+                    if (summary) {
+                        const parts = [];
+                        if (selectedDate.start || selectedDate.end) {
+                            const startStr = selectedDate.start || getText('notSet');
+                            const endStr = selectedDate.end || getText('notSet');
+                            parts.push(`${startStr} ${getText('rangeSeparator')} ${endStr}`);
+                        }
+                        if (Array.isArray(selectedDate.multi) && selectedDate.multi.length > 0) {
+                            parts.push(`${getText('multiLabel')}: ${formatMultiDateSummary(selectedDate.multi)}`);
+                        }
+                        summary.value = parts.length ? parts.join(' / ') : '';
+                    }
+                    closeTodoPeriodModal();
+                }
+
                 function closeCalendarDayDialog() {
                     const dialog = document.getElementById('calendarDayDialog');
                     dialog.classList.remove('show');
@@ -9402,6 +9713,33 @@ const translations = {
                     const calendarEndInput = document.getElementById('calendarTodoEndDate');
                     if (calendarEndInput) calendarEndInput.value = '';
                     selectedDate.calendarEnd = null;
+                    selectedDate.calendarMulti = [];
+                    updateCalendarMultiPreview();
+                }
+
+                function getCalendarStartDateStr() {
+                    if (!currentCalendarDate) return null;
+                    return `${currentCalendarDate.getFullYear()}-${String(currentCalendarDate.getMonth() + 1).padStart(2, '0')}-${String(currentCalendarDate.getDate()).padStart(2, '0')}`;
+                }
+
+                function getRangeDateSet(startStr, endStr) {
+                    const start = parseLocalDate(startStr);
+                    const end = parseLocalDate(endStr);
+                    if (!start || !end || start > end) return new Set();
+                    const dates = new Set();
+                    const cursor = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+                    while (cursor <= end) {
+                        const dateStr = `${cursor.getFullYear()}-${String(cursor.getMonth() + 1).padStart(2, '0')}-${String(cursor.getDate()).padStart(2, '0')}`;
+                        dates.add(dateStr);
+                        cursor.setDate(cursor.getDate() + 1);
+                    }
+                    return dates;
+                }
+
+                function updateCalendarMultiPreview() {
+                    const preview = document.getElementById('calendarMultiPreview');
+                    if (!preview) return;
+                    preview.textContent = formatMultiDateSummary(selectedDate.calendarMulti);
                 }
 
                 function renderCalendarDayTodos(date) {
@@ -9417,6 +9755,9 @@ const translations = {
                         // 保存された文字列をローカル日付として復元して比較する
                         const start = todo.period.start ? parseLocalDate(todo.period.start) : null;
                         const end = todo.period.end ? parseLocalDate(todo.period.end) : null;
+                        const dates = Array.isArray(todo.period.dates) ? todo.period.dates : [];
+
+                        if (dates.includes(dateStr)) return true;
 
                         if (start && end) {
                             return date >= start && date <= end;
@@ -9458,6 +9799,7 @@ const translations = {
 
                     const dateStr = `${currentCalendarDate.getFullYear()}-${String(currentCalendarDate.getMonth() + 1).padStart(2, '0')}-${String(currentCalendarDate.getDate()).padStart(2, '0')}`;
                     const endDateStr = endInput && endInput.value ? endInput.value : dateStr;
+                    const calendarMulti = Array.isArray(selectedDate.calendarMulti) ? selectedDate.calendarMulti : [];
 
                     let todos = getData('todos');
                     todos = todos ? JSON.parse(todos) : [];
@@ -9471,7 +9813,8 @@ const translations = {
                         createdAt: new Date().toISOString(),
                         period: {
                             start: dateStr,
-                            end: endDateStr
+                            end: endDateStr,
+                            dates: calendarMulti.length ? [...calendarMulti] : []
                         }
                     };
 
@@ -9479,6 +9822,8 @@ const translations = {
                     saveData('todos', JSON.stringify(todos));
 
                     input.value = '';
+                    selectedDate.calendarMulti = [];
+                    updateCalendarMultiPreview();
                     renderCalendarDayTodos(currentCalendarDate);
                     renderCalendar(calendarYear, calendarMonth);
                     loadTodos();
@@ -9604,11 +9949,15 @@ const translations = {
                     const markerHtml = [];
                     for (let marker = timelineStartMs + DAY_MS; marker < timelineEndMs; marker += DAY_MS) {
                         const left = ((marker - timelineStartMs) / totalSpan) * 100;
-                        const markerDate = new Date(marker);
-                        const dayText = String(markerDate.getDate()).padStart(2, '0');
-                        const label = getText('historyTimelineDayMarker').replace('{day}', dayText);
+                        const offsetDays = Math.round((marker - timelineStartMs) / DAY_MS);
+                        let label = '';
+                        if (offsetDays === 1) {
+                            label = getText('historyTimelineNextDay');
+                        } else {
+                            label = getText('historyTimelineDayOffset').replace('{n}', String(offsetDays));
+                        }
                         markerHtml.push(`<span class="history-timeline-marker" style="left:${left}%;"></span>`);
-                        markerHtml.push(`<span class="history-timeline-marker-label" style="left:${left}%;">${label}</span>`);
+                        markerHtml.push(`<span class="history-timeline-marker-label" style="left:${left}%">${label}</span>`);
                     }
 
                     return `<div class="history-timeline"><div class="history-timeline-scale"><span>0:00</span><span>0:00</span></div><div class="history-timeline-track">${segmentHtml}${markerHtml.join('')}</div></div>`;
@@ -11634,7 +11983,6 @@ const translations = {
                     // Finish loading after all initializations
                     finishLoading();
 
-                    // チュートリアル初期化（言語選択後に）
                     const savedLanguage = String(getData('app_language') || '').trim().toLowerCase();
                     if (savedLanguage === 'ja' || savedLanguage === 'en') {
                         setTimeout(() => {

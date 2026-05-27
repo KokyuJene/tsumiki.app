@@ -7606,6 +7606,11 @@ const translations = {
                     updateSettingsButtonState();
                 }
 
+                function normalizeMusicTitle(title) {
+                    if (typeof title !== 'string') return title;
+                    return title.normalize('NFC');
+                }
+
                 async function addMusicFile(event) {
                     const allFiles = Array.from(event.target.files || []);
                     const audioFiles = allFiles.filter(f => {
@@ -7618,20 +7623,21 @@ const translations = {
                     }
                     for (let file of audioFiles) {
                         const id = Date.now() + Math.random();
+                        const safeTitle = normalizeMusicTitle(file.name);
                         try {
-                            await saveFileBlobToDB(id, file.name, file);
+                            await saveFileBlobToDB(id, safeTitle, file);
                             const blob = await getFileBlobFromDB(id);
                             if (blob) {
                                 const url = URL.createObjectURL(blob);
-                                musicFiles.push({ url: url, title: file.name, id: id });
+                                musicFiles.push({ url: url, title: safeTitle, id: id });
                             } else {
                                 const url = URL.createObjectURL(file);
-                                musicFiles.push({ url: url, title: file.name, id: id });
+                                musicFiles.push({ url: url, title: safeTitle, id: id });
                             }
                         } catch (e) {
                             console.error('Failed to persist file to DB, using in-memory URL', e);
                             const url = URL.createObjectURL(file);
-                            musicFiles.push({ url: url, title: file.name, id: id });
+                            musicFiles.push({ url: url, title: safeTitle, id: id });
                         }
                     }
                     savePlaylist();
@@ -7707,7 +7713,7 @@ const translations = {
                                 continue;
                             }
                             const url = URL.createObjectURL(blob);
-                            musicFiles.push({ url, title: item.title || 'Unknown track', id: item.id });
+                            musicFiles.push({ url, title: normalizeMusicTitle(item.title || 'Unknown track'), id: item.id });
                         } catch (e) {
                             console.warn('Error loading track blob', item, e);
                             missingCount += 1;
@@ -8456,7 +8462,7 @@ const translations = {
                 function commitRename() {
                     if (_renamingIndex === null) return;
                     const input = document.getElementById('renameInput');
-                    const newName = input.value.trim();
+                    const newName = normalizeMusicTitle(input.value.trim());
 
                     if (newName && newName !== musicFiles[_renamingIndex].title) {
                         musicFiles[_renamingIndex].title = newName;

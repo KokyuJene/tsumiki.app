@@ -840,12 +840,15 @@
             border-radius: 24px;
         }
 
+        .footerrr {
+            opacity: 0.5;
+        }
+
         .copyright {
             margin-top: 50px;
             padding-top: 25px;
             border-top: 1px solid;
             font-size: 0.85rem;
-            opacity: 0.5;
         }
 
         .light .copyright {
@@ -3385,12 +3388,11 @@
 
         .drag-insert-marker {
             position: absolute;
-            left: 6px;
-            width: 24px;
-            height: 24px;
+            left: 0;
+            right: 0;
+            height: 0;
             pointer-events: none;
             z-index: 4;
-            transform: translateY(-50%);
             color: #3a3a3a;
             opacity: 0.9;
             overflow: visible;
@@ -3400,19 +3402,13 @@
             color: #e7e7e7;
         }
 
-        .drag-insert-marker svg {
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
-
-        /* 横線をマーカー先端からリスト端まで伸ばす */
+        /* 横線をリスト端まで伸ばす */
         .drag-insert-marker::after {
             content: '';
             position: absolute;
-            left: 30px; /* マーカー右端から始める */
-            right: 8px; /* リストの内側の余白に合わせる */
-            top: 50%;
+            left: 8px;
+            right: 0;
+            top: 0;
             transform: translateY(-50%);
             height: 3px;
             background: currentColor;
@@ -4557,6 +4553,26 @@
             }
         }
 
+        
+.footer-credit {
+  margin-top:20px; text-align:center; -webkit-font-smoothing:antialiased;
+}
+.footer-credit-label {
+  font-family:'Google Sans Flex','Zen Kaku Gothic Antique',sans-serif; font-size:.75rem; font-weight:100;
+  color:#676767; margin-bottom:4px; letter-spacing:-0.01em; white-space:nowrap;
+}
+.footer-credit-main {
+  font-family:'Jost',sans-serif; font-size:1.2rem; font-weight:400; color:#000000;
+  line-height:1; display:inline-flex; align-items:baseline; justify-content:center; white-space:nowrap;
+}
+body.dark .footer-credit-main { color:#ffffff; }
+body.dark .footer-credit-label { color:#676767; }
+.footer-credit-dot {
+  display:inline-block; background:linear-gradient(315deg,#275766 15%,#baffc0 33%) !important;
+  -webkit-background-clip:text !important; background-clip:text !important;
+  -webkit-text-fill-color:transparent !important; color:transparent !important; font-size:1.2rem;
+}
+
     </style>
 
 </head>
@@ -5381,8 +5397,6 @@
                 </a>
             </div>
 
-            <div class="copyright" data-i18n="copyright">© ツミキapp / Super Hiko14 / 高級ジェネ™ All rights reserved.</div>
-
             <div class="about-link">
                 <button class="about-button" onclick="showAboutModal()" aria-label="このサイトについて"
                     data-i18n-aria="aboutButton">
@@ -5451,8 +5465,7 @@
                         <!-- Content will be replaced by JS -->
                     </div>
                     <div class="about-actions">
-                        <button class="secondary" id="aboutCloseBtn" data-i18n="closeButton">閉じる</button>
-                        <button class="primary" id="aboutOkBtn" data-i18n="okButton">了解</button>
+                        <button class="primary" id="aboutOkBtn" data-i18n="closeButton">閉じる</button>
                     </div>
                 </div>
             </div>
@@ -5464,8 +5477,7 @@
                         <!-- Content will be replaced by JS -->
                     </div>
                     <div class="about-actions">
-                        <button class="secondary" id="qaCloseBtn" data-i18n="closeButton">閉じる</button>
-                        <button class="primary" id="qaOkBtn" data-i18n="okButton">了解</button>
+                        <button class="primary" id="qaOkBtn" data-i18n="closeButton">閉じる</button>
                     </div>
                 </div>
             </div>
@@ -5581,6 +5593,17 @@
                         <button class="primary" onclick="saveTodoPriorityColorSettings()" data-i18n="saveButton">保存</button>
                     </div>
                 </div>
+            </div>
+
+            <div class="footerrr">
+
+                <div class="copyright" data-i18n="copyright">© ツミキapp / Super Hiko14 / 高級ジェネ™ All rights reserved.</div>
+            
+                <div class="footer-credit" aria-label="Created by Super Hiko14">
+                  <div class="footer-credit-label">Created by</div>
+                  <div class="footer-credit-main">Super Hiko14<span class="footer-credit-dot">.</span></div>
+                </div>
+
             </div>
 
             <script>
@@ -7804,6 +7827,7 @@ const translations = {
                     if (!container || !items.length) return;
 
                     const containerRect = container.getBoundingClientRect();
+                    const scrollTop = container.scrollTop;
                     let y = 0;
                     if (insertIndex <= 0) {
                         const firstRect = items[0].getBoundingClientRect();
@@ -7822,10 +7846,9 @@ const translations = {
                         marker = document.createElement('div');
                         marker.className = 'drag-insert-marker';
                         marker.setAttribute('aria-hidden', 'true');
-                        marker.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="none" focusable="false" aria-hidden="true"><path d="M360-240v-480l240 240-240 240Z" fill="currentColor"/><line x1="600" y1="-480" x2="880" y2="-480" stroke="currentColor" stroke-width="80" stroke-linecap="round"/></svg>';
                         container.appendChild(marker);
                     }
-                    marker.style.top = `${y}px`;
+                    marker.style.top = `${y + scrollTop}px`;
                 }
 
                 // ドラッグ & 長押しで並べ替えモード

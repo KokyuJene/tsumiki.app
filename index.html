@@ -409,6 +409,168 @@
             opacity: 0.9;
         }
 
+        /* 日別タイムライン（統計ページ上部） */
+        .daily-timeline-section {
+            margin-bottom: 28px;
+        }
+
+        .daily-timeline-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+
+        .daily-timeline-nav-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 7px;
+            border-radius: 50%;
+            transition: background-color 0.2s, opacity 0.2s;
+            line-height: 1;
+            opacity: 0.5;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .light .daily-timeline-nav-btn {
+            color: #323232;
+        }
+
+        .dark .daily-timeline-nav-btn {
+            color: #e8e8e8;
+        }
+
+        .daily-timeline-nav-btn:hover {
+            background-color: rgba(0, 0, 0, 0.06);
+            opacity: 0.85;
+        }
+
+        .dark .daily-timeline-nav-btn:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+            opacity: 0.85;
+        }
+
+        .daily-timeline-nav-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .daily-timeline-date {
+            font-size: 0.95rem;
+            cursor: pointer;
+            padding: 5px 14px;
+            border-radius: 20px;
+            transition: background-color 0.2s;
+            user-select: none;
+        }
+
+        .daily-timeline-date:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .dark .daily-timeline-date:hover {
+            background-color: rgba(255, 255, 255, 0.06);
+        }
+
+        .daily-timeline-cal-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 50%;
+            transition: background-color 0.2s, opacity 0.2s;
+            line-height: 1;
+            opacity: 0.4;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .daily-timeline-cal-btn:hover {
+            background-color: rgba(0, 0, 0, 0.06);
+            opacity: 0.7;
+        }
+
+        .dark .daily-timeline-cal-btn:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+            opacity: 0.7;
+        }
+
+        .daily-timeline-cal-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .daily-timeline-track-wrapper {
+            padding: 18px 20px 16px;
+            border-radius: 24px;
+        }
+
+        .light .daily-timeline-track-wrapper {
+            background-color: var(--panel-light);
+        }
+
+        .dark .daily-timeline-track-wrapper {
+            background-color: var(--panel-dark);
+        }
+
+        .daily-timeline-scale {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.68rem;
+            opacity: 0.45;
+            margin-bottom: 10px;
+            font-variant-numeric: tabular-nums;
+            padding: 0 2px;
+        }
+
+        .daily-timeline-track {
+            position: relative;
+            width: 100%;
+            height: 16px;
+            border-radius: 24px;
+            background: rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+        }
+
+        .dark .daily-timeline-track {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .daily-timeline-segment {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            border-radius: 24px;
+            background: var(--primary-color);
+            min-width: 2px;
+            opacity: 0.85;
+        }
+
+        .dark .daily-timeline-segment {
+            background: var(--primary-color-dark);
+            opacity: 0.9;
+        }
+
+        .daily-timeline-summary {
+            margin-top: 12px;
+            font-size: 0.8rem;
+            opacity: 0.55;
+            text-align: center;
+            letter-spacing: 0.3px;
+        }
+
+        .daily-timeline-empty {
+            text-align: center;
+            font-size: 0.85rem;
+            opacity: 0.45;
+            padding: 10px 0;
+        }
+
         .history-timeline {
             margin-top: 12px;
             padding-top: 10px;
@@ -1642,12 +1804,25 @@
             background-color: var(--panel-dark);
         }
 
-        .todo-item.completed {
-            opacity: 0.5;
-        }
-
         .todo-item.completed .todo-text {
             text-decoration: line-through;
+            opacity: 0.45;
+        }
+
+        .todo-item.completed .todo-repeat-badge {
+            opacity: 0.45;
+        }
+
+        .todo-item.completed .todo-period {
+            opacity: 0.45;
+        }
+
+        .light .todo-item.completed {
+            background-color: rgba(0, 0, 0, 0.01);
+        }
+
+        .dark .todo-item.completed {
+            background-color: rgba(255, 255, 255, 0.01);
         }
 
         .todo-checkbox {
@@ -2042,6 +2217,9 @@
             --panel-dark-2: #3a4740;
             --panel-light: #eff5ef;
             --panel-light-2: #eff5ef;
+            --panel-light-hover: #e5ede5;
+            --panel-light-border: #dae5da;
+            --panel-light-focus: #eaf2ea;
         }
 
         body[data-theme="purple"] {
@@ -2055,6 +2233,9 @@
             --panel-dark-2: #443a4a;
             --panel-light: #f5eff7;
             --panel-light-2: #f5eff7;
+            --panel-light-hover: #ebe4ee;
+            --panel-light-border: #e0d8e5;
+            --panel-light-focus: #f0eaf3;
         }
 
         body[data-theme="orange"] {
@@ -2068,6 +2249,9 @@
             --panel-dark-2: #4a3f38;
             --panel-light: #f5f0ed;
             --panel-light-2: #f5f0ed;
+            --panel-light-hover: #ebe5e1;
+            --panel-light-border: #e0d9d4;
+            --panel-light-focus: #f0ebe8;
         }
 
         body[data-theme="pink"] {
@@ -2081,6 +2265,9 @@
             --panel-dark-2: #4a3a3e;
             --panel-light: #f5eff1;
             --panel-light-2: #f5eff1;
+            --panel-light-hover: #ebe4e7;
+            --panel-light-border: #e0d8dc;
+            --panel-light-focus: #f0eaec;
         }
 
         body[data-theme="teal"] {
@@ -2094,6 +2281,9 @@
             --panel-dark-2: #3a4848;
             --panel-light: #eff5f5;
             --panel-light-2: #eff5f5;
+            --panel-light-hover: #e5ecec;
+            --panel-light-border: #dae3e3;
+            --panel-light-focus: #eaf2f2;
         }
 
         body[data-theme="white"] {
@@ -2107,6 +2297,9 @@
             --panel-dark-2: #323232;
             --panel-light: #f5f5f5;
             --panel-light-2: #f5f5f5;
+            --panel-light-hover: #eaeaea;
+            --panel-light-border: #dfdfdf;
+            --panel-light-focus: #efefef;
         }
 
         /* Blue theme (default) panel overrides */
@@ -3096,8 +3289,10 @@
             padding: 3px 8px;
             border-radius: 24px;
             font-size: 0.75rem;
-            margin-left: 8px;
             font-weight: 500;
+            flex-shrink: 0;
+            align-self: center;
+            white-space: nowrap;
         }
 
         .light .todo-repeat-badge {
@@ -4345,13 +4540,13 @@
             background-color: transparent;
             margin: 0;
             padding: 0;
-            border: 2px solid rgba(0, 0, 0, 0.2);
-            border-radius: 8px;
+            border: 1.5px solid rgba(0, 0, 0, 0.18);
+            border-radius: 50%;
             cursor: pointer;
             position: relative;
             display: inline-block;
             vertical-align: middle;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
             flex-shrink: 0;
 
             /* デフォルトサイズ (クラスで指定がない場合) */
@@ -4387,7 +4582,7 @@
         }
 
         .dark input[type="checkbox"] {
-            border-color: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.25);
         }
 
         input[type="checkbox"]:checked {
@@ -4400,52 +4595,39 @@
             border-color: var(--primary-color-dark);
         }
 
-        /* チェックマークアイコン */
-        input[type="checkbox"]:checked::after {
+        /* チェックマーク（常に存在、opacity で表示切替） */
+        input[type="checkbox"]::after {
             content: '';
             position: absolute;
-            /* より厳密に中央に寄せる */
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%) rotate(45deg);
+            transform: translate(-50%, -55%) rotate(45deg);
             width: 30%;
             height: 55%;
-            /* 少し細めにして小さなボックスでもバランスが良くなるように */
             border-bottom: 2px solid white;
             border-right: 2px solid white;
             opacity: 0;
-            animation: checkAnim 0.2s forwards;
+            transition: opacity 0.2s ease;
         }
 
-        /* ToDo 用にさらに細かく補正(小さいボックスでの縦ずれ対策) */
-        .todo-checkbox:checked::after {
-            top: 50%;
-            transform: translate(-50%, -52%) rotate(45deg);
+        input[type="checkbox"]:checked::after {
+            opacity: 1;
+        }
+
+        /* ToDo 用にさらに細かく補正 */
+        .todo-checkbox::after {
+            transform: translate(-50%, -55%) rotate(45deg);
             width: 34%;
             height: 62%;
             border-bottom-width: 2px;
             border-right-width: 2px;
         }
 
-        @keyframes checkAnim {
-            from {
-                opacity: 0;
-                width: 0;
-                height: 0;
-            }
-
-            to {
-                opacity: 1;
-                width: 30%;
-                height: 55%;
-            }
-        }
-
         /* ホバー効果 */
         @media (hover: hover) {
             input[type="checkbox"]:hover {
                 border-color: var(--primary-color);
-                background-color: rgba(157, 180, 200, 0.1);
+                background-color: rgba(157, 180, 200, 0.08);
             }
 
             .dark input[type="checkbox"]:hover {
@@ -4808,6 +4990,24 @@ body.dark .footer-credit-label { color:#676767; }
         </div>
 
         <div id="statsPage" class="page">
+            <div id="dailyTimelineSection" class="daily-timeline-section">
+                <div class="daily-timeline-header">
+                    <button class="daily-timeline-nav-btn" onclick="changeDailyTimelineDate(-1)" aria-label="前の日">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                    </button>
+                    <span class="daily-timeline-date" id="dailyTimelineDate" onclick="resetDailyTimelineDate()"></span>
+                    <button class="daily-timeline-cal-btn" onclick="openDatePicker('dailyTimeline')" aria-label="カレンダーから選択">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="3" ry="3"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+                            <circle cx="8" cy="15" r="1.2" fill="currentColor" stroke="none"/><circle cx="12" cy="15" r="1.2" fill="currentColor" stroke="none"/><circle cx="16" cy="15" r="1.2" fill="currentColor" stroke="none"/>
+                        </svg>
+                    </button>
+                    <button class="daily-timeline-nav-btn" onclick="changeDailyTimelineDate(1)" aria-label="次の日">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                    </button>
+                </div>
+                <div id="dailyTimelineContent"></div>
+            </div>
             <div class="stats-container" id="statsContainer"></div>
             <div id="statsGraphContainer" style="display: none; margin-bottom: 30px;">
                 <canvas id="statsChart" style="max-height: 300px;"></canvas>
@@ -5064,12 +5264,6 @@ body.dark .footer-credit-label { color:#676767; }
                     </div>
                 </div>
                 <div class="toggle-item">
-                    <span>ToDo Ver.2</span>
-                    <div class="toggle-switch" id="toggleTodoV2" onclick="toggleTodoV2Setting()">
-                        <div class="toggle-slider"></div>
-                    </div>
-                </div>
-                <div class="toggle-item">
                     <span data-i18n="titleTimeDisplay">タイトルの時間表示</span>
                     <div class="toggle-switch" id="toggleTitleTime" onclick="toggleTitleTime()">
                         <div class="toggle-slider"></div>
@@ -5181,7 +5375,6 @@ body.dark .footer-credit-label { color:#676767; }
                     <div class="custom-select" style="width: 100%;">
                         <select id="fontEnSelect" onchange="saveFontSettings()">
                             <option value="" data-i18n="fontNone">未設定</option>
-                            <option value="Zen Kaku Gothic Antique">Zen Kaku Gothic Antique</option>
                             <option value="Jost">Jost</option>
                             <option value="JetBrains Mono">JetBrains Mono</option>
                             <option value="Montserrat">Montserrat</option>
@@ -5731,6 +5924,10 @@ const translations = {
                         noPauseRecords: '記録なし',
                         historyTimelineNextDay: '翌日 0:00~',
                         historyTimelineDayOffset: '+{n}日 0:00~',
+                        dailyTimelineToday: '今日',
+                        dailyTimelinePickerTitle: '日付を選択',
+                        dailyTimelineSessions: '{n}セッション',
+                        dailyTimelineNoSessions: 'この日の記録はありません',
 
                         // 音楽プレイヤー
                         selectFile: 'ファイルを選択',
@@ -6148,6 +6345,10 @@ const translations = {
                         noPauseRecords: 'No pause record',
                         historyTimelineNextDay: 'Next day 00:00~',
                         historyTimelineDayOffset: '+{n} days 00:00~',
+                        dailyTimelineToday: 'Today',
+                        dailyTimelinePickerTitle: 'Select date',
+                        dailyTimelineSessions: '{n} sessions',
+                        dailyTimelineNoSessions: 'No sessions on this day',
 
                         // Music Player
                         selectFile: 'Select File',
@@ -6755,6 +6956,7 @@ const translations = {
                         req.onerror = (e) => reject(e);
                     });
                 }
+
 
                 async function saveFileBlobToDB(id, title, file) {
                     const db = await openMusicDB();
@@ -7727,12 +7929,14 @@ const translations = {
                     musicFiles = [];
                     if (!active || !Array.isArray(active.tracks)) return;
                     let missingCount = 0;
+                    const missingIds = [];
                     for (const item of active.tracks) {
                         if (!item || item.id == null) continue;
                         try {
                             const blob = await getFileBlobFromDB(item.id);
                             if (!blob) {
                                 missingCount += 1;
+                                missingIds.push(item.id);
                                 continue;
                             }
                             const url = URL.createObjectURL(blob);
@@ -7740,9 +7944,13 @@ const translations = {
                         } catch (e) {
                             console.warn('Error loading track blob', item, e);
                             missingCount += 1;
+                            missingIds.push(item.id);
                         }
                     }
                     if (missingCount > 0) {
+                        active.tracks = active.tracks.filter(t => t && !missingIds.includes(t.id));
+                        persistPlaylists();
+                        console.warn(`[Music] Removed ${missingCount} ghost track(s) from playlist meta`);
                         setPlaylistWarning('playlistMissingFileData');
                     } else if (playlistWarningKey === 'playlistMissingFileData') {
                         setPlaylistWarning('');
@@ -8986,7 +9194,7 @@ const translations = {
                 function loadTodos() {
                     let todos = getData('todos');
                     todos = todos ? JSON.parse(todos) : [];
-                    const todoV2Enabled = getData('todo_v2_enabled') === 'true';
+                    const todoV2Enabled = true;
                     const normalized = normalizeTodoState(todos);
                     if (normalized) saveData('todos', JSON.stringify(todos));
                     const orderedTodos = getOrderedTodos(todos);
@@ -9078,13 +9286,10 @@ const translations = {
                 <img src="${getDragHandleSrc(false)}" class="todo-drag-handle" alt="${getText('dragHandle')}">
                 <input type="checkbox" class="todo-checkbox" ${todo.completed ? 'checked' : ''} onchange="toggleTodo(${index})">
                 <div style="flex: 1; min-width: 0;">
-                    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                        <span class="todo-text">${todo.text}</span>
-                        ${repeatBadge}
-                    </div>
-                    ${v2Details}
+                    <span class="todo-text">${todo.text}</span>
                     ${periodDisplay}
                 </div>
+                ${repeatBadge}
                 <button class="delete-btn" onclick="deleteTodo(${index})">${getText('deleteButton')}</button>
             </div>
         `;
@@ -9455,8 +9660,9 @@ const translations = {
                     const dropdown = document.getElementById('commonDatePicker');
                     const headingKey = type === 'start' ? 'selectStartDate'
                         : type === 'end' ? 'selectEndDate'
-                            : (type === 'multi' || type === 'calendarMulti') ? 'selectMultiDates'
-                                : 'selectEndDate';
+                            : type === 'dailyTimeline' ? 'dailyTimelinePickerTitle'
+                                : (type === 'multi' || type === 'calendarMulti') ? 'selectMultiDates'
+                                    : 'selectEndDate';
 
                     const year = date.getFullYear();
                     const month = date.getMonth();
@@ -9534,7 +9740,7 @@ const translations = {
                     dropdown.innerHTML = html;
                 }
 
-                let datePickerCurrentDate = { start: new Date(), end: new Date(), calendarEnd: new Date(), multi: new Date(), calendarMulti: new Date() };
+                let datePickerCurrentDate = { start: new Date(), end: new Date(), calendarEnd: new Date(), multi: new Date(), calendarMulti: new Date(), dailyTimeline: new Date() };
 
                 // 文字列からローカル日付を復元するヘルパー('YYYY-MM-DD' または ISO 全体を扱う)
                 function parseLocalDate(dateStr) {
@@ -9554,6 +9760,16 @@ const translations = {
 
                 function selectDate(type, dateStr) {
                     selectedDate[type] = dateStr;
+
+                    if (type === 'dailyTimeline') {
+                        const parts = dateStr.split('-').map(Number);
+                        dailyTimelineDate = new Date(parts[0], parts[1] - 1, parts[2]);
+                        dailyTimelineDate.setHours(0, 0, 0, 0);
+                        closeAllDatePickers();
+                        renderDailyTimeline();
+                        return;
+                    }
+
                     const inputIdMap = {
                         start: 'todoPeriodStart',
                         end: 'todoPeriodEnd',
@@ -9803,16 +10019,16 @@ const translations = {
                     if (dayTodos.length === 0) {
                         todosDiv.innerHTML = `<div style="opacity: 0.7; text-align: center; padding: 20px;">${getText('noTodosOnThisDay')}</div>`;
                     } else {
-                        const todoV2Enabled = getData('todo_v2_enabled') === 'true';
+                        const todoV2Enabled = true;
 
                         todosDiv.innerHTML = dayTodos.map(todo => {
                             const index = todo._index;
-                            const completedClass = todo.completed ? 'style="opacity: 0.6; text-decoration: line-through;"' : '';
+                            const completedStyle = todo.completed ? 'style="opacity: 0.45; text-decoration: line-through;"' : '';
 
                             return `
                                 <div class="calendar-day-todo-item">
                                     <input type="checkbox" ${todo.completed ? 'checked' : ''} onchange="toggleTodoFromCalendar(${index})">
-                                    <div style="flex: 1;" ${completedClass}>${todo.text}</div>
+                                    <div style="flex: 1;" ${completedStyle}>${todo.text}</div>
                                     <button class="delete-btn" style="padding: 6px 12px; font-size: 0.8rem;" onclick="deleteTodoFromCalendar(${index})">${getText('deleteButton')}</button>
                                 </div>
                             `;
@@ -9886,37 +10102,9 @@ const translations = {
                     }
                 }
 
-                // 設定からのVer.2切り替え
-                function toggleTodoV2Setting() {
-                    const currentState = getData('todo_v2_enabled') === 'true';
-                    const newState = !currentState;
-
-                    saveData('todo_v2_enabled', newState ? 'true' : 'false');
-
-                    syncTodoV2UI();
-                    loadTodos();
-                }
-
-                // UI同期関数
-                function syncTodoV2UI() {
-                    const todoV2Enabled = getData('todo_v2_enabled') === 'true';
-                    const settingsToggle = document.getElementById('toggleTodoV2');
-                    const popupToggle = document.getElementById('todoV2Toggle');
-
-                    if (settingsToggle) settingsToggle.classList.toggle('active', todoV2Enabled);
-                    if (popupToggle) popupToggle.classList.toggle('active', todoV2Enabled);
-
-                    updatePeriodSettingsVisibility();
-                }
-
-                function updatePeriodSettingsVisibility() {
-                    const todoV2Enabled = getData('todo_v2_enabled') === 'true';
-                    const periodSettings = document.getElementById('todoPeriodSettings');
-
-                    if (periodSettings) {
-                        periodSettings.style.display = todoV2Enabled ? 'flex' : 'none';
-                    }
-                }
+                function toggleTodoV2Setting() {}
+                function syncTodoV2UI() {}
+                function updatePeriodSettingsVisibility() {}
 
                 function isHistoryTimelineEnabled() {
                     return getData('feature_history_timeline') !== 'false';
@@ -9955,14 +10143,8 @@ const translations = {
                 function buildHistoryTimelineHtml(item, start, end) {
                     if (!isHistoryTimelineEnabled() || !hasPauseMetadata(item)) return '';
 
-                    const timelineStart = new Date(start);
-                    timelineStart.setHours(0, 0, 0, 0);
-                    const timelineEnd = new Date(end);
-                    timelineEnd.setHours(0, 0, 0, 0);
-                    timelineEnd.setTime(timelineEnd.getTime() + DAY_MS);
-
-                    const timelineStartMs = timelineStart.getTime();
-                    const timelineEndMs = timelineEnd.getTime();
+                    const timelineStartMs = start.getTime();
+                    const timelineEndMs = end.getTime();
                     const totalSpan = timelineEndMs - timelineStartMs;
                     if (!Number.isFinite(totalSpan) || totalSpan <= 0) return '';
 
@@ -9975,21 +10157,10 @@ const translations = {
                         return `<span class="history-timeline-segment" style="left:${left}%;width:${Math.max(width, 0.12)}%;"></span>`;
                     }).join('');
 
-                    const markerHtml = [];
-                    for (let marker = timelineStartMs + DAY_MS; marker < timelineEndMs; marker += DAY_MS) {
-                        const left = ((marker - timelineStartMs) / totalSpan) * 100;
-                        const offsetDays = Math.round((marker - timelineStartMs) / DAY_MS);
-                        let label = '';
-                        if (offsetDays === 1) {
-                            label = getText('historyTimelineNextDay');
-                        } else {
-                            label = getText('historyTimelineDayOffset').replace('{n}', String(offsetDays));
-                        }
-                        markerHtml.push(`<span class="history-timeline-marker" style="left:${left}%;"></span>`);
-                        markerHtml.push(`<span class="history-timeline-marker-label" style="left:${left}%">${label}</span>`);
-                    }
+                    const startLabel = formatDateTime(start);
+                    const endLabel = formatDateTime(end);
 
-                    return `<div class="history-timeline"><div class="history-timeline-scale"><span>0:00</span><span>0:00</span></div><div class="history-timeline-track">${segmentHtml}${markerHtml.join('')}</div></div>`;
+                    return `<div class="history-timeline"><div class="history-timeline-scale"><span>${startLabel}</span><span>${endLabel}</span></div><div class="history-timeline-track">${segmentHtml}</div></div>`;
                 }
 
                 function loadHistory() {
@@ -10459,6 +10630,93 @@ const translations = {
                     return streak;
                 }
 
+                let dailyTimelineDate = new Date();
+                dailyTimelineDate.setHours(0, 0, 0, 0);
+
+                function changeDailyTimelineDate(offset) {
+                    dailyTimelineDate.setDate(dailyTimelineDate.getDate() + offset);
+                    renderDailyTimeline();
+                }
+
+                function resetDailyTimelineDate() {
+                    dailyTimelineDate = new Date();
+                    dailyTimelineDate.setHours(0, 0, 0, 0);
+                    renderDailyTimeline();
+                }
+
+                function renderDailyTimeline() {
+                    const dateEl = document.getElementById('dailyTimelineDate');
+                    const contentEl = document.getElementById('dailyTimelineContent');
+                    if (!dateEl || !contentEl) return;
+
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    const isToday = dailyTimelineDate.getTime() === today.getTime();
+                    dateEl.textContent = isToday ? getText('dailyTimelineToday') : formatDate(dailyTimelineDate);
+
+                    const y = dailyTimelineDate.getFullYear();
+                    const m = String(dailyTimelineDate.getMonth() + 1).padStart(2, '0');
+                    const d = String(dailyTimelineDate.getDate()).padStart(2, '0');
+                    selectedDate.dailyTimeline = `${y}-${m}-${d}`;
+                    datePickerCurrentDate.dailyTimeline = new Date(y, dailyTimelineDate.getMonth(), 1);
+
+                    let history = getData('studyHistory');
+                    history = history ? JSON.parse(history) : [];
+
+                    const dayStart = dailyTimelineDate.getTime();
+                    const dayEnd = dayStart + 86400000;
+
+                    const daySessions = history.filter(item => {
+                        const start = new Date(item.start).getTime();
+                        const end = new Date(item.end).getTime();
+                        return start < dayEnd && end > dayStart;
+                    });
+
+                    if (daySessions.length === 0) {
+                        contentEl.innerHTML = `<div class="daily-timeline-track-wrapper"><div class="daily-timeline-empty">${getText('dailyTimelineNoSessions')}</div></div>`;
+                        return;
+                    }
+
+                    const segments = [];
+                    let totalStudy = 0;
+                    daySessions.forEach(item => {
+                        const sStart = Math.max(new Date(item.start).getTime(), dayStart);
+                        const sEnd = Math.min(new Date(item.end).getTime(), dayEnd);
+
+                        if (hasPauseMetadata(item)) {
+                            const pauseRanges = normalizeHistoryPauseRanges(item, new Date(item.start), new Date(item.end));
+                            const studySegs = buildStudySegmentsFromPauses(new Date(item.start), new Date(item.end), pauseRanges);
+                            studySegs.forEach(seg => {
+                                const clampedStart = Math.max(seg.start, dayStart);
+                                const clampedEnd = Math.min(seg.end, dayEnd);
+                                if (clampedEnd > clampedStart) {
+                                    segments.push({ start: clampedStart, end: clampedEnd });
+                                    totalStudy += clampedEnd - clampedStart;
+                                }
+                            });
+                        } else {
+                            segments.push({ start: sStart, end: sEnd });
+                            totalStudy += sEnd - sStart;
+                        }
+                    });
+
+                    const segmentHtml = segments.map(seg => {
+                        const left = ((seg.start - dayStart) / 86400000) * 100;
+                        const width = ((seg.end - seg.start) / 86400000) * 100;
+                        return `<span class="daily-timeline-segment" style="left:${left}%;width:${Math.max(width, 0.15)}%;"></span>`;
+                    }).join('');
+
+                    const sessionText = getText('dailyTimelineSessions').replace('{n}', String(daySessions.length));
+                    const timeText = formatTime(totalStudy);
+
+                    contentEl.innerHTML = `
+                        <div class="daily-timeline-track-wrapper">
+                            <div class="daily-timeline-scale"><span>0:00</span><span>6:00</span><span>12:00</span><span>18:00</span><span>24:00</span></div>
+                            <div class="daily-timeline-track">${segmentHtml}</div>
+                            <div class="daily-timeline-summary">${sessionText} · ${timeText}</div>
+                        </div>`;
+                }
+
                 function loadStats() {
                     let history = getData('studyHistory');
                     history = history ? JSON.parse(history) : [];
@@ -10479,6 +10737,7 @@ const translations = {
                         groupStatsSelector.innerHTML = `<h2>${getText('groupStats')}</h2>`;
                         groupStats.innerHTML = Object.entries(groups).sort((a, b) => b[1] - a[1]).map(([group, duration]) => `<div class="stat-card" style="margin-bottom: 15px;"><div class="stat-label">${group}</div><div class="stat-value">${formatTime(duration)}</div></div>`).join('');
                     }
+                    renderDailyTimeline();
                 }
 
                 async function clearHistory() {
@@ -11427,7 +11686,8 @@ const translations = {
 
                 function applyFonts() {
                     const fontJa = getData('font_ja') || 'Zen Kaku Gothic Antique';
-                    const fontEn = getData('font_en') || '';
+                    const fontEnRaw = getData('font_en');
+                    const fontEn = fontEnRaw !== null ? fontEnRaw : 'Jost';
 
                     document.documentElement.style.setProperty('--font-ja', `'${fontJa}'`);
                     document.documentElement.style.setProperty('--font-en', fontEn ? `'${fontEn}'` : '');

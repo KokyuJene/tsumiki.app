@@ -428,7 +428,7 @@
             cursor: pointer;
             padding: 7px;
             border-radius: 50%;
-            transition: background-color 0.2s, opacity 0.2s;
+            transition: background-color 0.2s, opacity 0.2s, color 0.2s;
             line-height: 1;
             opacity: 0.5;
             display: inline-flex;
@@ -447,11 +447,13 @@
         .daily-timeline-nav-btn:hover {
             background-color: rgba(0, 0, 0, 0.06);
             opacity: 0.85;
+            color: var(--primary-color);
         }
 
         .dark .daily-timeline-nav-btn:hover {
             background-color: rgba(255, 255, 255, 0.08);
             opacity: 0.85;
+            color: var(--primary-color-dark);
         }
 
         .daily-timeline-nav-btn svg {
@@ -482,7 +484,7 @@
             cursor: pointer;
             padding: 6px;
             border-radius: 50%;
-            transition: background-color 0.2s, opacity 0.2s;
+            transition: background-color 0.2s, opacity 0.2s, color 0.2s;
             line-height: 1;
             opacity: 0.4;
             display: inline-flex;
@@ -490,14 +492,24 @@
             justify-content: center;
         }
 
+        .light .daily-timeline-cal-btn {
+            color: #323232;
+        }
+
+        .dark .daily-timeline-cal-btn {
+            color: #e8e8e8;
+        }
+
         .daily-timeline-cal-btn:hover {
             background-color: rgba(0, 0, 0, 0.06);
-            opacity: 0.7;
+            opacity: 0.85;
+            color: var(--primary-color);
         }
 
         .dark .daily-timeline-cal-btn:hover {
             background-color: rgba(255, 255, 255, 0.08);
-            opacity: 0.7;
+            opacity: 0.85;
+            color: var(--primary-color-dark);
         }
 
         .daily-timeline-cal-btn svg {
@@ -4755,6 +4767,622 @@ body.dark .footer-credit-label { color:#676767; }
   -webkit-text-fill-color:transparent !important; color:transparent !important; font-size:1.2rem;
 }
 
+/* ── Editor Mode ── */
+.editor-mode-toggle-section {
+    margin-bottom: 25px;
+    padding: 15px;
+    border-radius: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.light .editor-mode-toggle-section { background-color: var(--panel-light); }
+.dark .editor-mode-toggle-section { background-color: var(--panel-dark); }
+
+body.editor-mode [data-editor-target],
+body.editor-mode .menu button[data-feature] {
+    position: relative;
+    cursor: pointer;
+    outline: 2px dashed transparent;
+    outline-offset: 4px;
+    transition: outline-color 0.2s;
+    border-radius: 18px;
+}
+body.editor-mode [data-editor-target]:hover,
+body.editor-mode .menu button[data-feature]:hover {
+    outline-color: var(--primary-color);
+}
+body.dark.editor-mode [data-editor-target]:hover,
+body.dark.editor-mode .menu button[data-feature]:hover {
+    outline-color: var(--primary-color-dark);
+}
+
+.editor-mini-menu {
+    position: fixed;
+    z-index: 9999;
+    min-width: 220px;
+    max-width: 300px;
+    padding: 14px 16px;
+    border-radius: 18px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    opacity: 0;
+    transform: scale(0.92) translateY(-6px);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    pointer-events: none;
+}
+.editor-mini-menu.visible {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    pointer-events: auto;
+}
+.light .editor-mini-menu { background: var(--panel-light); color: #323232; }
+.dark .editor-mini-menu { background: var(--panel-dark); color: #e8e8e8; }
+
+.editor-mini-menu .emm-title {
+    font-size: 0.85rem;
+    opacity: 0.6;
+    margin-bottom: 10px;
+}
+
+.editor-mini-menu .emm-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+.editor-mini-menu .emm-row:last-child { margin-bottom: 0; }
+
+.editor-mini-menu .emm-row label {
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.editor-mini-menu .emm-row .toggle-switch {
+    width: 42px;
+    height: 22px;
+    flex-shrink: 0;
+}
+.editor-mini-menu .emm-row .toggle-switch .toggle-slider {
+    width: 16px;
+    height: 16px;
+}
+.editor-mini-menu .emm-row .toggle-switch.active .toggle-slider {
+    transform: translateX(20px);
+}
+
+.editor-mini-menu .emm-row .custom-select {
+    width: 120px;
+    font-size: 0.85rem;
+}
+.editor-mini-menu .emm-row .custom-select select {
+    padding: 6px 30px 6px 10px;
+    font-size: 0.85rem;
+}
+
+.editor-mini-menu-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    display: none;
+}
+.editor-mini-menu-backdrop.visible { display: block; }
+
+/* [+] re-show button */
+.editor-add-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+}
+body.editor-mode .editor-add-btn { display: flex; }
+.light .editor-add-btn { background: var(--panel-light); color: #323232; }
+.dark .editor-add-btn { background: var(--panel-dark); color: #e8e8e8; }
+.editor-add-btn:hover { transform: scale(1.08); }
+
+.editor-exit-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1001;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 12px 20px;
+    font-size: 0.9rem;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.10);
+    transition: transform 0.25s ease;
+}
+body.editor-mode .editor-exit-bar { display: flex; }
+.light .editor-exit-bar { background: var(--panel-light); color: #323232; }
+.dark .editor-exit-bar { background: var(--panel-dark); color: #e8e8e8; }
+.editor-exit-bar span { opacity: 0.7; font-size: 0.85rem; }
+.editor-exit-bar button {
+    padding: 6px 18px;
+    font-size: 0.85rem;
+    border: none;
+    border-radius: 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.light .editor-exit-bar button { background: var(--primary-color); color: white; }
+.dark .editor-exit-bar button { background: var(--primary-color-dark); color: white; }
+
+.editor-add-dropdown {
+    position: fixed;
+    top: 72px;
+    left: 20px;
+    z-index: 9999;
+    min-width: 200px;
+    max-width: calc(100vw - 40px);
+    max-height: calc(100vh - 130px);
+    overflow-y: auto;
+    padding: 10px 0;
+    border-radius: 18px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    opacity: 0;
+    transform: scale(0.92) translateY(-6px);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    pointer-events: none;
+}
+.editor-add-dropdown.visible {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    pointer-events: auto;
+}
+.light .editor-add-dropdown { background: var(--panel-light); color: #323232; }
+.dark .editor-add-dropdown { background: var(--panel-dark); color: #e8e8e8; }
+
+.editor-add-dropdown .ead-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: background-color 0.15s;
+    font-size: 0.9rem;
+}
+.editor-add-dropdown .ead-item:hover {
+    background-color: rgba(0,0,0,0.05);
+}
+.dark .editor-add-dropdown .ead-item:hover {
+    background-color: rgba(255,255,255,0.06);
+}
+.editor-add-dropdown .ead-item .toggle-switch {
+    width: 42px;
+    height: 22px;
+    flex-shrink: 0;
+}
+.editor-add-dropdown .ead-item .toggle-switch .toggle-slider {
+    width: 16px;
+    height: 16px;
+}
+.editor-add-dropdown .ead-item .toggle-switch.active .toggle-slider {
+    transform: translateX(20px);
+}
+
+/* ── Flashcard (暗記カード) ── */
+.flashcard-stat-btn {
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    user-select: none;
+}
+.flashcard-stat-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+}
+.flashcard-stat-btn:active {
+    transform: scale(0.97);
+}
+
+.flashcard-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 10000;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.25s ease;
+}
+.flashcard-overlay.show {
+    opacity: 1; pointer-events: auto;
+}
+
+.flashcard-modal {
+    background: var(--panel-light);
+    border-radius: 24px;
+    width: 92vw; max-width: 480px;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 28px 22px 22px;
+    position: relative;
+    animation: fcSlideUp 0.3s ease;
+}
+body.dark .flashcard-modal {
+    background: var(--panel-dark);
+    color: #fff;
+}
+@keyframes fcSlideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.flashcard-modal h2 {
+    margin: 0 0 18px; font-size: 1.25rem; font-weight: 600;
+}
+.flashcard-modal .fc-close-btn {
+    position: absolute; top: 16px; right: 18px;
+    background: none; border: none; font-size: 1.4rem;
+    cursor: pointer; color: inherit; line-height: 1;
+}
+
+.fc-menu-btns {
+    display: flex; gap: 12px; margin-top: 10px;
+}
+.fc-menu-btns button {
+    flex: 1; padding: 16px 0; border: none; border-radius: 24px;
+    font-size: 1rem; font-weight: 600; cursor: pointer;
+    transition: transform 0.12s ease;
+}
+.fc-menu-btns button:active { transform: scale(0.96); }
+.fc-menu-btns .fc-create-btn {
+    background: var(--primary-color); color: #fff;
+}
+.fc-menu-btns .fc-view-btn {
+    background: var(--panel-light); border: 2px solid var(--primary-color); color: var(--primary-color);
+}
+body.dark .fc-menu-btns .fc-view-btn {
+    background: var(--panel-dark); color: var(--primary-color);
+}
+
+.fc-group-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px; margin-bottom: 8px;
+    border-radius: 24px; cursor: pointer;
+    background: var(--panel-light);
+    transition: background 0.15s ease;
+}
+body.dark .fc-group-item {
+    background: var(--panel-dark);
+}
+.fc-group-item:hover { opacity: 0.85; }
+.fc-group-item .fc-group-name {
+    font-weight: 500; font-size: 0.95rem;
+}
+.fc-group-item .fc-group-count {
+    font-size: 0.8rem; opacity: 0.6;
+}
+.fc-group-item .fc-group-delete {
+    background: none; border: none; color: #e74c3c; cursor: pointer;
+    font-size: 1.1rem; padding: 2px 6px; margin-left: 8px; border-radius: 8px;
+}
+.fc-group-item .fc-group-delete:hover { background: rgba(231,76,60,0.1); }
+
+.fc-add-group-row {
+    display: flex; gap: 8px; margin-top: 14px;
+}
+.fc-add-group-row input {
+    flex: 1; padding: 10px 14px; border-radius: 24px;
+    border: 2px solid transparent; outline: none;
+    font-size: 0.9rem;
+    background: var(--panel-light); color: inherit;
+}
+body.dark .fc-add-group-row input {
+    background: var(--panel-dark);
+}
+.fc-add-group-row input:focus {
+    border-color: var(--primary-color);
+}
+.fc-add-group-row button {
+    padding: 10px 18px; border: none; border-radius: 24px;
+    background: var(--primary-color); color: #fff;
+    font-weight: 600; cursor: pointer; white-space: nowrap;
+}
+
+/* Card editor */
+.fc-card-list {
+    margin: 10px 0;
+}
+.fc-card-entry {
+    padding: 10px 14px; margin-bottom: 8px;
+    border-radius: 24px; background: var(--panel-light);
+    position: relative;
+    display: flex; align-items: center; gap: 8px;
+}
+body.dark .fc-card-entry {
+    background: var(--panel-dark);
+}
+.fc-card-entry.dragging {
+    opacity: 0.6; border: 2px dashed #999;
+}
+.fc-card-entry .fc-card-body {
+    flex: 1; min-width: 0;
+}
+.fc-drag-handle {
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: grab; user-select: none; opacity: 0.8;
+    width: 20px; height: 20px; flex-shrink: 0;
+    touch-action: none;
+}
+.fc-drag-handle:active { cursor: grabbing; }
+.fc-card-entry .fc-card-type-badge {
+    display: inline-block; padding: 2px 8px; border-radius: 8px;
+    font-size: 0.7rem; font-weight: 600; margin-bottom: 6px;
+    background: var(--primary-color); color: #fff;
+}
+.fc-card-entry .fc-card-preview {
+    font-size: 0.85rem; opacity: 0.8;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.fc-card-entry .fc-card-actions {
+    display: flex; gap: 4px; flex-shrink: 0;
+}
+.fc-card-entry .fc-card-actions button {
+    background: none; border: none; cursor: pointer;
+    font-size: 0.95rem; padding: 2px 5px; border-radius: 6px; color: inherit;
+}
+.fc-card-entry .fc-card-actions button:hover { background: rgba(0,0,0,0.06); }
+
+.fc-add-card-form {
+    margin-top: 14px; padding: 16px; border-radius: 24px;
+    background: var(--panel-light);
+}
+body.dark .fc-add-card-form {
+    background: var(--panel-dark);
+}
+.fc-add-card-form label {
+    display: block; font-size: 0.8rem; font-weight: 600;
+    margin: 10px 0 4px; opacity: 0.7;
+}
+.fc-add-card-form label:first-child { margin-top: 0; }
+.fc-add-card-form input[type="text"],
+.fc-add-card-form input[type="number"] {
+    width: 100%; padding: 9px 12px; border-radius: 24px;
+    border: 2px solid transparent; outline: none;
+    font-size: 0.9rem; box-sizing: border-box;
+    background: var(--panel-light); color: inherit;
+}
+body.dark .fc-add-card-form input[type="text"],
+body.dark .fc-add-card-form input[type="number"] {
+    background: var(--panel-dark);
+}
+.fc-add-card-form input:focus {
+    border-color: var(--primary-color);
+}
+.fc-add-card-form .fc-type-selector {
+    display: flex; gap: 8px; margin: 6px 0;
+}
+.fc-add-card-form .fc-type-selector button {
+    flex: 1; padding: 8px 0; border: 2px solid var(--primary-color);
+    border-radius: 24px; background: transparent;
+    color: var(--primary-color); font-weight: 600;
+    cursor: pointer; font-size: 0.85rem;
+    transition: all 0.15s ease;
+}
+.fc-add-card-form .fc-type-selector button.active {
+    background: var(--primary-color); color: #fff;
+}
+.fc-operator-checks {
+    display: flex; gap: 6px; flex-wrap: wrap; margin: 6px 0;
+}
+.fc-operator-checks label {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 5px 10px; border-radius: 10px;
+    background: var(--panel-light); cursor: pointer;
+    font-size: 0.85rem; font-weight: 500; margin: 0;
+    border: 2px solid transparent; transition: border-color 0.15s ease;
+    user-select: none;
+}
+body.dark .fc-operator-checks label {
+    background: var(--panel-dark);
+}
+.fc-operator-checks label.checked {
+    border-color: var(--primary-color);
+}
+.fc-operator-checks input { display: none; }
+.fc-num-range {
+    display: flex; align-items: center; gap: 8px;
+}
+.fc-num-range input {
+    width: 80px !important; flex: unset !important;
+}
+.fc-form-actions {
+    display: flex; gap: 8px; margin-top: 14px;
+}
+.fc-form-actions button {
+    flex: 1; padding: 10px 0; border: none; border-radius: 24px;
+    font-weight: 600; cursor: pointer; font-size: 0.9rem;
+}
+.fc-form-actions .fc-save-card {
+    background: var(--primary-color); color: #fff;
+}
+.fc-form-actions .fc-shuffle-btn {
+    background: transparent; border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+}
+.fc-editor-toolbar {
+    display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap;
+}
+.fc-editor-toolbar button {
+    padding: 8px 14px; border: none; border-radius: 24px;
+    font-size: 0.82rem; font-weight: 600; cursor: pointer;
+}
+
+/* Viewer */
+.fc-viewer-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 10001;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.25s ease;
+    user-select: none;
+    -webkit-user-select: none;
+}
+.fc-viewer-overlay.show {
+    opacity: 1; pointer-events: auto;
+}
+.fc-viewer-header {
+    position: absolute; top: 0; left: 0; right: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 20px; color: #fff;
+}
+.fc-viewer-header button {
+    background: rgba(255,255,255,0.15); border: none;
+    color: #fff; padding: 8px 16px; border-radius: 24px;
+    font-weight: 600; cursor: pointer; font-size: 0.9rem;
+}
+.fc-viewer-counter {
+    font-size: 0.9rem; opacity: 0.7;
+}
+
+.fc-card-scene {
+    width: 85vw; max-width: 400px; height: 260px;
+    perspective: 800px;
+    cursor: pointer;
+}
+.fc-card-inner {
+    position: relative; width: 100%; height: 100%;
+    transition: transform 0.18s ease;
+    transform-style: preserve-3d;
+    transform: rotateY(0deg);
+}
+.fc-card-face {
+    position: absolute; inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+    border-radius: 24px;
+    font-size: 1.3rem; font-weight: 600;
+    text-align: center;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+.fc-card-front {
+    background: #fff; color: #222;
+}
+.fc-card-back {
+    background: var(--primary-color); color: #fff;
+}
+.fc-card-number {
+    position: absolute; top: 14px; left: 16px;
+    font-size: 0.75rem; font-weight: 600; opacity: 0.4;
+}
+
+.fc-no-flip-content {
+    width: 85vw; max-width: 400px;
+    min-height: 200px;
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px; position: relative;
+    border-radius: 24px;
+    background: #fff; color: #222;
+    font-size: 1.3rem; font-weight: 600;
+    text-align: center;
+    word-break: break-word;
+}
+
+/* Formula builder */
+.fc-formula-preview {
+    min-height: 44px; padding: 10px 14px;
+    border-radius: 24px; margin-bottom: 10px;
+    background: var(--panel-light);
+    display: flex; align-items: center; flex-wrap: wrap; gap: 6px;
+    font-size: 0.9rem; cursor: default;
+}
+body.dark .fc-formula-preview {
+    background: var(--panel-dark);
+}
+.fc-formula-preview:empty::before {
+    content: '[ ]'; opacity: 0.3; font-size: 0.9rem;
+}
+.fc-formula-token {
+    display: inline-flex; align-items: center; gap: 3px;
+    padding: 4px 10px; border-radius: 12px;
+    font-size: 0.82rem; font-weight: 600;
+    background: var(--primary-color); color: #fff;
+    cursor: default; white-space: nowrap;
+}
+.fc-formula-token.op {
+    background: rgba(0,0,0,0.12); color: inherit;
+}
+body.dark .fc-formula-token.op {
+    background: rgba(255,255,255,0.15);
+}
+.fc-formula-token .fc-token-del {
+    margin-left: 2px; cursor: pointer; opacity: 0.6;
+    font-size: 0.75rem; line-height: 1;
+}
+.fc-formula-token .fc-token-del:hover { opacity: 1; }
+.fc-formula-btns {
+    display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px;
+}
+.fc-formula-btns button {
+    padding: 7px 12px; border: none; border-radius: 24px;
+    font-size: 0.8rem; font-weight: 600; cursor: pointer;
+    transition: transform 0.1s;
+}
+.fc-formula-btns button:active { transform: scale(0.94); }
+.fc-formula-btns .fc-fbtn-num {
+    background: var(--primary-color); color: #fff;
+}
+.fc-formula-btns .fc-fbtn-range {
+    background: #e67e22; color: #fff;
+}
+.fc-formula-btns .fc-fbtn-op {
+    background: rgba(0,0,0,0.08); color: inherit;
+}
+body.dark .fc-formula-btns .fc-fbtn-op {
+    background: rgba(255,255,255,0.12);
+}
+.fc-formula-popup {
+    position: absolute; z-index: 10;
+    background: var(--panel-light);
+    border-radius: 24px; padding: 14px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.18);
+    min-width: 200px;
+}
+body.dark .fc-formula-popup {
+    background: var(--panel-dark);
+}
+.fc-formula-popup input {
+    width: 70px; padding: 7px 10px; border-radius: 24px;
+    border: 2px solid transparent; outline: none;
+    font-size: 0.9rem; background: var(--panel-light); color: inherit;
+    text-align: center;
+}
+body.dark .fc-formula-popup input {
+    background: var(--panel-dark);
+}
+.fc-formula-popup input:focus { border-color: var(--primary-color); }
+.fc-formula-popup button {
+    padding: 7px 16px; border: none; border-radius: 24px;
+    background: var(--primary-color); color: #fff;
+    font-weight: 600; cursor: pointer; font-size: 0.85rem;
+}
+
+/* Swipe card animation — direction set via inline style */
+.fc-card-scene.fc-swiping,
+.fc-no-flip-content.fc-swiping {
+    transition: transform 0.18s ease, opacity 0.18s ease;
+    opacity: 0;
+}
+
     </style>
 
 </head>
@@ -4952,6 +5580,15 @@ body.dark .footer-credit-label { color:#676767; }
         </button>
     </div>
 
+    <button class="editor-add-btn" id="editorAddBtn" onclick="toggleEditorAddDropdown()" aria-label="非表示の要素を再表示"><svg width="22" height="22" viewBox="0 0 22 22" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><rect x="9" y="2" width="4" height="18" rx="2"/><rect x="2" y="9" width="18" height="4" rx="2"/></svg></button>
+    <div class="editor-exit-bar" id="editorExitBar">
+        <span data-i18n="editorModeActive">エディターモード</span>
+        <button onclick="exitEditorMode()" data-i18n="editorModeExit">終了</button>
+    </div>
+    <div class="editor-add-dropdown" id="editorAddDropdown"></div>
+    <div class="editor-mini-menu-backdrop" id="editorMiniMenuBackdrop" onclick="closeEditorMiniMenu()"></div>
+    <div class="editor-mini-menu" id="editorMiniMenu"></div>
+
     <div class="container">
         <h1 aria-label="ツミキapp">
             <img class="tsumiki-logo" id="tsumikiLogoMain" src="tsumiki_logo.svg" data-light-src="tsumiki_logo.svg"
@@ -4965,15 +5602,15 @@ body.dark .footer-credit-label { color:#676767; }
         </div>
 
         <div id="timerPage" class="page active">
-            <div class="timer" id="timer" style="font-weight: 300;">00:00:00</div>
+            <div class="timer" id="timer" style="font-weight: 300;" data-editor-target="timer">00:00:00</div>
             <div class="timer-display-sub" id="totalTimerDisplay"
                 style="font-size: 1.5rem; opacity: 0.6; margin-top: -30px; margin-bottom: 20px; display: none;">00:00:00
             </div>
             <div class="group-input">
                 <input type="text" id="groupInput" placeholder="グループ名(任意)" data-i18n="groupPlaceholder">
             </div>
-            <div class="session-info" id="sessionInfo" data-i18n="sessionStart">開始ボタンを押して学習を始めましょう</div>
-            <div id="focusModeToggleContainer" style="display: none; margin-bottom: 15px;">
+            <div class="session-info" id="sessionInfo" data-i18n="sessionStart" data-editor-target="sessionInfo">開始ボタンを押して学習を始めましょう</div>
+            <div id="focusModeToggleContainer" style="display: none; margin-bottom: 15px;" data-editor-target="focusMode">
                 <div class="toggle-item" style="margin-bottom: 0;">
                     <span data-i18n="focusMode">フォーカスモード</span>
                     <div class="toggle-switch" id="toggleFocusModeMain" onclick="toggleFocusModeMain()">
@@ -4981,7 +5618,7 @@ body.dark .footer-credit-label { color:#676767; }
                     </div>
                 </div>
             </div>
-            <div class="controls">
+            <div class="controls" data-editor-target="controls">
                 <button id="startBtn" class="startButton primary" onclick="startStudy()" data-i18n="startButton">勉強開始</button>
                 <button id="pauseBtn" class="secondary hidden" onclick="pauseStudy()"
                     data-i18n="pauseButton">一時停止</button>
@@ -4990,7 +5627,7 @@ body.dark .footer-credit-label { color:#676767; }
         </div>
 
         <div id="statsPage" class="page">
-            <div id="dailyTimelineSection" class="daily-timeline-section">
+            <div id="dailyTimelineSection" class="daily-timeline-section" data-editor-target="dailyTimeline">
                 <div class="daily-timeline-header">
                     <button class="daily-timeline-nav-btn" onclick="changeDailyTimelineDate(-1)" aria-label="前の日">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
@@ -5008,8 +5645,8 @@ body.dark .footer-credit-label { color:#676767; }
                 </div>
                 <div id="dailyTimelineContent"></div>
             </div>
-            <div class="stats-container" id="statsContainer"></div>
-            <div id="statsGraphContainer" style="display: none; margin-bottom: 30px;">
+            <div class="stats-container" id="statsContainer" data-editor-target="statsContainer"></div>
+            <div id="statsGraphContainer" style="display: none; margin-bottom: 30px;" data-editor-target="graph">
                 <canvas id="statsChart" style="max-height: 300px;"></canvas>
             </div>
             <div class="group-selector" id="groupStatsSelector"></div>
@@ -5061,11 +5698,11 @@ body.dark .footer-credit-label { color:#676767; }
                     <button class="primary" onclick="moveSelectedToGroup()" data-i18n="moveButton">移動</button>
                 </div>
             </div>
-            <div id="studyGraphContainer" style="display: none; margin-bottom: 30px;">
+            <div id="studyGraphContainer" style="display: none; margin-bottom: 30px;" data-editor-target="graph">
                 <h2 data-i18n="graphTitle">勉強時間グラフ</h2>
                 <canvas id="studyChart" style="max-height: 300px;"></canvas>
             </div>
-            <div id="historyList" class="history-list"></div>
+            <div id="historyList" class="history-list" data-editor-target="historyList"></div>
             <button class="secondary clear-history" onclick="clearHistory()"
                 data-i18n="clearHistory">すべての履歴をクリア</button>
         </div>
@@ -5094,7 +5731,7 @@ body.dark .footer-credit-label { color:#676767; }
 
                 <audio id="audioPlayer" style="display:none;" playsinline webkit-playsinline></audio>
 
-                <div class="music-display-panel">
+                <div class="music-display-panel" data-editor-target="musicPlayer">
                     <div class="music-info-header">
                         <div class="music-title-display" id="musicTitleDisplay"  data-i18n="musicSelectPrompt">楽曲を選択してください</div>
                         <div class="music-progress-section">
@@ -5163,7 +5800,7 @@ body.dark .footer-credit-label { color:#676767; }
         </div>
         <div id="todoPage" class="page">
             <!-- ビュー切り替えメニュー -->
-            <div class="todo-view-menu">
+            <div class="todo-view-menu" data-editor-target="todoPage">
                 <button class="todo-view-btn active" onclick="switchTodoView('list')" id="todoViewList"
                     data-i18n="todoViewList">ToDoリスト</button>
                 <button class="todo-view-btn" onclick="switchTodoView('calendar')" id="todoViewCalendar"
@@ -5249,6 +5886,10 @@ body.dark .footer-credit-label { color:#676767; }
             </div>
         </div>
         <div id="settingsPage" class="page">
+            <div class="editor-mode-toggle-section">
+                <span data-i18n="editorMode">エディターモード</span>
+                <button class="primary" id="enterEditorModeBtn" onclick="enterEditorMode()" style="padding: 8px 20px; font-size: 0.9rem; border-radius: 20px;" data-i18n="editorModeEnter">開始</button>
+            </div>
             <div class="settings-section">
                 <h2 data-i18n="settingsDisplay">表示設定</h2>
                 <div class="toggle-item">
@@ -5751,43 +6392,6 @@ body.dark .footer-credit-label { color:#676767; }
                     </div>
                 </div>
             </div>
-            <div class="priority-color-overlay" id="priorityColorOverlay" aria-hidden="true">
-                <div class="priority-color-dialog" role="dialog" aria-modal="true" aria-label="ToDo優先度カラー設定">
-                    <h2 style="margin-bottom: 14px;" data-i18n="todoPriorityColorSettingsTitle">ToDo優先度カラー設定</h2>
-                    <div class="priority-color-targets">
-                        <button class="priority-color-target active" id="priorityTargetHigh" onclick="selectTodoPriorityColorTarget('high')">
-                            <span class="priority-color-target-swatch" id="priorityColorSampleHigh"></span>
-                            <span class="priority-color-target-name" data-i18n="priorityHigh">高</span>
-                        </button>
-                        <button class="priority-color-target" id="priorityTargetNormal" onclick="selectTodoPriorityColorTarget('normal')">
-                            <span class="priority-color-target-swatch" id="priorityColorSampleNormal"></span>
-                            <span class="priority-color-target-name" data-i18n="priorityNormal">通常</span>
-                        </button>
-                        <button class="priority-color-target" id="priorityTargetLow" onclick="selectTodoPriorityColorTarget('low')">
-                            <span class="priority-color-target-swatch" id="priorityColorSampleLow"></span>
-                            <span class="priority-color-target-name" data-i18n="priorityLow">低</span>
-                        </button>
-                    </div>
-                    <div class="priority-color-picker-wrap">
-                        <div class="priority-color-preview" id="priorityColorCurrentPreview"></div>
-                        <div class="priority-color-board-wrap">
-                            <div class="priority-color-board" id="priorityColorBoard">
-                                <div class="priority-color-board-cursor" id="priorityColorBoardCursor"></div>
-                            </div>
-                            <div class="priority-color-hue-wrap">
-                                <input type="range" min="0" max="360" value="0" class="priority-color-hue" id="priorityColorHue">
-                            </div>
-                        </div>
-                    </div>
-                    <input class="priority-color-hex" id="priorityColorHexInput" value="#E74C3C" maxlength="7">
-                    <div class="priority-color-actions">
-                        <button class="secondary" onclick="resetTodoPriorityColorSettings()" data-i18n="resetButton">初期値</button>
-                        <button class="secondary" onclick="closeTodoPriorityColorModal()" data-i18n="cancelButton">キャンセル</button>
-                        <button class="primary" onclick="saveTodoPriorityColorSettings()" data-i18n="saveButton">保存</button>
-                    </div>
-                </div>
-            </div>
-
             <div class="footerrr">
 
                 <div class="copyright" data-i18n="copyright">© ツミキapp / Super Hiko14 / 高級ジェネ™ All rights reserved.</div>
@@ -5798,6 +6402,120 @@ body.dark .footer-credit-label { color:#676767; }
                 </div>
 
             </div>
+
+        </div>
+
+    <!-- Flashcard Modal -->
+    <div class="flashcard-overlay" id="flashcardOverlay" onclick="if(event.target===this)closeFlashcardModal()">
+        <div class="flashcard-modal" id="flashcardModal">
+            <button class="fc-close-btn" onclick="closeFlashcardModal()">&times;</button>
+            <div id="fcScreenMenu">
+                <h2 id="fcMenuTitleEl"></h2>
+                <div class="fc-menu-btns">
+                    <button class="fc-create-btn" onclick="openFlashcardGroups('create')"></button>
+                    <button class="fc-view-btn" onclick="openFlashcardGroups('view')"></button>
+                </div>
+            </div>
+            <div id="fcScreenGroups" style="display:none;">
+                <h2 id="fcGroupsTitleEl"></h2>
+                <div id="fcGroupList"></div>
+                <div class="fc-add-group-row" id="fcAddGroupRow" style="display:none;">
+                    <input type="text" id="fcNewGroupInput" />
+                    <button onclick="addFlashcardGroupFromInput()"></button>
+                </div>
+            </div>
+            <div id="fcScreenEditor" style="display:none;">
+                <h2 id="fcEditorTitleEl"></h2>
+                <div class="fc-editor-toolbar">
+                    <button style="background:var(--primary-color);color:#fff;" onclick="showFcAddCardForm()"></button>
+                    <button style="background:transparent;border:2px solid var(--primary-color);color:var(--primary-color);" onclick="shuffleFlashcards()"></button>
+                </div>
+                <div class="fc-card-list" id="fcCardList"></div>
+                <div class="fc-add-card-form" id="fcAddCardForm" style="display:none;">
+                    <label id="fcTypeLabelEl"></label>
+                    <div class="fc-type-selector">
+                        <button class="active" onclick="setFcCardType('normal')" id="fcTypeBtnNormal"></button>
+                        <button onclick="setFcCardType('math')" id="fcTypeBtnMath"></button>
+                    </div>
+                    <div id="fcNormalFields">
+                        <label id="fcFrontLabelEl"></label>
+                        <input type="text" id="fcFrontInput" />
+                        <label id="fcBackLabelEl"></label>
+                        <input type="text" id="fcBackInput" />
+                    </div>
+                    <div id="fcMathFields" style="display:none;">
+                        <label>式を組み立てる</label>
+                        <div class="fc-formula-preview" id="fcFormulaPreview"></div>
+                        <div class="fc-formula-btns" style="position:relative;">
+                            <button class="fc-fbtn-num" onclick="fcFormulaShowNumPopup(event)">数字</button>
+                            <button class="fc-fbtn-range" onclick="fcFormulaShowRangePopup(event)">a~b</button>
+                            <button class="fc-fbtn-op" onclick="fcFormulaAddOp('+')">+</button>
+                            <button class="fc-fbtn-op" onclick="fcFormulaAddOp('-')">−</button>
+                            <button class="fc-fbtn-op" onclick="fcFormulaAddOp('*')">×</button>
+                            <button class="fc-fbtn-op" onclick="fcFormulaAddOp('/')">÷</button>
+                            <button class="fc-fbtn-op" onclick="fcFormulaAddOp('^')">^</button>
+                            <div class="fc-formula-popup" id="fcFormulaPopup" style="display:none;"></div>
+                        </div>
+                    </div>
+                    <div class="fc-form-actions">
+                        <button class="fc-save-card" onclick="saveFlashcardFromForm()" id="fcSaveCardBtn"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Flashcard Viewer -->
+    <div class="fc-viewer-overlay" id="fcViewerOverlay">
+        <div class="fc-viewer-header">
+            <button onclick="closeFlashcardViewer()" id="fcViewerCloseBtn"></button>
+            <span class="fc-viewer-counter" id="fcViewerCounter"></span>
+        </div>
+        <div class="fc-card-scene" id="fcCardScene">
+            <div class="fc-card-inner" id="fcCardInner">
+                <div class="fc-card-face fc-card-front" id="fcCardFront"></div>
+                <div class="fc-card-face fc-card-back" id="fcCardBack"></div>
+            </div>
+        </div>
+        <div class="fc-no-flip-content" id="fcNoFlipContent" style="display:none;"></div>
+    </div>
+
+    <div class="priority-color-overlay" id="priorityColorOverlay" aria-hidden="true">
+        <div class="priority-color-dialog" role="dialog" aria-modal="true" aria-label="ToDo優先度カラー設定">
+            <h2 style="margin-bottom: 14px;" data-i18n="todoPriorityColorSettingsTitle">ToDo優先度カラー設定</h2>
+            <div class="priority-color-targets">
+                <button class="priority-color-target active" id="priorityTargetHigh" onclick="selectTodoPriorityColorTarget('high')">
+                    <span class="priority-color-target-swatch" id="priorityColorSampleHigh"></span>
+                    <span class="priority-color-target-name" data-i18n="priorityHigh">高</span>
+                </button>
+                <button class="priority-color-target" id="priorityTargetNormal" onclick="selectTodoPriorityColorTarget('normal')">
+                    <span class="priority-color-target-swatch" id="priorityColorSampleNormal"></span>
+                    <span class="priority-color-target-name" data-i18n="priorityNormal">通常</span>
+                </button>
+                <button class="priority-color-target" id="priorityTargetLow" onclick="selectTodoPriorityColorTarget('low')">
+                    <span class="priority-color-target-swatch" id="priorityColorSampleLow"></span>
+                    <span class="priority-color-target-name" data-i18n="priorityLow">低</span>
+                </button>
+            </div>
+            <div class="priority-color-picker-wrap">
+                <div class="priority-color-preview" id="priorityColorCurrentPreview"></div>
+                <div class="priority-color-board-wrap">
+                    <div class="priority-color-board" id="priorityColorBoard">
+                        <div class="priority-color-board-cursor" id="priorityColorBoardCursor"></div>
+                    </div>
+                    <div class="priority-color-hue-wrap">
+                        <input type="range" min="0" max="360" value="0" class="priority-color-hue" id="priorityColorHue">
+                    </div>
+                </div>
+            </div>
+            <input class="priority-color-hex" id="priorityColorHexInput" value="#E74C3C" maxlength="7">
+            <div class="priority-color-actions">
+                <button class="secondary" onclick="resetTodoPriorityColorSettings()" data-i18n="resetButton">初期値</button>
+                <button class="secondary" onclick="closeTodoPriorityColorModal()" data-i18n="cancelButton">キャンセル</button>
+                <button class="primary" onclick="saveTodoPriorityColorSettings()" data-i18n="saveButton">保存</button>
+            </div>
+        </div>
+    </div>
 
             <script>
                 let startTime = null;
@@ -6010,6 +6728,34 @@ const translations = {
                         filterDaily: '毎日',
                         filterWeekly: '毎週',
 
+                        // エディターモード
+                        editorMode: 'エディターモード',
+                        editorModeDisplay: '表示',
+                        editorModeResumeWindow: 'タップ再開有効時間',
+                        editorModeStopMusic: 'タイマー終了時に停止',
+                        editorModeResumeOnTap: 'タップで自動再開',
+                        editorModeGraphLocation: '表示場所',
+                        editorModeGraphType: 'グラフの種類',
+                        editorModeGraphPeriod: '表示期間',
+                        editorModeFocusDuration: '集中時間',
+                        editorModeBreakDuration: '休憩時間',
+                        editorModeTitleTime: 'タイトル時間表示',
+                        editorModeTimeline: 'タイムラインバー',
+                        editorModeFocusToggle: 'フォーカスモード切替',
+                        editorModeEnter: '開始',
+                        editorModeExit: '終了',
+                        editorModeActive: 'エディターモード',
+                        editorModeLockSettings: '設定を固定',
+                        editorModeLoadingAnim: 'ローディングアニメ',
+                        editorModePriorityColor: '優先度カラー設定',
+                        editorModeControls: 'タイマー操作',
+                        editorModeSessionInfo: 'セッション情報',
+                        editorModeDailyTimeline: '日別タイムライン',
+                        editorModeHistoryList: '履歴リスト',
+                        editorModeMusicPlayer: '音楽プレイヤー',
+                        editorModeTodoPage: 'ToDoリスト',
+                        editorModeStatsContainer: '統計',
+
                         // 設定ページ
                         settingsDisplay: '表示設定',
                         musicPlayer: '音楽プレイヤー',
@@ -6217,6 +6963,35 @@ const translations = {
                         days: '日',
                         sessions: 'セッション',
 
+                        // 暗記カード
+                        flashcards: '暗記カード',
+                        fcCreate: '作成',
+                        fcView: '閲覧',
+                        fcMenuTitle: '暗記カード',
+                        fcGroupsTitle: 'グループ一覧',
+                        fcEditorTitle: 'カード編集',
+                        fcNewGroup: '新しいグループ',
+                        fcGroupNamePlaceholder: 'グループ名',
+                        fcAdd: '追加',
+                        fcNormal: '通常',
+                        fcMath: '数式',
+                        fcFront: '表面（問題）',
+                        fcBack: '裏面（答え）',
+                        fcFlip: 'フリップ',
+                        fcMinNum: '最小値',
+                        fcMaxNum: '最大値',
+                        fcOperators: '演算子',
+                        fcSaveCard: '保存',
+                        fcShuffle: 'シャッフル',
+                        fcAddCard: 'カード追加',
+                        fcNoGroups: 'グループがありません',
+                        fcNoCards: 'カードがありません',
+                        fcDeleteGroupConfirm: 'このグループを削除しますか？',
+                        fcPrev: '前へ',
+                        fcNext: '次へ',
+                        fcClose: '閉じる',
+                        fcCardCount: '枚',
+
                         // リストページ - 追加
                         start: '開始',
                         end: '終了',
@@ -6397,6 +7172,34 @@ const translations = {
                         filterDaily: 'Daily',
                         filterWeekly: 'Weekly',
 
+                        // Editor Mode
+                        editorMode: 'Editor Mode',
+                        editorModeDisplay: 'Display',
+                        editorModeResumeWindow: 'Resume Window',
+                        editorModeStopMusic: 'Stop on Timer End',
+                        editorModeResumeOnTap: 'Auto Resume on Tap',
+                        editorModeGraphLocation: 'Location',
+                        editorModeGraphType: 'Graph Type',
+                        editorModeGraphPeriod: 'Period',
+                        editorModeFocusDuration: 'Focus Duration',
+                        editorModeBreakDuration: 'Break Duration',
+                        editorModeTitleTime: 'Title Time',
+                        editorModeTimeline: 'Timeline Bar',
+                        editorModeFocusToggle: 'Focus Mode Toggle',
+                        editorModeEnter: 'Start',
+                        editorModeExit: 'Exit',
+                        editorModeActive: 'Editor Mode',
+                        editorModeLockSettings: 'Lock Settings',
+                        editorModeLoadingAnim: 'Loading Animation',
+                        editorModePriorityColor: 'Priority Colors',
+                        editorModeControls: 'Timer Controls',
+                        editorModeSessionInfo: 'Session Info',
+                        editorModeDailyTimeline: 'Daily Timeline',
+                        editorModeHistoryList: 'History List',
+                        editorModeMusicPlayer: 'Music Player',
+                        editorModeTodoPage: 'ToDo List',
+                        editorModeStatsContainer: 'Statistics',
+
                         // Settings Page
                         settingsDisplay: 'Display Settings',
                         musicPlayer: 'Music Player',
@@ -6539,6 +7342,35 @@ const translations = {
                         uncategorized: 'Uncategorized',
                         days: 'days',
                         sessions: 'sessions',
+
+                        // Flashcards
+                        flashcards: 'Flashcards',
+                        fcCreate: 'Create',
+                        fcView: 'View',
+                        fcMenuTitle: 'Flashcards',
+                        fcGroupsTitle: 'Groups',
+                        fcEditorTitle: 'Edit Cards',
+                        fcNewGroup: 'New Group',
+                        fcGroupNamePlaceholder: 'Group name',
+                        fcAdd: 'Add',
+                        fcNormal: 'Normal',
+                        fcMath: 'Math',
+                        fcFront: 'Front (Question)',
+                        fcBack: 'Back (Answer)',
+                        fcFlip: 'Flip',
+                        fcMinNum: 'Min',
+                        fcMaxNum: 'Max',
+                        fcOperators: 'Operators',
+                        fcSaveCard: 'Save',
+                        fcShuffle: 'Shuffle',
+                        fcAddCard: 'Add Card',
+                        fcNoGroups: 'No groups yet',
+                        fcNoCards: 'No cards yet',
+                        fcDeleteGroupConfirm: 'Delete this group?',
+                        fcPrev: 'Prev',
+                        fcNext: 'Next',
+                        fcClose: 'Close',
+                        fcCardCount: 'cards',
 
                         // List Page - Additional
                         start: 'Start',
@@ -7321,8 +8153,10 @@ const translations = {
                         btn.setAttribute('data-i18n', feature === 'music' ? 'menuMusic' : 'menuTodo');
                         menu.appendChild(btn);
                     } else {
-                        // 既存ボタンのテキスト更新(言語切り替え時など)
                         existingBtn.textContent = btnText;
+                    }
+                    if (typeof editorModeActive !== 'undefined' && editorModeActive) {
+                        setTimeout(attachEditorTargets, 50);
                     }
                 }
 
@@ -10724,7 +11558,7 @@ const translations = {
                     const streak = calculateStreak();
                     const totalSessions = history.length;
                     const statsContainer = document.getElementById('statsContainer');
-                    statsContainer.innerHTML = `<div class="stat-card"><div class="stat-label">${getText('totalTime')}</div><div class="stat-value">${formatTime(totalTime)}</div></div><div class="stat-card"><div class="stat-label">${getText('consecutiveDays')}</div><div class="stat-value">${streak}${getText('days')}</div></div><div class="stat-card"><div class="stat-label">${getText('totalSessions')}</div><div class="stat-value">${totalSessions}</div></div>`;
+                    statsContainer.innerHTML = `<div class="stat-card"><div class="stat-label">${getText('totalTime')}</div><div class="stat-value">${formatTime(totalTime)}</div></div><div class="stat-card"><div class="stat-label">${getText('consecutiveDays')}</div><div class="stat-value">${streak}${getText('days')}</div></div><div class="stat-card"><div class="stat-label">${getText('totalSessions')}</div><div class="stat-value">${totalSessions}</div></div><div class="stat-card flashcard-stat-btn" onclick="openFlashcardMenu()"><div class="stat-label">${getText('flashcards')}</div><div class="stat-value" style="font-size:1.4rem;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="3"/><line x1="7" y1="10" x2="17" y2="10"/><line x1="7" y1="14" x2="13" y2="14"/></svg></div></div>`;
                     const groups = {};
                     history.forEach(item => {
                         const group = item.group || getText('uncategorized');
@@ -12044,6 +12878,8 @@ const translations = {
                     }
                     applyMusicResumeWindowSetting();
 
+                    initEditorMode();
+
                     const loopImg = document.getElementById('loopBtnImg');
                     if (loopImg) {
                         loopImg.src = isLoop ? 'loop_on.webp' : 'loop_off.webp';
@@ -12469,6 +13305,392 @@ const translations = {
                     }
                 }
 
+                // ── Editor Mode ──
+                let editorModeActive = false;
+
+                function enterEditorMode() {
+                    editorModeActive = true;
+                    document.body.classList.add('editor-mode');
+                    attachEditorTargets();
+                    showPage('timer');
+                }
+
+                function exitEditorMode() {
+                    editorModeActive = false;
+                    document.body.classList.remove('editor-mode');
+                    closeEditorMiniMenu();
+                    closeEditorAddDropdown();
+                }
+
+                function initEditorMode() {
+                    // no-op: editor mode is session-only, not persisted
+                }
+
+                function attachEditorTargets() {
+                    document.querySelectorAll('[data-editor-target]').forEach(el => {
+                        if (el._editorBound) return;
+                        el._editorBound = true;
+                        el.addEventListener('click', function(e) {
+                            if (!editorModeActive) return;
+                            var t = e.target;
+                            if (t.closest('.toggle-switch') && !t.closest('.editor-mini-menu')) return;
+                            if (t.closest('input, select, textarea')) return;
+                            var closestTarget = t.closest('[data-editor-target]');
+                            if (closestTarget && closestTarget !== this) return;
+                            var passthrough = t !== this && t.closest('.history-item, .todo-item, .playlist-item');
+                            if (!passthrough && t !== this && t.closest('button, a, .daily-timeline-nav-btn, .daily-timeline-cal-btn, .daily-timeline-date, .player-btn, .control-btn')) return;
+                            if (passthrough) {
+                                var self = this;
+                                var target = this.dataset.editorTarget;
+                                setTimeout(function() { openEditorMiniMenu(self, target); }, 80);
+                                return;
+                            }
+                            e.preventDefault();
+                            e.stopPropagation();
+                            openEditorMiniMenu(this, this.dataset.editorTarget);
+                        }, true);
+                    });
+                    document.querySelectorAll('.menu button[data-feature]').forEach(btn => {
+                        if (btn._editorBound) return;
+                        btn._editorBound = true;
+                        btn.addEventListener('click', function(e) {
+                            if (!editorModeActive) return;
+                            var self = this;
+                            var feature = this.dataset.feature;
+                            setTimeout(function() { openEditorMiniMenu(self, feature); }, 50);
+                        }, false);
+                    });
+                }
+
+                const editorMiniMenuDefs = {
+                    music: function() {
+                        return {
+                            title: getText('musicPlayer'),
+                            rows: [
+                                { type: 'toggle', label: getText('editorModeDisplay'), id: 'toggleMusic', key: 'feature_music', onToggle: function() { toggleFeature('music'); } },
+                                { type: 'toggle', label: getText('editorModeStopMusic'), id: 'toggleStopMusicOnTimerEnd', key: 'feature_stop_music_on_timer_end', onToggle: function() { toggleStopMusicOnTimerEnd(); } },
+                                { type: 'toggle', label: getText('editorModeResumeOnTap'), id: 'toggleMusicResumeOnTap', key: 'feature_music_resume_on_tap_after_reload', onToggle: function() { toggleMusicResumeOnTap(); } },
+                                { type: 'select', label: getText('editorModeResumeWindow'), options: [
+                                    {v:'1',t:'1分'},{v:'3',t:'3分'},{v:'5',t:'5分'},{v:'10',t:'10分'},{v:'30',t:'30分'},{v:'60',t:'60分'},{v:'120',t:'120分'}
+                                ], key: 'music_resume_window_min', onChange: function(val) { saveData('music_resume_window_min', val); var orig = document.getElementById('musicResumeWindowSelect'); if(orig) orig.value = val; } }
+                            ]
+                        };
+                    },
+                    musicPlayer: function() {
+                        return {
+                            title: getText('editorModeMusicPlayer'),
+                            rows: [
+                                { type: 'toggle', label: getText('editorModeStopMusic'), id: 'toggleStopMusicOnTimerEnd', key: 'feature_stop_music_on_timer_end', onToggle: function() { toggleStopMusicOnTimerEnd(); } },
+                                { type: 'toggle', label: getText('editorModeResumeOnTap'), id: 'toggleMusicResumeOnTap', key: 'feature_music_resume_on_tap_after_reload', onToggle: function() { toggleMusicResumeOnTap(); } },
+                                { type: 'select', label: getText('editorModeResumeWindow'), options: [
+                                    {v:'1',t:'1分'},{v:'3',t:'3分'},{v:'5',t:'5分'},{v:'10',t:'10分'},{v:'30',t:'30分'},{v:'60',t:'60分'},{v:'120',t:'120分'}
+                                ], key: 'music_resume_window_min', onChange: function(val) { saveData('music_resume_window_min', val); var orig = document.getElementById('musicResumeWindowSelect'); if(orig) orig.value = val; } }
+                            ]
+                        };
+                    },
+                    todo: function() {
+                        return {
+                            title: getText('todoList'),
+                            rows: [
+                                { type: 'toggle', label: getText('editorModeDisplay'), id: 'toggleTodo', key: 'feature_todo', onToggle: function() { toggleFeature('todo'); } },
+                                { type: 'button', label: getText('editorModePriorityColor'), onClick: function() { closeEditorMiniMenu(); openTodoPriorityColorModal(); } }
+                            ]
+                        };
+                    },
+                    todoPage: function() {
+                        return {
+                            title: getText('editorModeTodoPage'),
+                            rows: [
+                                { type: 'toggle', label: getText('editorModeDisplay'), id: 'toggleTodo', key: 'feature_todo', onToggle: function() { toggleFeature('todo'); } },
+                                { type: 'button', label: getText('editorModePriorityColor'), onClick: function() { closeEditorMiniMenu(); openTodoPriorityColorModal(); } }
+                            ]
+                        };
+                    },
+                    graph: function() {
+                        return {
+                            title: getText('graphDisplay'),
+                            rows: [
+                                { type: 'toggle', label: getText('editorModeDisplay'), id: 'toggleGraph', key: 'graph_enabled', onToggle: function() { toggleGraph(); } },
+                                { type: 'select', label: getText('editorModeGraphType'), options: [
+                                    {v:'bar',t:getText('graphBar')},{v:'line',t:getText('graphLine')},{v:'area',t:getText('graphArea')}
+                                ], key: 'graph_type', onChange: function(val) { saveData('graph_type', val); var el=document.getElementById('graphType'); if(el) el.value=val; updateGraphs(); } },
+                                { type: 'select', label: getText('editorModeGraphPeriod'), options: [
+                                    {v:'7',t:getText('period7days')},{v:'14',t:getText('period14days')},{v:'30',t:getText('period30days')},{v:'90',t:getText('period90days')},{v:'365',t:getText('period1year')},{v:'all',t:getText('periodAll')}
+                                ], key: 'graph_period', onChange: function(val) { saveData('graph_period', val); var el=document.getElementById('graphPeriod'); if(el) el.value=val; updateGraphs(); } },
+                                { type: 'select', label: getText('editorModeGraphLocation'), options: [
+                                    {v:'list',t:getText('locationList')},{v:'stats',t:getText('locationStats')},{v:'both',t:getText('locationBoth')}
+                                ], key: 'graph_location', onChange: function(val) { saveData('graph_location', val); var el=document.getElementById('graphLocation'); if(el) el.value=val; updateGraphs(); } }
+                            ]
+                        };
+                    },
+                    focusMode: function() {
+                        return {
+                            title: getText('focusModeSettings'),
+                            rows: [
+                                { type: 'toggle', label: getText('editorModeFocusToggle'), id: 'toggleFocusDisplay', key: 'feature_focus_mode_display', onToggle: function() { toggleFocusDisplaySetting(); } },
+                                { type: 'select', label: getText('editorModeFocusDuration'), options: [
+                                    {v:'20',t:'20分'},{v:'25',t:'25分'},{v:'30',t:'30分'}
+                                ], key: 'focus_duration', onChange: function(val) { saveData('focus_duration', val); var el=document.getElementById('focusDurationSelect'); if(el) el.value=val; } },
+                                { type: 'select', label: getText('editorModeBreakDuration'), options: [
+                                    {v:'1',t:'1分'},{v:'5',t:'5分'},{v:'10',t:'10分'}
+                                ], key: 'break_duration', onChange: function(val) { saveData('break_duration', val); var el=document.getElementById('breakDurationSelect'); if(el) el.value=val; } }
+                            ]
+                        };
+                    },
+                    timer: function() {
+                        return {
+                            title: getText('menuTimer'),
+                            rows: [
+                                { type: 'toggle', label: getText('editorModeTitleTime'), id: 'toggleTitleTime', key: 'feature_title_time', onToggle: function() { toggleTitleTime(); } },
+                                { type: 'toggle', label: getText('editorModeTimeline'), id: 'toggleHistoryTimeline', key: 'feature_history_timeline', onToggle: function() { toggleHistoryTimeline(); } },
+                                { type: 'toggle', label: getText('editorModeLoadingAnim'), id: 'toggleLoadingAnim', key: 'feature_loading_anim', onToggle: function() { toggleLoadingAnim(); } }
+                            ]
+                        };
+                    },
+                    controls: function() {
+                        return {
+                            title: getText('editorModeControls'),
+                            rows: [
+                                { type: 'toggle', label: getText('editorModeLockSettings'), id: 'toggleLockSettings', key: 'lock_settings_during_timer', onToggle: function() { toggleLockSettingsDuringTimer(); } },
+                                { type: 'toggle', label: getText('editorModeLoadingAnim'), id: 'toggleLoadingAnim', key: 'feature_loading_anim', onToggle: function() { toggleLoadingAnim(); } }
+                            ]
+                        };
+                    },
+                    sessionInfo: function() {
+                        return {
+                            title: getText('editorModeSessionInfo'),
+                            rows: [
+                                { type: 'toggle', label: getText('editorModeTitleTime'), id: 'toggleTitleTime', key: 'feature_title_time', onToggle: function() { toggleTitleTime(); } },
+                                { type: 'toggle', label: getText('editorModeLockSettings'), id: 'toggleLockSettings', key: 'lock_settings_during_timer', onToggle: function() { toggleLockSettingsDuringTimer(); } }
+                            ]
+                        };
+                    },
+                    dailyTimeline: function() {
+                        return {
+                            title: getText('editorModeDailyTimeline'),
+                            rows: [
+                                { type: 'toggle', label: getText('editorModeTimeline'), id: 'toggleHistoryTimeline', key: 'feature_history_timeline', onToggle: function() { toggleHistoryTimeline(); } },
+                                { type: 'toggle', label: getText('graphDisplay'), id: 'toggleGraph', key: 'graph_enabled', onToggle: function() { toggleGraph(); } },
+                                { type: 'select', label: getText('editorModeGraphLocation'), options: [
+                                    {v:'list',t:getText('locationList')},{v:'stats',t:getText('locationStats')},{v:'both',t:getText('locationBoth')}
+                                ], key: 'graph_location', onChange: function(val) { saveData('graph_location', val); var el=document.getElementById('graphLocation'); if(el) el.value=val; updateGraphs(); } }
+                            ]
+                        };
+                    },
+                    historyList: function() {
+                        return {
+                            title: getText('editorModeHistoryList'),
+                            rows: [
+                                { type: 'toggle', label: getText('editorModeTimeline'), id: 'toggleHistoryTimeline', key: 'feature_history_timeline', onToggle: function() { toggleHistoryTimeline(); } },
+                                { type: 'toggle', label: getText('editorModeDisplay') + ' (' + getText('graphDisplay') + ')', id: 'toggleGraph', key: 'graph_enabled', onToggle: function() { toggleGraph(); } },
+                                { type: 'select', label: getText('editorModeGraphType'), options: [
+                                    {v:'bar',t:getText('graphBar')},{v:'line',t:getText('graphLine')},{v:'area',t:getText('graphArea')}
+                                ], key: 'graph_type', onChange: function(val) { saveData('graph_type', val); var el=document.getElementById('graphType'); if(el) el.value=val; updateGraphs(); } },
+                                { type: 'select', label: getText('editorModeGraphPeriod'), options: [
+                                    {v:'7',t:getText('period7days')},{v:'14',t:getText('period14days')},{v:'30',t:getText('period30days')},{v:'90',t:getText('period90days')},{v:'365',t:getText('period1year')},{v:'all',t:getText('periodAll')}
+                                ], key: 'graph_period', onChange: function(val) { saveData('graph_period', val); var el=document.getElementById('graphPeriod'); if(el) el.value=val; updateGraphs(); } }
+                            ]
+                        };
+                    },
+                    statsContainer: function() {
+                        return {
+                            title: getText('editorModeStatsContainer'),
+                            rows: [
+                                { type: 'toggle', label: getText('editorModeTimeline'), id: 'toggleHistoryTimeline', key: 'feature_history_timeline', onToggle: function() { toggleHistoryTimeline(); } },
+                                { type: 'toggle', label: getText('graphDisplay'), id: 'toggleGraph', key: 'graph_enabled', onToggle: function() { toggleGraph(); } },
+                                { type: 'select', label: getText('editorModeGraphLocation'), options: [
+                                    {v:'list',t:getText('locationList')},{v:'stats',t:getText('locationStats')},{v:'both',t:getText('locationBoth')}
+                                ], key: 'graph_location', onChange: function(val) { saveData('graph_location', val); var el=document.getElementById('graphLocation'); if(el) el.value=val; updateGraphs(); } }
+                            ]
+                        };
+                    }
+                };
+
+                function openEditorMiniMenu(anchorEl, target) {
+                    const def = editorMiniMenuDefs[target];
+                    if (!def) return;
+                    const config = def();
+                    const menu = document.getElementById('editorMiniMenu');
+                    const backdrop = document.getElementById('editorMiniMenuBackdrop');
+
+                    let html = '<div class="emm-title">' + config.title + '</div>';
+                    config.rows.forEach(function(row, i) {
+                        html += '<div class="emm-row">';
+                        html += '<label>' + row.label + '</label>';
+                        if (row.type === 'toggle') {
+                            const origToggle = row.id ? document.getElementById(row.id) : null;
+                            const isActive = origToggle ? origToggle.classList.contains('active') : isSettingActive(row.key);
+                            html += '<div class="toggle-switch' + (isActive ? ' active' : '') + '" data-emm-toggle="' + i + '" onclick="editorMiniMenuToggle(' + i + ')">';
+                            html += '<div class="toggle-slider"></div></div>';
+                        } else if (row.type === 'select') {
+                            const selectDefaults = {music_resume_window_min:'5',focus_duration:'25',break_duration:'5',graph_type:'bar',graph_period:'30',graph_location:'list'};
+                            const currentVal = getData(row.key) || selectDefaults[row.key] || row.options[0].v;
+                            html += '<div class="custom-select" style="width:120px;">';
+                            html += '<select data-emm-select="' + i + '" onchange="editorMiniMenuSelect(' + i + ', this.value)">';
+                            row.options.forEach(function(opt) {
+                                html += '<option value="' + opt.v + '"' + (opt.v === currentVal ? ' selected' : '') + '>' + opt.t + '</option>';
+                            });
+                            html += '</select><div class="select-arrow">▾</div></div>';
+                        } else if (row.type === 'button') {
+                            html += '<button class="secondary" style="padding:6px 12px;font-size:0.82rem;border-radius:16px;display:inline-flex;align-items:center;" onclick="editorMiniMenuButton(' + i + ')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>';
+                        }
+                        html += '</div>';
+                    });
+
+                    menu.innerHTML = html;
+                    menu._config = config;
+
+                    menu.style.top = '0px';
+                    menu.style.left = '-9999px';
+                    menu.style.visibility = 'hidden';
+                    menu.classList.add('visible');
+
+                    requestAnimationFrame(function() {
+                        var rect = anchorEl.getBoundingClientRect();
+                        var mw = menu.offsetWidth || 240;
+                        var mh = menu.offsetHeight || 200;
+                        var vw = window.innerWidth;
+                        var vh = window.innerHeight;
+                        var exitBarH = 50;
+
+                        var top = rect.bottom + 8;
+                        var left = rect.left + rect.width / 2 - mw / 2;
+
+                        if (left < 8) left = 8;
+                        if (left + mw > vw - 8) left = vw - mw - 8;
+
+                        if (top + mh > vh - exitBarH) {
+                            top = rect.top - mh - 8;
+                        }
+                        if (top < 8) top = 8;
+
+                        if (top + mh > vh - exitBarH) {
+                            mh = vh - exitBarH - top - 8;
+                            menu.style.maxHeight = mh + 'px';
+                            menu.style.overflowY = 'auto';
+                        } else {
+                            menu.style.maxHeight = '';
+                            menu.style.overflowY = '';
+                        }
+
+                        menu.style.top = top + 'px';
+                        menu.style.left = left + 'px';
+                        menu.style.visibility = '';
+                    });
+
+                    backdrop.classList.add('visible');
+                }
+
+                function editorMiniMenuToggle(index) {
+                    const menu = document.getElementById('editorMiniMenu');
+                    if (!menu._config) return;
+                    const row = menu._config.rows[index];
+                    if (!row) return;
+                    const toggleEl = menu.querySelector('[data-emm-toggle="' + index + '"]');
+                    if (toggleEl) toggleEl.classList.toggle('active');
+                    if (row.onToggle) row.onToggle(toggleEl && toggleEl.classList.contains('active'));
+                }
+
+                function editorMiniMenuSelect(index, value) {
+                    const menu = document.getElementById('editorMiniMenu');
+                    if (!menu._config) return;
+                    const row = menu._config.rows[index];
+                    if (!row) return;
+                    if (row.onChange) row.onChange(value);
+                }
+
+                function editorMiniMenuButton(index) {
+                    const menu = document.getElementById('editorMiniMenu');
+                    if (!menu._config) return;
+                    const row = menu._config.rows[index];
+                    if (!row) return;
+                    if (row.onClick) row.onClick();
+                }
+
+                function closeEditorMiniMenu() {
+                    const menu = document.getElementById('editorMiniMenu');
+                    const backdrop = document.getElementById('editorMiniMenuBackdrop');
+                    if (menu) menu.classList.remove('visible');
+                    if (backdrop) backdrop.classList.remove('visible');
+                }
+
+                function isSettingActive(key) {
+                    var val = getData(key);
+                    var defaultOnKeys = ['feature_title_time','feature_history_timeline','feature_loading_anim','feature_focus_mode_display','feature_stop_music_on_timer_end','feature_music_resume_on_tap_after_reload'];
+                    if (val === null || val === undefined) return defaultOnKeys.indexOf(key) !== -1;
+                    return val === 'true';
+                }
+
+                // [+] button: show hidden/off items
+                function toggleEditorAddDropdown() {
+                    const dropdown = document.getElementById('editorAddDropdown');
+                    if (dropdown.classList.contains('visible')) {
+                        closeEditorAddDropdown();
+                        return;
+                    }
+                    const items = [
+                        { label: getText('musicPlayer'), key: 'feature_music', toggleFn: function() { toggleFeature('music'); } },
+                        { label: getText('todoList'), key: 'feature_todo', toggleFn: function() { toggleFeature('todo'); } },
+                        { label: getText('studyGraph'), key: 'graph_enabled', toggleFn: function() { toggleGraph(); } },
+                        { label: getText('editorModeFocusToggle'), key: 'feature_focus_mode_display', toggleFn: function() { toggleFocusDisplaySetting(); } },
+                        { label: getText('editorModeTitleTime'), key: 'feature_title_time', toggleFn: function() { toggleTitleTime(); } },
+                        { label: getText('editorModeTimeline'), key: 'feature_history_timeline', toggleFn: function() { toggleHistoryTimeline(); } },
+                        { label: getText('loadingAnimSetting'), key: 'feature_loading_anim', toggleFn: function() { toggleLoadingAnim(); } },
+                        { label: getText('lockSettingsDuringTimer'), key: 'lock_settings_during_timer', toggleFn: function() { toggleLockSettingsDuringTimer(); } },
+                        { label: getText('editorModeStopMusic'), key: 'feature_stop_music_on_timer_end', toggleFn: function() { toggleStopMusicOnTimerEnd(); } },
+                        { label: getText('editorModeResumeOnTap'), key: 'feature_music_resume_on_tap_after_reload', toggleFn: function() { toggleMusicResumeOnTap(); } }
+                    ];
+
+                    let html = '';
+                    items.forEach(function(item, i) {
+                        const isActive = isSettingActive(item.key);
+                        html += '<div class="ead-item" data-ead-index="' + i + '">';
+                        html += '<span>' + item.label + '</span>';
+                        html += '<div class="toggle-switch' + (isActive ? ' active' : '') + '" onclick="editorAddToggle(' + i + ', event)">';
+                        html += '<div class="toggle-slider"></div></div>';
+                        html += '</div>';
+                    });
+
+                    dropdown.innerHTML = html;
+                    dropdown._items = items;
+                    requestAnimationFrame(function() { dropdown.classList.add('visible'); });
+
+                    // Close on outside click
+                    setTimeout(function() {
+                        document.addEventListener('click', closeEditorAddOnOutside);
+                    }, 10);
+                }
+
+                function editorAddToggle(index, e) {
+                    e.stopPropagation();
+                    const dropdown = document.getElementById('editorAddDropdown');
+                    if (!dropdown._items) return;
+                    const item = dropdown._items[index];
+                    if (!item) return;
+                    item.toggleFn();
+                    const toggleEl = dropdown.querySelector('[data-ead-index="' + index + '"] .toggle-switch');
+                    if (toggleEl) {
+                        const newState = isSettingActive(item.key);
+                        toggleEl.classList.toggle('active', newState);
+                    }
+                    // Re-attach editor targets for any new elements
+                    setTimeout(attachEditorTargets, 50);
+                }
+
+                function closeEditorAddDropdown() {
+                    const dropdown = document.getElementById('editorAddDropdown');
+                    if (dropdown) dropdown.classList.remove('visible');
+                    document.removeEventListener('click', closeEditorAddOnOutside);
+                }
+
+                function closeEditorAddOnOutside(e) {
+                    const dropdown = document.getElementById('editorAddDropdown');
+                    const btn = document.getElementById('editorAddBtn');
+                    if (dropdown && !dropdown.contains(e.target) && btn && !btn.contains(e.target)) {
+                        closeEditorAddDropdown();
+                    }
+                }
+
                 function getPrimaryColor() {
                     const theme = document.body.getAttribute('data-theme') || 'blue';
                     const colors = {
@@ -12620,6 +13842,695 @@ const translations = {
 
                 // Trigger loading overlay wipe animation
                 // Trigger loading overlay wipe animation (Moved to window.onload)
+
+                // ── Flashcard (暗記カード) ──
+
+                var fcData = null;
+                var fcCurrentMode = 'create';
+                var fcCurrentGroupId = null;
+                var fcCurrentCardType = 'normal';
+                var fcViewerCards = [];
+                var fcViewerIndex = 0;
+                var fcViewerFlipped = false;
+                var fcViewerTouchStartX = 0;
+
+                function loadFlashcardData() {
+                    var raw = getData('flashcards');
+                    if (raw) {
+                        try { fcData = JSON.parse(raw); } catch(e) { fcData = { groups: [] }; }
+                    } else {
+                        fcData = { groups: [] };
+                    }
+                    return fcData;
+                }
+
+                function saveFlashcardData() {
+                    saveData('flashcards', JSON.stringify(fcData));
+                }
+
+                function fcGenerateId() {
+                    return Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
+                }
+
+                function fcFindGroup(groupId) {
+                    if (!fcData) loadFlashcardData();
+                    for (var i = 0; i < fcData.groups.length; i++) {
+                        if (fcData.groups[i].id === groupId) return fcData.groups[i];
+                    }
+                    return null;
+                }
+
+                function openFlashcardMenu() {
+                    loadFlashcardData();
+                    fcShowScreen('fcScreenMenu');
+                    var titleEl = document.getElementById('fcMenuTitleEl');
+                    titleEl.textContent = getText('fcMenuTitle');
+                    var btns = document.querySelectorAll('.fc-menu-btns button');
+                    btns[0].textContent = getText('fcCreate');
+                    btns[1].textContent = getText('fcView');
+                    var overlay = document.getElementById('flashcardOverlay');
+                    overlay.classList.add('show');
+                }
+
+                function closeFlashcardModal() {
+                    document.getElementById('flashcardOverlay').classList.remove('show');
+                }
+
+                function fcShowScreen(screenId) {
+                    var screens = ['fcScreenMenu', 'fcScreenGroups', 'fcScreenEditor'];
+                    for (var i = 0; i < screens.length; i++) {
+                        document.getElementById(screens[i]).style.display = screens[i] === screenId ? 'block' : 'none';
+                    }
+                }
+
+                function openFlashcardGroups(mode) {
+                    fcCurrentMode = mode;
+                    loadFlashcardData();
+                    fcShowScreen('fcScreenGroups');
+                    document.getElementById('fcGroupsTitleEl').textContent = getText('fcGroupsTitle');
+                    document.getElementById('fcAddGroupRow').style.display = mode === 'create' ? 'flex' : 'none';
+                    var addBtn = document.querySelector('#fcAddGroupRow button');
+                    if (addBtn) addBtn.textContent = getText('fcAdd');
+                    var input = document.getElementById('fcNewGroupInput');
+                    if (input) input.placeholder = getText('fcGroupNamePlaceholder');
+                    renderFlashcardGroupList();
+                }
+
+                function renderFlashcardGroupList() {
+                    var container = document.getElementById('fcGroupList');
+                    if (!fcData || fcData.groups.length === 0) {
+                        container.innerHTML = '<p style="text-align:center;opacity:0.5;margin:20px 0;">' + getText('fcNoGroups') + '</p>';
+                        return;
+                    }
+                    var html = '';
+                    for (var i = 0; i < fcData.groups.length; i++) {
+                        var g = fcData.groups[i];
+                        var count = g.cards ? g.cards.length : 0;
+                        var clickAction = fcCurrentMode === 'create'
+                            ? 'openFlashcardEditor(\'' + g.id + '\')'
+                            : 'startFlashcardViewer(\'' + g.id + '\')';
+                        html += '<div class="fc-group-item" onclick="' + clickAction + '">';
+                        html += '<div><div class="fc-group-name">' + escapeHtml(g.name) + '</div>';
+                        html += '<div class="fc-group-count">' + count + ' ' + getText('fcCardCount') + '</div></div>';
+                        if (fcCurrentMode === 'create') {
+                            html += '<button class="fc-group-delete" onclick="event.stopPropagation();deleteFlashcardGroup(\'' + g.id + '\')">&times;</button>';
+                        }
+                        html += '</div>';
+                    }
+                    container.innerHTML = html;
+                }
+
+                function addFlashcardGroupFromInput() {
+                    var input = document.getElementById('fcNewGroupInput');
+                    var name = input.value.trim();
+                    if (!name) return;
+                    addFlashcardGroup(name);
+                    input.value = '';
+                }
+
+                function addFlashcardGroup(name) {
+                    if (!fcData) loadFlashcardData();
+                    fcData.groups.push({
+                        id: fcGenerateId(),
+                        name: name,
+                        cards: []
+                    });
+                    saveFlashcardData();
+                    renderFlashcardGroupList();
+                }
+
+                async function deleteFlashcardGroup(groupId) {
+                    var ok = await customConfirm(getText('fcDeleteGroupConfirm'), getText('confirmDelete'));
+                    if (!ok) return;
+                    if (!fcData) loadFlashcardData();
+                    fcData.groups = fcData.groups.filter(function(g) { return g.id !== groupId; });
+                    saveFlashcardData();
+                    renderFlashcardGroupList();
+                }
+
+                function openFlashcardEditor(groupId) {
+                    fcCurrentGroupId = groupId;
+                    loadFlashcardData();
+                    fcShowScreen('fcScreenEditor');
+                    document.getElementById('fcEditorTitleEl').textContent = getText('fcEditorTitle');
+                    var toolbar = document.querySelectorAll('.fc-editor-toolbar button');
+                    toolbar[0].textContent = getText('fcAddCard');
+                    toolbar[1].textContent = getText('fcShuffle');
+                    document.getElementById('fcAddCardForm').style.display = 'none';
+                    renderFlashcardCardList();
+                }
+
+                function fcCardPreviewText(c) {
+                    if (c.type === 'normal') {
+                        return escapeHtml(c.front || '') + (c.back ? ' → ' + escapeHtml(c.back) : '');
+                    }
+                    if (c.formula && c.formula.length > 0) {
+                        var parts = [];
+                        for (var fi = 0; fi < c.formula.length; fi++) {
+                            var tk = c.formula[fi];
+                            if (tk.type === 'num') parts.push(tk.value);
+                            else if (tk.type === 'range') parts.push(tk.min + '~' + tk.max);
+                            else parts.push({'+':'+','-':'−','*':'×','/':'÷','^':'^'}[tk.value] || tk.value);
+                        }
+                        return escapeHtml(parts.join(' '));
+                    }
+                    return (c.numRange ? c.numRange[0] + '~' + c.numRange[1] : '') + ' [' + (c.operators ? c.operators.join(', ') : '') + ']';
+                }
+
+                function renderFlashcardCardList() {
+                    var group = fcFindGroup(fcCurrentGroupId);
+                    var container = document.getElementById('fcCardList');
+                    if (!group || group.cards.length === 0) {
+                        container.innerHTML = '<p style="text-align:center;opacity:0.5;margin:20px 0;">' + getText('fcNoCards') + '</p>';
+                        return;
+                    }
+                    var html = '';
+                    for (var i = 0; i < group.cards.length; i++) {
+                        var c = group.cards[i];
+                        var badge = c.type === 'math' ? getText('fcMath') : getText('fcNormal');
+                        var flipIcon = c.flip ? '↔' : '→';
+                        var handleSrc = getDragHandleSrc(false);
+                        html += '<div class="fc-card-entry" data-card-index="' + i + '" draggable="false">';
+                        html += '<img src="' + handleSrc + '" class="fc-drag-handle" data-index="' + i + '" draggable="true" alt="" aria-label="' + getText('dragHandle') + '">';
+                        html += '<div class="fc-card-body">';
+                        html += '<div class="fc-card-type-badge">' + badge + ' ' + flipIcon + '</div>';
+                        html += '<div class="fc-card-preview">' + fcCardPreviewText(c) + '</div>';
+                        html += '</div>';
+                        html += '<div class="fc-card-actions">';
+                        html += '<button onclick="deleteFlashcard(\'' + fcCurrentGroupId + '\',\'' + c.id + '\')">&times;</button>';
+                        html += '</div></div>';
+                    }
+                    container.innerHTML = html;
+                    fcAttachCardDragHandlers();
+                }
+
+                var _fcDragSrcIndex = null;
+                var _fcTouchDragTimer = null;
+                var _fcTouchDragState = null;
+
+                function fcAttachCardDragHandlers() {
+                    var container = document.getElementById('fcCardList');
+                    if (!container) return;
+
+                    var getItems = function() { return Array.from(container.querySelectorAll('.fc-card-entry')); };
+                    var clearIndicators = function() {
+                        getItems().forEach(function(el) { el.classList.remove('drag-over-top', 'drag-over-bottom'); });
+                        clearInsertIndicator(container, null);
+                    };
+                    var clearAll = function() {
+                        _fcDragSrcIndex = null;
+                        if (_fcTouchDragTimer) { clearTimeout(_fcTouchDragTimer); _fcTouchDragTimer = null; }
+                        _fcTouchDragState = null;
+                        getItems().forEach(function(el) { el.classList.remove('dragging'); });
+                        clearIndicators();
+                    };
+                    var doReorder = function(src, insertIdx) {
+                        if (src < insertIdx) insertIdx -= 1;
+                        clearAll();
+                        if (isNaN(src) || src < 0 || src === insertIdx) return;
+                        var group = fcFindGroup(fcCurrentGroupId);
+                        if (!group) return;
+                        var moved = group.cards.splice(src, 1)[0];
+                        group.cards.splice(insertIdx, 0, moved);
+                        saveFlashcardData();
+                        renderFlashcardCardList();
+                    };
+
+                    if (!container.dataset.fcDragBound) {
+                        container.dataset.fcDragBound = 'true';
+                        container.addEventListener('dragover', function(e) {
+                            if (_fcDragSrcIndex === null) return;
+                            e.preventDefault();
+                            e.dataTransfer.dropEffect = 'move';
+                            setInsertIndicator(container, getItems(), getInsertIndexByClientY(getItems(), e.clientY));
+                        });
+                        container.addEventListener('drop', function(e) {
+                            if (_fcDragSrcIndex === null) return;
+                            e.preventDefault();
+                            doReorder(_fcDragSrcIndex, getInsertIndexByClientY(getItems(), e.clientY));
+                        });
+                    }
+
+                    container.querySelectorAll('.fc-card-entry').forEach(function(item) {
+                        var index = parseInt(item.getAttribute('data-card-index'), 10);
+                        var handle = item.querySelector('.fc-drag-handle');
+                        if (!handle) return;
+
+                        item.addEventListener('dragover', function(e) {
+                            if (_fcDragSrcIndex === null) return;
+                            e.preventDefault();
+                            setInsertIndicator(container, getItems(), getInsertIndexByClientY(getItems(), e.clientY));
+                        });
+                        item.addEventListener('dragleave', function() {
+                            item.classList.remove('drag-over-top', 'drag-over-bottom');
+                        });
+                        item.addEventListener('drop', function(e) {
+                            if (_fcDragSrcIndex === null) return;
+                            e.preventDefault();
+                            e.stopPropagation();
+                            doReorder(_fcDragSrcIndex, getInsertIndexByClientY(getItems(), e.clientY));
+                        });
+                        item.addEventListener('dragend', function() { clearAll(); });
+
+                        handle.addEventListener('click', function(e) { e.stopPropagation(); });
+                        handle.addEventListener('dragstart', function(e) {
+                            _fcDragSrcIndex = index;
+                            e.dataTransfer.effectAllowed = 'move';
+                            e.dataTransfer.setData('text/plain', String(index));
+                            item.classList.add('dragging');
+                            clearIndicators();
+                        });
+                        handle.addEventListener('dragend', function() { clearAll(); });
+
+                        handle.addEventListener('touchstart', function(e) {
+                            var touch = e.touches && e.touches[0];
+                            if (!touch) return;
+                            if (e.cancelable) e.preventDefault();
+                            e.stopPropagation();
+                            if (_fcTouchDragTimer) { clearTimeout(_fcTouchDragTimer); _fcTouchDragTimer = null; }
+                            _fcTouchDragState = { srcIndex: index, insertIndex: index, active: false, startX: touch.clientX, startY: touch.clientY };
+                            _fcTouchDragTimer = setTimeout(function() {
+                                if (!_fcTouchDragState || _fcTouchDragState.srcIndex !== index) return;
+                                _fcTouchDragState.active = true;
+                                item.classList.add('dragging');
+                                clearIndicators();
+                            }, 220);
+                        }, { passive: false });
+
+                        handle.addEventListener('touchmove', function(e) {
+                            if (!_fcTouchDragState) return;
+                            var touch = e.touches && e.touches[0];
+                            if (!touch) return;
+                            if (!_fcTouchDragState.active) {
+                                if (Math.abs(touch.clientX - _fcTouchDragState.startX) > 12 || Math.abs(touch.clientY - _fcTouchDragState.startY) > 12) {
+                                    if (_fcTouchDragTimer) { clearTimeout(_fcTouchDragTimer); _fcTouchDragTimer = null; }
+                                    _fcTouchDragState = null;
+                                }
+                                return;
+                            }
+                            if (e.cancelable) e.preventDefault();
+                            var items = getItems();
+                            var insertIdx = getInsertIndexByClientY(items, touch.clientY);
+                            setInsertIndicator(container, items, insertIdx);
+                            _fcTouchDragState.insertIndex = insertIdx;
+                        }, { passive: false });
+
+                        handle.addEventListener('touchend', function() {
+                            if (_fcTouchDragTimer) { clearTimeout(_fcTouchDragTimer); _fcTouchDragTimer = null; }
+                            if (!_fcTouchDragState) { clearAll(); return; }
+                            var state = _fcTouchDragState;
+                            _fcTouchDragState = null;
+                            item.classList.remove('dragging');
+                            clearIndicators();
+                            if (!state.active) return;
+                            doReorder(state.srcIndex, Number.isFinite(state.insertIndex) ? state.insertIndex : state.srcIndex);
+                        }, { passive: true });
+
+                        handle.addEventListener('touchcancel', function() { clearAll(); }, { passive: true });
+                    });
+                }
+
+                function showFcAddCardForm() {
+                    var form = document.getElementById('fcAddCardForm');
+                    form.style.display = form.style.display === 'none' ? 'block' : 'none';
+                    fcCurrentCardType = 'normal';
+                    fcFormulaTokens = [];
+                    fcFormulaRender();
+                    updateFcCardFormUI();
+                }
+
+                function updateFcCardFormUI() {
+                    var typeLabel = document.getElementById('fcTypeLabelEl');
+                    if (typeLabel) typeLabel.textContent = getText('fcNormal') + ' / ' + getText('fcMath');
+                    document.getElementById('fcTypeBtnNormal').textContent = getText('fcNormal');
+                    document.getElementById('fcTypeBtnMath').textContent = getText('fcMath');
+                    document.getElementById('fcFrontLabelEl').textContent = getText('fcFront');
+                    document.getElementById('fcBackLabelEl').textContent = getText('fcBack');
+                    document.getElementById('fcSaveCardBtn').textContent = getText('fcSaveCard');
+
+                    document.getElementById('fcTypeBtnNormal').className = fcCurrentCardType === 'normal' ? 'active' : '';
+                    document.getElementById('fcTypeBtnMath').className = fcCurrentCardType === 'math' ? 'active' : '';
+                    document.getElementById('fcNormalFields').style.display = fcCurrentCardType === 'normal' ? 'block' : 'none';
+                    document.getElementById('fcMathFields').style.display = fcCurrentCardType === 'math' ? 'block' : 'none';
+                }
+
+                function setFcCardType(type) {
+                    fcCurrentCardType = type;
+                    updateFcCardFormUI();
+                }
+
+                // ── Formula builder state ──
+                var fcFormulaTokens = [];
+
+                function fcFormulaRender() {
+                    var el = document.getElementById('fcFormulaPreview');
+                    if (!el) return;
+                    if (fcFormulaTokens.length === 0) { el.innerHTML = ''; return; }
+                    var html = '';
+                    for (var i = 0; i < fcFormulaTokens.length; i++) {
+                        var tk = fcFormulaTokens[i];
+                        var cls = tk.type === 'op' ? 'fc-formula-token op' : 'fc-formula-token';
+                        var label = '';
+                        if (tk.type === 'num') label = String(tk.value);
+                        else if (tk.type === 'range') label = tk.min + '~' + tk.max;
+                        else label = {'+':'+','-':'−','*':'×','/':'÷','^':'^'}[tk.value] || tk.value;
+                        html += '<span class="' + cls + '">' + label + '<span class="fc-token-del" onclick="fcFormulaRemove(' + i + ')">&times;</span></span>';
+                    }
+                    el.innerHTML = html;
+                }
+
+                function fcFormulaRemove(idx) {
+                    fcFormulaTokens.splice(idx, 1);
+                    fcFormulaRender();
+                }
+
+                function fcFormulaAddOp(op) {
+                    fcFormulaTokens.push({ type: 'op', value: op });
+                    fcFormulaRender();
+                    fcFormulaClosePopup();
+                }
+
+                function fcFormulaClosePopup() {
+                    var p = document.getElementById('fcFormulaPopup');
+                    if (p) p.style.display = 'none';
+                }
+
+                function fcFormulaShowNumPopup(e) {
+                    e.stopPropagation();
+                    var p = document.getElementById('fcFormulaPopup');
+                    p.innerHTML = '<div style="display:flex;align-items:center;gap:8px;"><input type="number" id="fcFormulaNumVal" value="1" style="width:90px;"/><button onclick="fcFormulaAddNum()">OK</button></div>';
+                    p.style.display = 'block';
+                }
+
+                function fcFormulaAddNum() {
+                    var v = parseInt(document.getElementById('fcFormulaNumVal').value);
+                    if (isNaN(v)) v = 0;
+                    fcFormulaTokens.push({ type: 'num', value: v });
+                    fcFormulaRender();
+                    fcFormulaClosePopup();
+                }
+
+                function fcFormulaShowRangePopup(e) {
+                    e.stopPropagation();
+                    var p = document.getElementById('fcFormulaPopup');
+                    p.innerHTML = '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;"><input type="number" id="fcFormulaRangeA" value="1" style="width:70px;"/><span>~</span><input type="number" id="fcFormulaRangeB" value="100" style="width:70px;"/><button onclick="fcFormulaAddRange()">OK</button></div>';
+                    p.style.display = 'block';
+                }
+
+                function fcFormulaAddRange() {
+                    var a = parseInt(document.getElementById('fcFormulaRangeA').value) || 1;
+                    var b = parseInt(document.getElementById('fcFormulaRangeB').value) || 100;
+                    if (a > b) { var t = a; a = b; b = t; }
+                    fcFormulaTokens.push({ type: 'range', min: a, max: b });
+                    fcFormulaRender();
+                    fcFormulaClosePopup();
+                }
+
+                document.addEventListener('click', function(e) {
+                    if (!e.target.closest('.fc-formula-btns')) fcFormulaClosePopup();
+                });
+
+                function saveFlashcardFromForm() {
+                    var group = fcFindGroup(fcCurrentGroupId);
+                    if (!group) return;
+
+                    var cardData = {
+                        id: fcGenerateId(),
+                        type: fcCurrentCardType
+                    };
+
+                    if (fcCurrentCardType === 'normal') {
+                        var front = document.getElementById('fcFrontInput').value.trim();
+                        var back = document.getElementById('fcBackInput').value.trim();
+                        if (!front) return;
+                        cardData.front = front;
+                        cardData.back = back;
+                        cardData.flip = !!back;
+                    } else {
+                        if (fcFormulaTokens.length === 0) return;
+                        cardData.formula = JSON.parse(JSON.stringify(fcFormulaTokens));
+                        cardData.flip = true;
+                    }
+
+                    addFlashcard(fcCurrentGroupId, cardData);
+
+                    document.getElementById('fcFrontInput').value = '';
+                    document.getElementById('fcBackInput').value = '';
+                    fcFormulaTokens = [];
+                    fcFormulaRender();
+                }
+
+                function addFlashcard(groupId, cardData) {
+                    var group = fcFindGroup(groupId);
+                    if (!group) return;
+                    group.cards.push(cardData);
+                    saveFlashcardData();
+                    renderFlashcardCardList();
+                }
+
+                async function deleteFlashcard(groupId, cardId) {
+                    var ok = await customConfirm(getText('deleteTaskConfirm'), getText('confirmDelete'));
+                    if (!ok) return;
+                    var group = fcFindGroup(groupId);
+                    if (!group) return;
+                    group.cards = group.cards.filter(function(c) { return c.id !== cardId; });
+                    saveFlashcardData();
+                    renderFlashcardCardList();
+                }
+
+                function shuffleFlashcards() {
+                    var group = fcFindGroup(fcCurrentGroupId);
+                    if (!group || group.cards.length < 2) return;
+                    for (var i = group.cards.length - 1; i > 0; i--) {
+                        var j = Math.floor(Math.random() * (i + 1));
+                        var tmp = group.cards[i];
+                        group.cards[i] = group.cards[j];
+                        group.cards[j] = tmp;
+                    }
+                    saveFlashcardData();
+                    renderFlashcardCardList();
+                }
+
+                // ── Flashcard Viewer ──
+
+                function fcResolveToken(tk) {
+                    if (tk.type === 'num') return tk.value;
+                    if (tk.type === 'range') return Math.floor(Math.random() * (tk.max - tk.min + 1)) + tk.min;
+                    return null;
+                }
+
+                function generateMathProblem(card) {
+                    if (card.formula && card.formula.length > 0) {
+                        var tokens = card.formula;
+                        var exprParts = [];
+                        var displayParts = [];
+                        for (var i = 0; i < tokens.length; i++) {
+                            var tk = tokens[i];
+                            if (tk.type === 'op') {
+                                exprParts.push(tk.value === '^' ? '**' : tk.value);
+                                displayParts.push({'+':' + ','-':' − ','*':' × ','/':' ÷ ','^':' ^ '}[tk.value] || ' ' + tk.value + ' ');
+                            } else {
+                                var v = fcResolveToken(tk);
+                                exprParts.push(String(v));
+                                displayParts.push(String(v));
+                            }
+                        }
+                        var result;
+                        try { result = Function('"use strict"; return (' + exprParts.join('') + ')')(); } catch(e) { result = 'Error'; }
+                        if (typeof result === 'number') result = Math.round(result * 10000) / 10000;
+                        return { expression: displayParts.join(''), answer: String(result) };
+                    }
+                    var min = card.numRange ? card.numRange[0] : 1;
+                    var max = card.numRange ? card.numRange[1] : 100;
+                    var ops = card.operators && card.operators.length > 0 ? card.operators : ['+'];
+                    var a = Math.floor(Math.random() * (max - min + 1)) + min;
+                    var b = Math.floor(Math.random() * (max - min + 1)) + min;
+                    var op = ops[Math.floor(Math.random() * ops.length)];
+                    var result2, displayOp = op;
+                    switch(op) {
+                        case '+': result2 = a + b; break;
+                        case '-': if (a < b) { var t = a; a = b; b = t; } result2 = a - b; displayOp = '−'; break;
+                        case '*': result2 = a * b; displayOp = '×'; break;
+                        case '/': b = b === 0 ? 1 : b; a = a * b; result2 = a / b; displayOp = '÷'; break;
+                        case '^': b = Math.min(Math.abs(b), 5); result2 = Math.pow(a, b); break;
+                        default: result2 = a + b;
+                    }
+                    return { expression: a + ' ' + displayOp + ' ' + b, answer: String(result2) };
+                }
+
+                var fcSwiping = false;
+                var fcSwipeDx = -100;
+                var fcSwipeDy = 0;
+
+                function startFlashcardViewer(groupId) {
+                    loadFlashcardData();
+                    var group = fcFindGroup(groupId);
+                    if (!group || group.cards.length === 0) return;
+                    closeFlashcardModal();
+                    fcViewerCards = [];
+                    for (var i = 0; i < group.cards.length; i++) {
+                        var c = group.cards[i];
+                        if (c.type === 'math') {
+                            var problem = generateMathProblem(c);
+                            fcViewerCards.push({ front: problem.expression, back: problem.answer, flip: true, type: 'math', originalCard: c });
+                        } else {
+                            var hasBack = !!(c.back && c.back.trim());
+                            fcViewerCards.push({ front: c.front || '', back: c.back || '', flip: hasBack, type: 'normal', originalCard: c });
+                        }
+                    }
+                    fcViewerIndex = 0;
+                    fcViewerFlipped = false;
+                    fcSwiping = false;
+                    document.getElementById('fcViewerCloseBtn').textContent = getText('fcClose');
+                    fcRenderCardNoTransition();
+
+                    var overlay = document.getElementById('fcViewerOverlay');
+                    overlay.classList.add('show');
+
+                    var startX = 0, startY = 0;
+
+                    function handleStart(x, y) { startX = x; startY = y; }
+                    function handleEnd(x, y, e) {
+                        if (fcSwiping) return;
+                        if (e && e.target && e.target.closest('button')) return;
+                        var dx = x - startX;
+                        var dy = y - startY;
+                        var dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < 15) {
+                            fcSwipeDx = -100; fcSwipeDy = 0;
+                        } else {
+                            fcSwipeDx = dx; fcSwipeDy = dy;
+                        }
+                        fcHandleSwipe();
+                    }
+
+                    overlay.ontouchstart = function(e) { handleStart(e.touches[0].clientX, e.touches[0].clientY); };
+                    overlay.ontouchend = function(e) { handleEnd(e.changedTouches[0].clientX, e.changedTouches[0].clientY, e); };
+                    overlay.onmousedown = function(e) { if (!e.target.closest('button')) handleStart(e.clientX, e.clientY); };
+                    overlay.onmouseup = function(e) { handleEnd(e.clientX, e.clientY, e); };
+                    overlay.onclick = null;
+                }
+
+                function fcCalcFlipAxis(dx, dy) {
+                    var dist = Math.sqrt(dx * dx + dy * dy) || 1;
+                    var ndx = dx / dist;
+                    var ndy = dy / dist;
+                    var ax = -ndy;
+                    var ay = ndx;
+                    return { ax: ax, ay: ay };
+                }
+
+                function fcHandleSwipe() {
+                    if (fcSwiping) return;
+                    var card = fcViewerCards[fcViewerIndex];
+                    if (!card) return;
+
+                    if (!card.flip) {
+                        fcDoSwipeOut(document.getElementById('fcNoFlipContent'));
+                        return;
+                    }
+
+                    if (!fcViewerFlipped) {
+                        fcViewerFlipped = true;
+                        var axis = fcCalcFlipAxis(fcSwipeDx, fcSwipeDy);
+                        var inner = document.getElementById('fcCardInner');
+                        var backEl = document.getElementById('fcCardBack');
+                        inner.style.transition = 'transform 0.18s ease';
+                        inner.style.transform = 'rotate3d(' + axis.ax + ',' + axis.ay + ',0,180deg)';
+                        backEl.style.transform = 'rotate3d(' + axis.ax + ',' + axis.ay + ',0,180deg)';
+                        return;
+                    }
+
+                    fcDoSwipeOut(document.getElementById('fcCardScene'));
+                }
+
+                function fcDoSwipeOut(el) {
+                    fcSwiping = true;
+                    var dx = fcSwipeDx;
+                    var dy = fcSwipeDy;
+                    var dist = Math.sqrt(dx * dx + dy * dy) || 1;
+                    var nx = dx / dist;
+                    var ny = dy / dist;
+                    var flyDist = Math.max(window.innerWidth, window.innerHeight) * 1.2;
+                    var tx = nx * flyDist;
+                    var ty = ny * flyDist;
+                    var angle = Math.atan2(dy, dx) * (180 / Math.PI);
+                    var rot = angle * 0.15;
+
+                    el.style.transform = 'translate(' + tx + 'px, ' + ty + 'px) rotate(' + rot + 'deg)';
+                    el.classList.add('fc-swiping');
+
+                    setTimeout(function() {
+                        el.classList.remove('fc-swiping');
+                        el.style.transform = '';
+                        fcAdvanceCard();
+                        fcSwiping = false;
+                    }, 180);
+                }
+
+                function fcAdvanceCard() {
+                    if (fcViewerIndex >= fcViewerCards.length - 1) {
+                        for (var i = 0; i < fcViewerCards.length; i++) {
+                            if (fcViewerCards[i].type === 'math') {
+                                var p = generateMathProblem(fcViewerCards[i].originalCard);
+                                fcViewerCards[i].front = p.expression;
+                                fcViewerCards[i].back = p.answer;
+                            }
+                        }
+                        fcViewerIndex = 0;
+                    } else {
+                        fcViewerIndex++;
+                    }
+                    fcViewerFlipped = false;
+                    fcRenderCardNoTransition();
+                }
+
+                function closeFlashcardViewer() {
+                    var overlay = document.getElementById('fcViewerOverlay');
+                    overlay.classList.remove('show');
+                    overlay.ontouchstart = null;
+                    overlay.ontouchend = null;
+                    overlay.onmousedown = null;
+                    overlay.onmouseup = null;
+                    overlay.onclick = null;
+                }
+
+                // Render card with NO transition on the inner element,
+                // so the back face is never visible during initial display.
+                function fcRenderCardNoTransition() {
+                    if (fcViewerCards.length === 0) return;
+                    var card = fcViewerCards[fcViewerIndex];
+                    var num = String(fcViewerIndex + 1).padStart(2, '0');
+                    document.getElementById('fcViewerCounter').textContent = num + ' / ' + String(fcViewerCards.length).padStart(2, '0');
+                    var scene = document.getElementById('fcCardScene');
+                    var noFlip = document.getElementById('fcNoFlipContent');
+                    var inner = document.getElementById('fcCardInner');
+
+                    if (card.flip) {
+                        scene.style.display = 'block';
+                        noFlip.style.display = 'none';
+                        inner.style.transition = 'none';
+                        inner.style.transform = 'rotate3d(0,1,0,0deg)';
+                        var backEl = document.getElementById('fcCardBack');
+                        backEl.style.transform = 'rotateY(180deg)';
+                        document.getElementById('fcCardFront').innerHTML = '<span class="fc-card-number">' + num + '</span>' + escapeHtml(card.front);
+                        backEl.innerHTML = '<span class="fc-card-number">' + num + '</span>' + escapeHtml(card.back);
+                        void inner.offsetHeight;
+                        inner.style.transition = 'transform 0.18s ease';
+                    } else {
+                        scene.style.display = 'none';
+                        noFlip.style.display = 'flex';
+                        noFlip.innerHTML = '<span class="fc-card-number" style="color:#222;">' + num + '</span>' + escapeHtml(card.front) + (card.back ? '<br>' + escapeHtml(card.back) : '');
+                    }
+                }
+
+                function renderFlashcardViewer() {
+                    fcRenderCardNoTransition();
+                }
+
+                function flipFlashcard() {
+                    // unused — swipe handles flipping
+                }
 
             </script>
 </body>

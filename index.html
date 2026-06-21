@@ -1975,7 +1975,7 @@
 
         .custom-confirm-title {
             font-size: 1.4rem;
-            font-weight: 600;
+            font-weight: bold;
             margin-bottom: 12px;
             text-align: center;
             letter-spacing: 0.5px;
@@ -2766,7 +2766,7 @@
         .tutorial-box h3 {
             font-size: 1.1rem;
             margin-bottom: 12px;
-            font-weight: 600;
+            
         }
 
         .tutorial-box p {
@@ -4088,7 +4088,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 10px;
+            border-radius: 24px;
             padding: 0 4px;
             font-weight: bold;
             pointer-events: none;
@@ -4358,7 +4358,7 @@
         }
 
         .date-picker-day.today {
-            font-weight: 600;
+            
         }
 
         .light .date-picker-day.today {
@@ -4372,7 +4372,7 @@
         }
 
         .date-picker-day.selected {
-            font-weight: 600;
+            
         }
 
         .date-picker-day.range-selected {
@@ -4704,7 +4704,7 @@
             .calendar-day {
                 padding: 4px;
                 min-height: 50px;
-                border-radius: 20px;
+                border-radius: 24px;
             }
 
             .calendar-day-number {
@@ -4780,20 +4780,32 @@ body.dark .footer-credit-label { color:#676767; }
 .dark .editor-mode-toggle-section { background-color: var(--panel-dark); }
 
 body.editor-mode [data-editor-target],
-body.editor-mode .menu button[data-feature] {
+body.editor-mode .menu button[data-feature],
+body.editor-mode .menu button[data-page="stats"],
+body.editor-mode .menu button[data-page="timer"] {
     position: relative;
     cursor: pointer;
-    outline: 2px dashed transparent;
+    outline: 2px dashed color-mix(in srgb, var(--primary-color) 20%, transparent);
     outline-offset: 4px;
     transition: outline-color 0.2s;
-    border-radius: 18px;
+    border-radius: 24px;
 }
 body.editor-mode [data-editor-target]:hover,
-body.editor-mode .menu button[data-feature]:hover {
+body.editor-mode .menu button[data-feature]:hover,
+body.editor-mode .menu button[data-page="stats"]:hover,
+body.editor-mode .menu button[data-page="timer"]:hover {
     outline-color: var(--primary-color);
 }
+body.dark.editor-mode [data-editor-target],
+body.dark.editor-mode .menu button[data-feature],
+body.dark.editor-mode .menu button[data-page="stats"],
+body.dark.editor-mode .menu button[data-page="timer"] {
+    outline-color: color-mix(in srgb, var(--primary-color-dark) 20%, transparent);
+}
 body.dark.editor-mode [data-editor-target]:hover,
-body.dark.editor-mode .menu button[data-feature]:hover {
+body.dark.editor-mode .menu button[data-feature]:hover,
+body.dark.editor-mode .menu button[data-page="stats"]:hover,
+body.dark.editor-mode .menu button[data-page="timer"]:hover {
     outline-color: var(--primary-color-dark);
 }
 
@@ -4803,8 +4815,7 @@ body.dark.editor-mode .menu button[data-feature]:hover {
     min-width: 220px;
     max-width: 300px;
     padding: 14px 16px;
-    border-radius: 18px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    border-radius: 24px;
     opacity: 0;
     transform: scale(0.92) translateY(-6px);
     transition: opacity 0.18s ease, transform 0.18s ease;
@@ -4890,7 +4901,6 @@ body.dark.editor-mode .menu button[data-feature]:hover {
     align-items: center;
     justify-content: center;
     transition: all 0.2s;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.12);
 }
 body.editor-mode .editor-add-btn { display: flex; }
 .light .editor-add-btn { background: var(--panel-light); color: #323232; }
@@ -4907,9 +4917,8 @@ body.editor-mode .editor-add-btn { display: flex; }
     align-items: center;
     justify-content: center;
     gap: 14px;
-    padding: 12px 20px;
+    padding: 22px 20px;
     font-size: 0.9rem;
-    box-shadow: 0 -4px 20px rgba(0,0,0,0.10);
     transition: transform 0.25s ease;
 }
 body.editor-mode .editor-exit-bar { display: flex; }
@@ -4917,10 +4926,10 @@ body.editor-mode .editor-exit-bar { display: flex; }
 .dark .editor-exit-bar { background: var(--panel-dark); color: #e8e8e8; }
 .editor-exit-bar span { opacity: 0.7; font-size: 0.85rem; }
 .editor-exit-bar button {
-    padding: 6px 18px;
-    font-size: 0.85rem;
+    padding: 10px 22px;
+    font-size: 0.9rem;
     border: none;
-    border-radius: 18px;
+    border-radius: 24px;
     cursor: pointer;
     transition: all 0.2s;
 }
@@ -4937,8 +4946,7 @@ body.editor-mode .editor-exit-bar { display: flex; }
     max-height: calc(100vh - 130px);
     overflow-y: auto;
     padding: 10px 0;
-    border-radius: 18px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    border-radius: 24px;
     opacity: 0;
     transform: scale(0.92) translateY(-6px);
     transition: opacity 0.18s ease, transform 0.18s ease;
@@ -4988,7 +4996,6 @@ body.editor-mode .editor-exit-bar { display: flex; }
 }
 .flashcard-stat-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
 }
 .flashcard-stat-btn:active {
     transform: scale(0.97);
@@ -5025,7 +5032,7 @@ body.dark .flashcard-modal {
     to   { opacity: 1; transform: translateY(0); }
 }
 .flashcard-modal h2 {
-    margin: 0 0 18px; font-size: 1.25rem; font-weight: 600;
+    margin: 0 0 18px; font-size: 1.25rem;
 }
 .flashcard-modal .fc-close-btn {
     position: absolute; top: 16px; right: 18px;
@@ -5038,7 +5045,7 @@ body.dark .flashcard-modal {
 }
 .fc-menu-btns button {
     flex: 1; padding: 16px 0; border: none; border-radius: 24px;
-    font-size: 1rem; font-weight: 600; cursor: pointer;
+    font-size: 1rem;; cursor: pointer;
     transition: transform 0.12s ease;
 }
 .fc-menu-btns button:active { transform: scale(0.96); }
@@ -5064,14 +5071,14 @@ body.dark .fc-group-item {
 }
 .fc-group-item:hover { opacity: 0.85; }
 .fc-group-item .fc-group-name {
-    font-weight: 500; font-size: 0.95rem;
+    font-size: 0.95rem;
 }
 .fc-group-item .fc-group-count {
     font-size: 0.8rem; opacity: 0.6;
 }
 .fc-group-item .fc-group-delete {
     background: none; border: none; color: #e74c3c; cursor: pointer;
-    font-size: 1.1rem; padding: 2px 6px; margin-left: 8px; border-radius: 8px;
+    font-size: 1.1rem; padding: 2px 6px; margin-left: 8px; border-radius: 24px;
 }
 .fc-group-item .fc-group-delete:hover { background: rgba(231,76,60,0.1); }
 
@@ -5093,12 +5100,13 @@ body.dark .fc-add-group-row input {
 .fc-add-group-row button {
     padding: 10px 18px; border: none; border-radius: 24px;
     background: var(--primary-color); color: #fff;
-    font-weight: 600; cursor: pointer; white-space: nowrap;
+     cursor: pointer; white-space: nowrap;
 }
 
 /* Card editor */
 .fc-card-list {
     margin: 10px 0;
+    position: relative;
 }
 .fc-card-entry {
     padding: 10px 14px; margin-bottom: 8px;
@@ -5123,8 +5131,8 @@ body.dark .fc-card-entry {
 }
 .fc-drag-handle:active { cursor: grabbing; }
 .fc-card-entry .fc-card-type-badge {
-    display: inline-block; padding: 2px 8px; border-radius: 8px;
-    font-size: 0.7rem; font-weight: 600; margin-bottom: 6px;
+    display: inline-block; padding: 2px 8px; border-radius: 24px;
+    font-size: 0.7rem;  margin-bottom: 6px;
     background: var(--primary-color); color: #fff;
 }
 .fc-card-entry .fc-card-preview {
@@ -5136,7 +5144,7 @@ body.dark .fc-card-entry {
 }
 .fc-card-entry .fc-card-actions button {
     background: none; border: none; cursor: pointer;
-    font-size: 0.95rem; padding: 2px 5px; border-radius: 6px; color: inherit;
+    font-size: 0.95rem; padding: 2px 5px; border-radius: 24px; color: inherit;
 }
 .fc-card-entry .fc-card-actions button:hover { background: rgba(0,0,0,0.06); }
 
@@ -5148,7 +5156,7 @@ body.dark .fc-add-card-form {
     background: var(--panel-dark);
 }
 .fc-add-card-form label {
-    display: block; font-size: 0.8rem; font-weight: 600;
+    display: block; font-size: 0.8rem; 
     margin: 10px 0 4px; opacity: 0.7;
 }
 .fc-add-card-form label:first-child { margin-top: 0; }
@@ -5172,7 +5180,7 @@ body.dark .fc-add-card-form input[type="number"] {
 .fc-add-card-form .fc-type-selector button {
     flex: 1; padding: 8px 0; border: 2px solid var(--primary-color);
     border-radius: 24px; background: transparent;
-    color: var(--primary-color); font-weight: 600;
+    color: var(--primary-color); 
     cursor: pointer; font-size: 0.85rem;
     transition: all 0.15s ease;
 }
@@ -5184,7 +5192,7 @@ body.dark .fc-add-card-form input[type="number"] {
 }
 .fc-operator-checks label {
     display: inline-flex; align-items: center; gap: 4px;
-    padding: 5px 10px; border-radius: 10px;
+    padding: 5px 10px; border-radius: 24px;
     background: var(--panel-light); cursor: pointer;
     font-size: 0.85rem; font-weight: 500; margin: 0;
     border: 2px solid transparent; transition: border-color 0.15s ease;
@@ -5208,7 +5216,7 @@ body.dark .fc-operator-checks label {
 }
 .fc-form-actions button {
     flex: 1; padding: 10px 0; border: none; border-radius: 24px;
-    font-weight: 600; cursor: pointer; font-size: 0.9rem;
+     cursor: pointer; font-size: 0.9rem;
 }
 .fc-form-actions .fc-save-card {
     background: var(--primary-color); color: #fff;
@@ -5222,7 +5230,7 @@ body.dark .fc-operator-checks label {
 }
 .fc-editor-toolbar button {
     padding: 8px 14px; border: none; border-radius: 24px;
-    font-size: 0.82rem; font-weight: 600; cursor: pointer;
+    font-size: 0.82rem;  cursor: pointer;
 }
 
 /* Viewer */
@@ -5248,7 +5256,7 @@ body.dark .fc-operator-checks label {
 .fc-viewer-header button {
     background: rgba(255,255,255,0.15); border: none;
     color: #fff; padding: 8px 16px; border-radius: 24px;
-    font-weight: 600; cursor: pointer; font-size: 0.9rem;
+     cursor: pointer; font-size: 0.9rem;
 }
 .fc-viewer-counter {
     font-size: 0.9rem; opacity: 0.7;
@@ -5272,7 +5280,7 @@ body.dark .fc-operator-checks label {
     display: flex; align-items: center; justify-content: center;
     padding: 24px;
     border-radius: 24px;
-    font-size: 1.3rem; font-weight: 600;
+    font-size: 1.3rem;
     text-align: center;
     word-break: break-word;
     overflow-wrap: break-word;
@@ -5285,17 +5293,18 @@ body.dark .fc-operator-checks label {
 }
 .fc-card-number {
     position: absolute; top: 14px; left: 16px;
-    font-size: 0.75rem; font-weight: 600; opacity: 0.4;
+    font-size: 0.75rem;  opacity: 0.4;
 }
 
 .fc-no-flip-content {
     width: 85vw; max-width: 400px;
-    min-height: 200px;
+    height: 260px;
     display: flex; align-items: center; justify-content: center;
     padding: 24px; position: relative;
     border-radius: 24px;
+    overflow-y: auto;
     background: #fff; color: #222;
-    font-size: 1.3rem; font-weight: 600;
+    font-size: 1.3rem;
     text-align: center;
     word-break: break-word;
 }
@@ -5316,8 +5325,8 @@ body.dark .fc-formula-preview {
 }
 .fc-formula-token {
     display: inline-flex; align-items: center; gap: 3px;
-    padding: 4px 10px; border-radius: 12px;
-    font-size: 0.82rem; font-weight: 600;
+    padding: 4px 10px; border-radius: 24px;
+    font-size: 0.82rem; 
     background: var(--primary-color); color: #fff;
     cursor: default; white-space: nowrap;
 }
@@ -5337,7 +5346,7 @@ body.dark .fc-formula-token.op {
 }
 .fc-formula-btns button {
     padding: 7px 12px; border: none; border-radius: 24px;
-    font-size: 0.8rem; font-weight: 600; cursor: pointer;
+    font-size: 0.8rem;  cursor: pointer;
     transition: transform 0.1s;
 }
 .fc-formula-btns button:active { transform: scale(0.94); }
@@ -5357,7 +5366,6 @@ body.dark .fc-formula-btns .fc-fbtn-op {
     position: absolute; z-index: 10;
     background: var(--panel-light);
     border-radius: 24px; padding: 14px;
-    box-shadow: 0 6px 24px rgba(0,0,0,0.18);
     min-width: 200px;
 }
 body.dark .fc-formula-popup {
@@ -5376,7 +5384,7 @@ body.dark .fc-formula-popup input {
 .fc-formula-popup button {
     padding: 7px 16px; border: none; border-radius: 24px;
     background: var(--primary-color); color: #fff;
-    font-weight: 600; cursor: pointer; font-size: 0.85rem;
+     cursor: pointer; font-size: 0.85rem;
 }
 
 /* Swipe card animation — direction set via inline style */
@@ -5612,7 +5620,7 @@ body.dark .fc-formula-popup input {
             <div class="group-input">
                 <input type="text" id="groupInput" placeholder="グループ名(任意)" data-i18n="groupPlaceholder">
             </div>
-            <div class="session-info" id="sessionInfo" data-i18n="sessionStart" data-editor-target="sessionInfo">開始ボタンを押して学習を始めましょう</div>
+            <div class="session-info" id="sessionInfo" data-i18n="sessionStart">開始ボタンを押して学習を始めましょう</div>
             <div id="focusModeToggleContainer" style="display: none; margin-bottom: 15px;" data-editor-target="focusMode">
                 <div class="toggle-item" style="margin-bottom: 0;">
                     <span data-i18n="focusMode">フォーカスモード</span>
@@ -5621,7 +5629,7 @@ body.dark .fc-formula-popup input {
                     </div>
                 </div>
             </div>
-            <div class="controls" data-editor-target="controls">
+            <div class="controls">
                 <button id="startBtn" class="startButton primary" onclick="startStudy()" data-i18n="startButton">勉強開始</button>
                 <button id="pauseBtn" class="secondary hidden" onclick="pauseStudy()"
                     data-i18n="pauseButton">一時停止</button>
@@ -5648,7 +5656,7 @@ body.dark .fc-formula-popup input {
                 </div>
                 <div id="dailyTimelineContent"></div>
             </div>
-            <div class="stats-container" id="statsContainer" data-editor-target="statsContainer"></div>
+            <div class="stats-container" id="statsContainer"></div>
             <div id="statsGraphContainer" style="display: none; margin-bottom: 30px;" data-editor-target="graph">
                 <canvas id="statsChart" style="max-height: 300px;"></canvas>
             </div>
@@ -5891,7 +5899,7 @@ body.dark .fc-formula-popup input {
         <div id="settingsPage" class="page">
             <div class="editor-mode-toggle-section">
                 <span data-i18n="editorMode">エディターモード</span>
-                <button class="primary" id="enterEditorModeBtn" onclick="enterEditorMode()" style="padding: 8px 20px; font-size: 0.9rem; border-radius: 20px;" data-i18n="editorModeEnter">開始</button>
+                <button class="primary" id="enterEditorModeBtn" onclick="enterEditorMode()" style="padding: 8px 20px; font-size: 0.9rem; border-radius: 24px;" data-i18n="editorModeEnter">開始</button>
             </div>
             <div class="settings-section">
                 <h2 data-i18n="settingsDisplay">表示設定</h2>
@@ -13363,6 +13371,17 @@ const translations = {
                             setTimeout(function() { openEditorMiniMenu(self, feature); }, 50);
                         }, false);
                     });
+                    document.querySelectorAll('.menu button[data-page]').forEach(btn => {
+                        if (btn._editorBound) return;
+                        var page = btn.dataset.page;
+                        if (!editorMiniMenuDefs[page]) return;
+                        btn._editorBound = true;
+                        btn.addEventListener('click', function(e) {
+                            if (!editorModeActive) return;
+                            var self = this;
+                            setTimeout(function() { openEditorMiniMenu(self, page); }, 50);
+                        }, false);
+                    });
                 }
 
                 const editorMiniMenuDefs = {
@@ -13446,24 +13465,7 @@ const translations = {
                             rows: [
                                 { type: 'toggle', label: getText('editorModeTitleTime'), id: 'toggleTitleTime', key: 'feature_title_time', onToggle: function() { toggleTitleTime(); } },
                                 { type: 'toggle', label: getText('editorModeTimeline'), id: 'toggleHistoryTimeline', key: 'feature_history_timeline', onToggle: function() { toggleHistoryTimeline(); } },
-                                { type: 'toggle', label: getText('editorModeLoadingAnim'), id: 'toggleLoadingAnim', key: 'feature_loading_anim', onToggle: function() { toggleLoadingAnim(); } }
-                            ]
-                        };
-                    },
-                    controls: function() {
-                        return {
-                            title: getText('editorModeControls'),
-                            rows: [
-                                { type: 'toggle', label: getText('editorModeLockSettings'), id: 'toggleLockSettings', key: 'lock_settings_during_timer', onToggle: function() { toggleLockSettingsDuringTimer(); } },
-                                { type: 'toggle', label: getText('editorModeLoadingAnim'), id: 'toggleLoadingAnim', key: 'feature_loading_anim', onToggle: function() { toggleLoadingAnim(); } }
-                            ]
-                        };
-                    },
-                    sessionInfo: function() {
-                        return {
-                            title: getText('editorModeSessionInfo'),
-                            rows: [
-                                { type: 'toggle', label: getText('editorModeTitleTime'), id: 'toggleTitleTime', key: 'feature_title_time', onToggle: function() { toggleTitleTime(); } },
+                                { type: 'toggle', label: getText('editorModeLoadingAnim'), id: 'toggleLoadingAnim', key: 'feature_loading_anim', onToggle: function() { toggleLoadingAnim(); } },
                                 { type: 'toggle', label: getText('editorModeLockSettings'), id: 'toggleLockSettings', key: 'lock_settings_during_timer', onToggle: function() { toggleLockSettingsDuringTimer(); } }
                             ]
                         };
@@ -13472,11 +13474,7 @@ const translations = {
                         return {
                             title: getText('editorModeDailyTimeline'),
                             rows: [
-                                { type: 'toggle', label: getText('editorModeTimeline'), id: 'toggleHistoryTimeline', key: 'feature_history_timeline', onToggle: function() { toggleHistoryTimeline(); } },
-                                { type: 'toggle', label: getText('graphDisplay'), id: 'toggleGraph', key: 'graph_enabled', onToggle: function() { toggleGraph(); } },
-                                { type: 'select', label: getText('editorModeGraphLocation'), options: [
-                                    {v:'list',t:getText('locationList')},{v:'stats',t:getText('locationStats')},{v:'both',t:getText('locationBoth')}
-                                ], key: 'graph_location', onChange: function(val) { saveData('graph_location', val); var el=document.getElementById('graphLocation'); if(el) el.value=val; updateGraphs(); } }
+                                { type: 'toggle', label: getText('editorModeTimeline'), id: 'toggleHistoryTimeline', key: 'feature_history_timeline', onToggle: function() { toggleHistoryTimeline(); } }
                             ]
                         };
                     },
@@ -13484,23 +13482,21 @@ const translations = {
                         return {
                             title: getText('editorModeHistoryList'),
                             rows: [
-                                { type: 'toggle', label: getText('editorModeTimeline'), id: 'toggleHistoryTimeline', key: 'feature_history_timeline', onToggle: function() { toggleHistoryTimeline(); } },
-                                { type: 'toggle', label: getText('editorModeDisplay') + ' (' + getText('graphDisplay') + ')', id: 'toggleGraph', key: 'graph_enabled', onToggle: function() { toggleGraph(); } },
+                                { type: 'toggle', label: getText('editorModeTimeline'), id: 'toggleHistoryTimeline', key: 'feature_history_timeline', onToggle: function() { toggleHistoryTimeline(); } }
+                            ]
+                        };
+                    },
+                    stats: function() {
+                        return {
+                            title: getText('editorModeStatsContainer'),
+                            rows: [
+                                { type: 'toggle', label: getText('graphDisplay'), id: 'toggleGraph', key: 'graph_enabled', onToggle: function() { toggleGraph(); } },
                                 { type: 'select', label: getText('editorModeGraphType'), options: [
                                     {v:'bar',t:getText('graphBar')},{v:'line',t:getText('graphLine')},{v:'area',t:getText('graphArea')}
                                 ], key: 'graph_type', onChange: function(val) { saveData('graph_type', val); var el=document.getElementById('graphType'); if(el) el.value=val; updateGraphs(); } },
                                 { type: 'select', label: getText('editorModeGraphPeriod'), options: [
                                     {v:'7',t:getText('period7days')},{v:'14',t:getText('period14days')},{v:'30',t:getText('period30days')},{v:'90',t:getText('period90days')},{v:'365',t:getText('period1year')},{v:'all',t:getText('periodAll')}
-                                ], key: 'graph_period', onChange: function(val) { saveData('graph_period', val); var el=document.getElementById('graphPeriod'); if(el) el.value=val; updateGraphs(); } }
-                            ]
-                        };
-                    },
-                    statsContainer: function() {
-                        return {
-                            title: getText('editorModeStatsContainer'),
-                            rows: [
-                                { type: 'toggle', label: getText('editorModeTimeline'), id: 'toggleHistoryTimeline', key: 'feature_history_timeline', onToggle: function() { toggleHistoryTimeline(); } },
-                                { type: 'toggle', label: getText('graphDisplay'), id: 'toggleGraph', key: 'graph_enabled', onToggle: function() { toggleGraph(); } },
+                                ], key: 'graph_period', onChange: function(val) { saveData('graph_period', val); var el=document.getElementById('graphPeriod'); if(el) el.value=val; updateGraphs(); } },
                                 { type: 'select', label: getText('editorModeGraphLocation'), options: [
                                     {v:'list',t:getText('locationList')},{v:'stats',t:getText('locationStats')},{v:'both',t:getText('locationBoth')}
                                 ], key: 'graph_location', onChange: function(val) { saveData('graph_location', val); var el=document.getElementById('graphLocation'); if(el) el.value=val; updateGraphs(); } }
@@ -13535,7 +13531,7 @@ const translations = {
                             });
                             html += '</select><div class="select-arrow">▾</div></div>';
                         } else if (row.type === 'button') {
-                            html += '<button class="secondary" style="padding:6px 12px;font-size:0.82rem;border-radius:16px;display:inline-flex;align-items:center;" onclick="editorMiniMenuButton(' + i + ')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>';
+                            html += '<button class="secondary" style="padding:6px 12px;font-size:0.82rem;border-radius:24px;display:inline-flex;align-items:center;" onclick="editorMiniMenuButton(' + i + ')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>';
                         }
                         html += '</div>';
                     });
@@ -13893,10 +13889,12 @@ const translations = {
                     btns[1].textContent = getText('fcView');
                     var overlay = document.getElementById('flashcardOverlay');
                     overlay.classList.add('show');
+                    document.body.style.overflow = 'hidden';
                 }
 
                 function closeFlashcardModal() {
                     document.getElementById('flashcardOverlay').classList.remove('show');
+                    document.body.style.overflow = '';
                 }
 
                 function fcShowScreen(screenId) {
@@ -14389,6 +14387,7 @@ const translations = {
 
                     var overlay = document.getElementById('fcViewerOverlay');
                     overlay.classList.add('show');
+                    document.body.style.overflow = 'hidden';
 
                     var startX = 0, startY = 0;
 
@@ -14460,15 +14459,16 @@ const translations = {
                     var angle = Math.atan2(dy, dx) * (180 / Math.PI);
                     var rot = angle * 0.15;
 
-                    el.style.transform = 'translate(' + tx + 'px, ' + ty + 'px) rotate(' + rot + 'deg)';
                     el.classList.add('fc-swiping');
+                    void el.offsetHeight;
+                    el.style.transform = 'translate(' + tx + 'px, ' + ty + 'px) rotate(' + rot + 'deg)';
 
                     setTimeout(function() {
                         el.classList.remove('fc-swiping');
                         el.style.transform = '';
                         fcAdvanceCard();
                         fcSwiping = false;
-                    }, 180);
+                    }, 200);
                 }
 
                 function fcAdvanceCard() {
@@ -14491,6 +14491,7 @@ const translations = {
                 function closeFlashcardViewer() {
                     var overlay = document.getElementById('fcViewerOverlay');
                     overlay.classList.remove('show');
+                    document.body.style.overflow = '';
                     overlay.ontouchstart = null;
                     overlay.ontouchend = null;
                     overlay.onmousedown = null;

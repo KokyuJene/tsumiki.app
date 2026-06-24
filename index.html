@@ -107,6 +107,7 @@
             max-width: 600px;
             width: 100%;
             font-weight: 400;
+            position: relative;
         }
 
         a {
@@ -666,7 +667,183 @@
             font-size: 1rem;
         }
 
-        .clear-history {
+        .list-toolbar {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .list-search-row {
+            flex: 0;
+            width: 0;
+            min-width: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: flex 0.35s cubic-bezier(0.22,1,0.36,1),
+                        width 0.35s cubic-bezier(0.22,1,0.36,1),
+                        min-width 0.35s cubic-bezier(0.22,1,0.36,1),
+                        opacity 0.2s ease;
+        }
+
+        .list-search-row.active {
+            flex: 1;
+            min-width: 0;
+            opacity: 1;
+            transition: flex 0.4s cubic-bezier(0.34, 1.4, 0.64, 1),
+                        width 0.4s cubic-bezier(0.34, 1.4, 0.64, 1),
+                        min-width 0.4s cubic-bezier(0.34, 1.4, 0.64, 1),
+                        opacity 0.25s ease 0.1s;
+        }
+
+        .list-search-row input {
+            width: 100%;
+            padding: 10px 16px;
+            border: 2px solid transparent;
+            border-radius: 24px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            box-sizing: border-box;
+            transition: border-color 0.2s ease;
+        }
+
+        .light .list-search-row input {
+            background-color: var(--panel-light);
+            color: #323232;
+        }
+
+        .dark .list-search-row input {
+            background-color: var(--panel-dark);
+            color: #e8e8e8;
+        }
+
+        .light .list-search-row input::placeholder {
+            color: #8a8a8a;
+        }
+
+        .dark .list-search-row input::placeholder {
+            color: #a8a8a8;
+        }
+
+        .list-search-row input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .dark .list-search-row input:focus {
+            border-color: var(--primary-color-dark);
+        }
+
+        .list-toolbar-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            position: relative;
+        }
+
+        .list-toolbar-row.selection-row {
+            flex-wrap: wrap;
+        }
+
+        .list-toolbar-row.move-row {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            flex-wrap: nowrap;
+            transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.25s ease;
+        }
+
+        .list-toolbar-row.move-row.active {
+            max-height: 60px;
+            opacity: 1;
+        }
+
+        .list-toolbar-row.move-row .custom-select {
+            flex: 1;
+            min-width: 0;
+            width: auto;
+        }
+
+        .list-toolbar-row.move-row .list-action-btn {
+            flex-shrink: 0;
+        }
+
+        .list-search-icon {
+            width: 42px;
+            height: 42px;
+            min-width: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 2px solid transparent;
+            padding: 0;
+            flex-shrink: 0;
+            z-index: 2;
+            transition: border-color 0.2s ease;
+        }
+
+        .light .list-search-icon {
+            background-color: var(--panel-light);
+            color: #323232;
+        }
+
+        .dark .list-search-icon {
+            background-color: var(--panel-dark);
+            color: #e8e8e8;
+        }
+
+        .list-search-icon:hover {
+            border-color: var(--primary-color);
+        }
+
+        .dark .list-search-icon:hover {
+            border-color: var(--primary-color-dark);
+        }
+
+        .list-search-icon svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .list-filter-selects.search-active {
+            flex: 0;
+            width: 0;
+            min-width: 0;
+            opacity: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .list-filter-selects {
+            display: flex;
+            gap: 8px;
+            flex: 1;
+            min-width: 0;
+            transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+        }
+
+        .list-filter-selects .custom-select {
+            flex: 1;
+            min-width: 0;
+            width: auto;
+        }
+
+        .list-action-btn {
+            padding: 9px 16px;
+            font-size: 0.88rem;
+            border-radius: 24px;
+            white-space: nowrap;
+            transition: opacity 0.2s ease;
+        }
+
+        .list-action-btn.dim {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .list-clear-all {
             margin-top: 35px;
         }
 
@@ -851,106 +1028,6 @@
             color: white;
         }
 
-        .action-buttons {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-        }
-
-        .action-buttons button {
-            padding: 10px 20px;
-            font-size: 0.9rem;
-        }
-
-        .action-buttons button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .move-group-container {
-            display: none;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 20px;
-            gap: 12px;
-            align-items: center;
-            z-index: 100;
-        }
-
-        .move-group-container.active {
-            display: flex;
-        }
-
-        .move-count {
-            font-size: 0.95rem;
-            opacity: 0.9;
-            margin-right: 8px;
-            min-width: 86px;
-            text-align: center;
-        }
-
-        .light .move-group-container {
-            background-color: var(--bg-light);
-            border-top: 1px solid var(--panel-light-border);
-        }
-
-        .dark .move-group-container {
-            background-color: var(--panel-dark);
-            border-top: 1px solid var(--panel-dark);
-        }
-
-        .move-group-container input {
-            padding: 12px 15px;
-            border: 2px solid transparent;
-            border-radius: 24px;
-            font-size: 0.95rem;
-            font-family: inherit;
-            transition: all 0.2s;
-        }
-
-        .light .move-group-container input {
-            background-color: var(--panel-light);
-            color: #323232;
-        }
-
-        .dark .move-group-container input {
-            background-color: var(--panel-dark);
-            color: #e8e8e8;
-        }
-
-        .light .move-group-container input::placeholder {
-            color: #9a9a9a;
-        }
-
-        .dark .move-group-container input::placeholder {
-            color: #8a8a8a;
-        }
-
-        .light .move-group-container input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-        }
-
-        .dark .move-group-container input:focus {
-            outline: none;
-            border-color: var(--primary-color-dark);
-        }
-
-        .move-group-container button {
-            padding: 14px 24px;
-            white-space: nowrap;
-            border-radius: 24px;
-        }
-
-        .move-group-buttons {
-            margin-left: auto;
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
 
         .move-group-buttons button {
             padding: 10px 16px;
@@ -2053,23 +2130,18 @@
             background-color: var(--primary-hover-dark);
         }
 
-        @media (min-width: 769px) {
-            .move-group-container {
-                position: static;
-                box-shadow: none;
-                border: none;
-                padding: 0;
-                margin-bottom: 24px;
+        @media (max-width: 480px) {
+            .list-toolbar-row.selection-row {
+                flex-wrap: wrap;
             }
 
-            .light .move-group-container {
-                background-color: transparent;
-                border: none;
+            .list-filter-selects {
+                flex-direction: column;
+                width: 100%;
             }
 
-            .dark .move-group-container {
-                background-color: transparent;
-                border: none;
+            .list-filter-selects .custom-select {
+                width: 100%;
             }
         }
 
@@ -2114,34 +2186,6 @@
 
             .history-item {
                 padding: 15px;
-            }
-
-            .move-group-container {
-                flex-direction: column;
-                align-items: stretch;
-                padding: 20px;
-                gap: 12px;
-            }
-
-            .move-group-container input {
-                min-width: 100%;
-            }
-
-            .move-group-container button {
-                width: 100%;
-            }
-
-            .move-group-buttons {
-                display: flex;
-                gap: 12px;
-            }
-
-            .move-group-buttons button {
-                flex: 1;
-            }
-
-            .move-group-container.active~.history-list {
-                padding-bottom: 180px;
             }
 
             .theme-options {
@@ -5394,6 +5438,92 @@ body.dark .fc-formula-popup input {
     opacity: 0;
 }
 
+        /* Mini Player Popup */
+        .mini-player-popup {
+            position: absolute;
+            z-index: 900;
+            background: var(--panel-light);
+            border-radius: 24px;
+            padding: 12px;
+            width: 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.9);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+        .mini-player-popup.visible {
+            opacity: 1;
+            pointer-events: auto;
+            transform: scale(1);
+        }
+        .dark .mini-player-popup {
+            background: var(--panel-dark);
+        }
+        .mini-player-popup.pos-top-right { left: calc(100% + 12px); }
+        .mini-player-popup.pos-top-left { right: calc(100% + 12px); }
+        .mini-player-popup.pos-bottom-right { bottom: 0; left: calc(100% + 12px); }
+        .mini-player-popup.pos-bottom-left { bottom: 0; right: calc(100% + 12px); }
+        @media (max-width: 760px) {
+            .mini-player-popup.pos-top-right { left: auto; right: 0; }
+            .mini-player-popup.pos-top-left { right: auto; left: 0; }
+            .mini-player-popup.pos-bottom-right { left: auto; right: 0; }
+            .mini-player-popup.pos-bottom-left { right: auto; left: 0; }
+        }
+        .mini-player-close {
+            position: absolute;
+            top: 4px;
+            right: 6px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            font-size: 0.9rem;
+            line-height: 1;
+            opacity: 0.4;
+            transition: opacity 0.2s;
+            color: inherit;
+        }
+        .mini-player-close:hover { opacity: 1; }
+        .mini-player-title {
+            width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-size: 0.7rem;
+            opacity: 0.75;
+            text-align: center;
+            margin-top: 6px;
+        }
+        .mini-player-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+        }
+        .mini-player-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: opacity 0.2s;
+        }
+        .mini-player-btn:hover { opacity: 0.7; }
+        .mini-player-btn img {
+            width: 18px;
+            height: 18px;
+        }
+        .mini-player-btn.mini-play-btn img {
+            width: 26px;
+            height: 26px;
+        }
     </style>
 
 </head>
@@ -5601,6 +5731,22 @@ body.dark .fc-formula-popup input {
     <div class="editor-mini-menu" id="editorMiniMenu"></div>
 
     <div class="container">
+        <!-- Mini Music Player Popup -->
+        <div id="miniPlayerPopup" class="mini-player-popup pos-top-right">
+            <button class="mini-player-close" id="miniPlayerClose" onclick="closeMiniPlayer()" aria-label="閉じる">&times;</button>
+            <div class="mini-player-title" id="miniPlayerTitle">---</div>
+            <div class="mini-player-controls">
+                <button class="mini-player-btn mini-prev-btn" id="miniPrevBtn" onclick="playPrevious()" aria-label="前へ">
+                    <img src="prev.webp" alt="前へ">
+                </button>
+                <button class="mini-player-btn mini-play-btn" onclick="togglePlay()" aria-label="再生/一時停止">
+                    <img id="miniPlayIcon" src="play.webp" alt="再生">
+                </button>
+                <button class="mini-player-btn mini-next-btn" id="miniNextBtn" onclick="playNext()" aria-label="次へ">
+                    <img src="next.webp" alt="次へ">
+                </button>
+            </div>
+        </div>
         <h1 aria-label="ツミキapp">
             <img class="tsumiki-logo" id="tsumikiLogoMain" src="tsumiki_logo.svg" data-light-src="tsumiki_logo.svg"
                 data-dark-src="tsumiki_logo_akarui.svg" alt="ツミキapp" data-i18n-alt="studyTimeManagement">
@@ -5665,56 +5811,58 @@ body.dark .fc-formula-popup input {
         </div>
 
         <div id="listPage" class="page">
-            <div class="group-selector">
-                <div class="custom-select">
-                    <select id="groupFilter" onchange="loadHistory()" aria-label="グループで絞り込む"
-                        data-i18n-aria="filterByGroup">
-                        <option value="" data-i18n="allGroupsFilter">すべてのグループ</option>
-                    </select>
-                    <div class="select-arrow">▾</div>
+            <div class="list-toolbar">
+                <div class="list-toolbar-row">
+                    <button class="list-search-icon" id="listSearchIcon" onclick="toggleListSearch()" aria-label="検索">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    </button>
+                    <div class="list-search-row" id="listSearchRow">
+                        <input type="text" id="searchInput" placeholder="日付や時刻で検索(例: 2025/12/11, 14:30, dec, summer)"
+                            data-i18n="searchPlaceholder" oninput="loadHistory()">
+                    </div>
+                    <div class="list-filter-selects" id="listFilterSelects">
+                        <div class="custom-select">
+                            <select id="groupFilter" onchange="loadHistory()" aria-label="グループで絞り込む"
+                                data-i18n-aria="filterByGroup">
+                                <option value="" data-i18n="allGroupsFilter">すべてのグループ</option>
+                            </select>
+                            <div class="select-arrow">▾</div>
+                        </div>
+                        <div class="custom-select">
+                            <select id="sortSelect" onchange="sortHistoryBySelect(this.value)" aria-label="並び替え">
+                                <option value="date-desc" data-i18n="sortNewest">新しい順</option>
+                                <option value="date-asc" data-i18n="sortOldest">古い順</option>
+                                <option value="duration-desc" data-i18n="sortLongest">時間が長い順</option>
+                                <option value="duration-asc" data-i18n="sortShortest">時間が短い順</option>
+                            </select>
+                            <div class="select-arrow">▾</div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="日付や時刻で検索(例: 2025年12月11日や、14:30)"
-                    data-i18n="searchPlaceholder" oninput="loadHistory()">
+
+                <div class="list-toolbar-row selection-row">
+                    <button class="secondary list-action-btn" onclick="toggleSelectAll()" data-i18n="selectAll">すべて選択</button>
+                    <button class="secondary list-action-btn" id="cancelSelectionBtn" onclick="cancelSelection()" data-i18n="cancelButton">キャンセル</button>
+                    <button class="secondary list-action-btn" id="deleteBtn" onclick="deleteSelected()" data-i18n="deleteSelected">選択を削除</button>
+                </div>
+
+                <div class="list-toolbar-row move-row" id="moveGroupRow">
+                    <div class="custom-select">
+                        <select id="moveGroupSelect" aria-label="移動先のグループを選択" data-i18n-aria="moveDestination">
+                            <option value="" data-i18n="moveDestination">移動先を選択</option>
+                        </select>
+                        <div class="select-arrow">▾</div>
+                    </div>
+                    <button class="primary list-action-btn" onclick="moveSelectedToGroup()" data-i18n="moveButton">移動</button>
+                </div>
             </div>
 
-            <div class="sort-controls"
-                style="margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
-                <button class="secondary filter-control-btn active" onclick="sortHistory('date-desc')"
-                    data-sort="date-desc" data-i18n="sortNewest">新しい順</button>
-                <button class="secondary filter-control-btn" onclick="sortHistory('date-asc')" data-sort="date-asc"
-                    data-i18n="sortOldest">古い順</button>
-                <button class="secondary filter-control-btn" onclick="sortHistory('duration-desc')"
-                    data-sort="duration-desc" data-i18n="sortLongest">時間が長い順</button>
-                <button class="secondary filter-control-btn" onclick="sortHistory('duration-asc')"
-                    data-sort="duration-asc" data-i18n="sortShortest">時間が短い順</button>
-            </div>
-
-            <div class="action-buttons">
-                <button class="secondary" onclick="toggleSelectAll()" data-i18n="selectAll">すべて選択</button>
-                <button class="secondary" id="deleteBtn" onclick="deleteSelected()" disabled
-                    data-i18n="deleteSelected">選択を削除</button>
-            </div>
-            <div class="move-group-container" id="moveGroupContainer">
-                <div class="move-count" id="moveCount"></div>
-                <div class="custom-select" style="display:inline-block; margin-right:8px;">
-                    <select id="moveGroupSelect" aria-label="移動先のグループを選択" data-i18n-aria="moveDestination">
-                        <option value="" data-i18n="moveDestination">移動先を選択</option>
-                    </select>
-                    <div class="select-arrow">▾</div>
-                </div>
-                <div class="move-group-buttons">
-                    <button class="secondary" onclick="hideMoveGroup()" data-i18n="cancelButton">キャンセル</button>
-                    <button class="primary" onclick="moveSelectedToGroup()" data-i18n="moveButton">移動</button>
-                </div>
-            </div>
             <div id="studyGraphContainer" style="display: none; margin-bottom: 30px;" data-editor-target="graph">
                 <h2 data-i18n="graphTitle">勉強時間グラフ</h2>
                 <canvas id="studyChart" style="max-height: 300px;"></canvas>
             </div>
             <div id="historyList" class="history-list" data-editor-target="historyList"></div>
-            <button class="secondary clear-history" onclick="clearHistory()"
+            <button class="secondary list-clear-all" onclick="clearHistory()"
                 data-i18n="clearHistory">すべての履歴をクリア</button>
         </div>
 
@@ -5975,6 +6123,49 @@ body.dark .fc-formula-popup input {
                 </div>
                 <div class="setting-note" data-i18n="musicResumeWindowNote">
                     設定した時間を過ぎると、再開は手動になります。
+                </div>
+                <div class="toggle-item">
+                    <span data-i18n="miniPlayerEnabled">ミニプレイヤーを表示</span>
+                    <div class="toggle-switch" id="toggleMiniPlayer" onclick="toggleMiniPlayerSetting()">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <div class="toggle-item">
+                    <span data-i18n="miniPlayerHideSkip">次/前の曲ボタンを非表示</span>
+                    <div class="toggle-switch" id="toggleMiniPlayerHideSkip" onclick="toggleMiniPlayerHideSkip()">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <div class="toggle-item">
+                    <span data-i18n="miniPlayerAutoHideLabel">停止後の自動非表示時間</span>
+                    <div class="toggle-controls">
+                        <div class="custom-select" style="width: 120px;">
+                            <select id="miniPlayerAutoHideSelect" onchange="updateMiniPlayerAutoHide()">
+                                <option value="30">30</option>
+                                <option value="60">60</option>
+                                <option value="120">120</option>
+                                <option value="180">180</option>
+                                <option value="300">300</option>
+                                <option value="0" data-i18n="miniPlayerNoAutoHide">なし</option>
+                            </select>
+                            <div class="select-arrow">▾</div>
+                        </div>
+                        <span data-i18n="seconds">秒</span>
+                    </div>
+                </div>
+                <div class="toggle-item">
+                    <span data-i18n="miniPlayerPositionLabel">ミニプレイヤーの位置</span>
+                    <div class="toggle-controls">
+                        <div class="custom-select" style="width: 120px;">
+                            <select id="miniPlayerPositionSelect" onchange="updateMiniPlayerPosition()">
+                                <option value="top-right" data-i18n="posTopRight">右上</option>
+                                <option value="top-left" data-i18n="posTopLeft">左上</option>
+                                <option value="bottom-right" data-i18n="posBottomRight">右下</option>
+                                <option value="bottom-left" data-i18n="posBottomLeft">左下</option>
+                            </select>
+                            <div class="select-arrow">▾</div>
+                        </div>
+                    </div>
                 </div>
                 <div style="margin-top: 14px;">
                     <button class="secondary" style="width: 100%;" onclick="openTodoPriorityColorModal()" data-i18n="todoPriorityColorSettingsButton">
@@ -6625,7 +6816,7 @@ const translations = {
 
                         // リストページ
                         allGroupsFilter: 'すべてのグループ',
-                        searchPlaceholder: '日付や時刻で検索(例: 2025年12月11日 や 14:30)',
+                        searchPlaceholder: '日付や時刻で検索(例: 2025/12/11, 14:30, dec, summer)',
                         sortNewest: '新しい順',
                         sortOldest: '古い順',
                         sortLongest: '時間が長い順',
@@ -6643,6 +6834,7 @@ const translations = {
                         cancelButton: 'キャンセル',
                         graphTitle: '勉強時間グラフ',
                         clearHistoryConfirm: 'すべての学習記録を削除しますか?',
+                        clearHistoryConfirm2: '本当にすべての履歴を削除しますか？この操作は取り消せません。',
                         clearAllConfirmTitle: '全削除確認',
                         deleteSelectedConfirm: '選択した{n}件の記録を削除しますか?',
                         deleteConfirmTitle: '削除確認',
@@ -6787,6 +6979,16 @@ const translations = {
                         musicResumeWindowLabel: 'タップ再開の有効時間',
                         musicResumeWindowMinutes: '分',
                         musicResumeWindowNote: '設定した時間を過ぎると、再開は手動になります。',
+                        miniPlayerEnabled: 'ミニプレイヤーを表示',
+                        miniPlayerHideSkip: '次/前の曲ボタンを非表示',
+                        miniPlayerAutoHideLabel: '停止後の自動非表示時間',
+                        miniPlayerNoAutoHide: 'なし',
+                        miniPlayerPositionLabel: 'ミニプレイヤーの位置',
+                        posTopRight: '右上',
+                        posTopLeft: '左上',
+                        posBottomRight: '右下',
+                        posBottomLeft: '左下',
+                        seconds: '秒',
                         historyTimelineToggle: '履歴カードのタイムラインバー表示',
                         historyTimelineLegacyNote: '一時停止データがない履歴ではタイムラインバーは表示されません。4月22日より前の記録は表示されません。',
                         graphDisplay: 'グラフ表示',
@@ -7107,7 +7309,7 @@ const translations = {
 
                         // List Page
                         allGroupsFilter: 'All Groups',
-                        searchPlaceholder: 'Search by date or time (e.g., Dec 11, 2025 or 14:30)',
+                        searchPlaceholder: 'Search by date or time (e.g., 2025/12/11, 14:30, dec, summer)',
                         sortNewest: 'Newest First',
                         sortOldest: 'Oldest First',
                         sortLongest: 'Longest First',
@@ -7231,6 +7433,16 @@ const translations = {
                         musicResumeWindowLabel: 'Tap resume window',
                         musicResumeWindowMinutes: 'min',
                         musicResumeWindowNote: 'After this time, resume is manual.',
+                        miniPlayerEnabled: 'Show Mini Player',
+                        miniPlayerHideSkip: 'Hide Next/Previous Buttons',
+                        miniPlayerAutoHideLabel: 'Auto-hide after stop',
+                        miniPlayerNoAutoHide: 'None',
+                        miniPlayerPositionLabel: 'Mini Player Position',
+                        posTopRight: 'Top Right',
+                        posTopLeft: 'Top Left',
+                        posBottomRight: 'Bottom Right',
+                        posBottomLeft: 'Bottom Left',
+                        seconds: 'sec',
                         historyTimelineToggle: 'Show timeline bar on history cards',
                         historyTimelineLegacyNote: 'Timeline bars are hidden for records without pause data. Records before 4/22 are not shown in this bar feature.',
                         graphDisplay: 'Graph Display',
@@ -7510,6 +7722,7 @@ const translations = {
                         </div>`,
 
                         clearHistoryConfirm: 'Are you sure you want to delete all study history?',
+                        clearHistoryConfirm2: 'Are you absolutely sure? This action cannot be undone.',
                         clearAllConfirmTitle: 'Confirm Delete All',
                         deleteSelectedConfirm: 'Delete selected {n} items?',
                         deleteConfirmTitle: 'Confirm Delete',
@@ -11008,27 +11221,109 @@ const translations = {
                     return `<div class="history-timeline"><div class="history-timeline-scale"><span>${startLabel}</span><span>${endLabel}</span></div><div class="history-timeline-track">${segmentHtml}</div></div>`;
                 }
 
+                function parseSearchQuery(query) {
+                    query = query.trim().toLowerCase();
+                    if (!query) return null;
+                    const monthNames = {
+                        'jan':1,'january':1,'feb':2,'february':2,'mar':3,'march':3,
+                        'apr':4,'april':4,'may':5,'jun':6,'june':6,
+                        'jul':7,'july':7,'aug':8,'august':8,'sep':9,'september':9,
+                        'oct':10,'october':10,'nov':11,'november':11,'dec':12,'december':12
+                    };
+                    const seasons = {
+                        'spring':[3,4,5],'summer':[6,7,8],
+                        'fall':[9,10,11],'autumn':[9,10,11],'winter':[12,1,2]
+                    };
+                    if (seasons[query]) return { months: seasons[query] };
+                    if (monthNames[query] !== undefined) return { month: monthNames[query] };
+                    const timeMatch = query.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?$/);
+                    if (timeMatch) return { time: { h: parseInt(timeMatch[1]), m: parseInt(timeMatch[2]) } };
+                    const fullDate = query.match(/^(\d{4})[\/\.\-年](\d{1,2})[\/\.\-月](\d{1,2})[日]?$/);
+                    if (fullDate) return { year: parseInt(fullDate[1]), month: parseInt(fullDate[2]), day: parseInt(fullDate[3]) };
+                    const yearMonth = query.match(/^(\d{4})[\/\.\-年](\d{1,2})[月]?$/);
+                    if (yearMonth) return { year: parseInt(yearMonth[1]), month: parseInt(yearMonth[2]) };
+                    const yearOnly = query.match(/^(\d{4})[年]?$/);
+                    if (yearOnly) return { year: parseInt(yearOnly[1]) };
+                    const monthDay = query.match(/^(\d{1,2})[\/\.\-月](\d{1,2})[日]?$/);
+                    if (monthDay) return { month: parseInt(monthDay[1]), day: parseInt(monthDay[2]) };
+                    const monthOnly = query.match(/^(\d{1,2})月$/);
+                    if (monthOnly) return { month: parseInt(monthOnly[1]) };
+                    return { fallback: query };
+                }
+
+                function matchesSearchCriteria(item, criteria) {
+                    if (!criteria) return true;
+                    const start = new Date(item.start);
+                    const end = new Date(item.end);
+                    if (criteria.fallback) {
+                        const dateStr = formatDate(start).toLowerCase();
+                        const startTimeStr = formatDateTime(start).toLowerCase();
+                        const endTimeStr = formatDateTime(end).toLowerCase();
+                        return dateStr.includes(criteria.fallback) || startTimeStr.includes(criteria.fallback) || endTimeStr.includes(criteria.fallback);
+                    }
+                    if (criteria.months) {
+                        const sm = start.getMonth() + 1, em = end.getMonth() + 1;
+                        return criteria.months.includes(sm) || criteria.months.includes(em);
+                    }
+                    if (criteria.time) {
+                        const { h, m } = criteria.time;
+                        if (start.getHours() === h && start.getMinutes() === m) return true;
+                        if (end.getHours() === h && end.getMinutes() === m) return true;
+                        const probe = new Date(start);
+                        probe.setHours(h, m, 0, 0);
+                        if (probe >= start && probe <= end) return true;
+                        if (end.toDateString() !== start.toDateString()) {
+                            const probe2 = new Date(end);
+                            probe2.setHours(h, m, 0, 0);
+                            if (probe2 >= start && probe2 <= end) return true;
+                        }
+                        return false;
+                    }
+                    if (criteria.year != null && criteria.month != null && criteria.day != null) {
+                        const rangeStart = new Date(criteria.year, criteria.month - 1, criteria.day, 0, 0, 0);
+                        const rangeEnd = new Date(criteria.year, criteria.month - 1, criteria.day, 23, 59, 59, 999);
+                        return start <= rangeEnd && end >= rangeStart;
+                    }
+                    if (criteria.year != null && criteria.month != null) {
+                        const rangeStart = new Date(criteria.year, criteria.month - 1, 1);
+                        const rangeEnd = new Date(criteria.year, criteria.month, 0, 23, 59, 59, 999);
+                        return start <= rangeEnd && end >= rangeStart;
+                    }
+                    if (criteria.year != null) {
+                        const rangeStart = new Date(criteria.year, 0, 1);
+                        const rangeEnd = new Date(criteria.year, 11, 31, 23, 59, 59, 999);
+                        return start <= rangeEnd && end >= rangeStart;
+                    }
+                    if (criteria.month != null && criteria.day != null) {
+                        const sm = start.getMonth() + 1, sd = start.getDate();
+                        const em = end.getMonth() + 1, ed = end.getDate();
+                        return (sm === criteria.month && sd === criteria.day) || (em === criteria.month && ed === criteria.day);
+                    }
+                    if (criteria.month != null) {
+                        const sm = start.getMonth() + 1, em = end.getMonth() + 1;
+                        return sm === criteria.month || em === criteria.month;
+                    }
+                    return true;
+                }
+
+                function filterBySearch(history, searchTerm) {
+                    if (!searchTerm) return history;
+                    const criteria = parseSearchQuery(searchTerm);
+                    return history.filter(item => matchesSearchCriteria(item, criteria));
+                }
+
                 function loadHistory() {
                     const historyList = document.getElementById('historyList');
                     const searchInput = document.getElementById('searchInput');
                     const groupFilter = document.getElementById('groupFilter');
-                    const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+                    const searchTerm = searchInput ? searchInput.value : '';
                     const selectedGroup = groupFilter ? groupFilter.value : '';
                     let history = getData('studyHistory');
                     history = history ? JSON.parse(history) : [];
                     allHistoryItems = [...history];
                     updateHistoryTimelineLegacyNotice(allHistoryItems);
                     if (selectedGroup) history = history.filter(item => item.group === selectedGroup);
-                    if (searchTerm) {
-                        history = history.filter(item => {
-                            const start = new Date(item.start);
-                            const end = new Date(item.end);
-                            const dateStr = formatDate(start).toLowerCase();
-                            const startTimeStr = formatDateTime(start).toLowerCase();
-                            const endTimeStr = formatDateTime(end).toLowerCase();
-                            return dateStr.includes(searchTerm) || startTimeStr.includes(searchTerm) || endTimeStr.includes(searchTerm);
-                        });
-                    }
+                    history = filterBySearch(history, searchTerm);
                     // ソート処理
                     if (currentSort === 'date-desc') {
                         history.sort((a, b) => new Date(b.start) - new Date(a.start));
@@ -11070,8 +11365,60 @@ const translations = {
                         if (btn.getAttribute('data-sort') === sortType) btn.classList.add('active');
                         else btn.classList.remove('active');
                     });
+                    const sortSel = document.getElementById('sortSelect');
+                    if (sortSel) sortSel.value = sortType;
                     loadHistory();
                 }
+
+                function sortHistoryBySelect(sortType) {
+                    currentSort = sortType;
+                    loadHistory();
+                }
+
+                function toggleListSearch() {
+                    const searchRow = document.getElementById('listSearchRow');
+                    const filterSelects = document.getElementById('listFilterSelects');
+                    const input = document.getElementById('searchInput');
+                    if (searchRow.classList.contains('active')) {
+                        collapseListSearch();
+                    } else {
+                        searchRow.classList.add('active');
+                        filterSelects.classList.add('search-active');
+                        setTimeout(() => input.focus(), 300);
+                    }
+                }
+
+                function collapseListSearch() {
+                    const searchRow = document.getElementById('listSearchRow');
+                    const filterSelects = document.getElementById('listFilterSelects');
+                    const input = document.getElementById('searchInput');
+                    searchRow.classList.remove('active');
+                    filterSelects.classList.remove('search-active');
+                    if (input.value) {
+                        input.value = '';
+                        loadHistory();
+                    }
+                }
+
+                function cancelSelection() {
+                    if (selectedItems.size === 0) return;
+                    selectedItems.clear();
+                    loadHistory();
+                }
+
+                (function() {
+                    const input = document.getElementById('searchInput');
+                    if (input) {
+                        input.addEventListener('blur', function() {
+                            setTimeout(() => {
+                                const searchRow = document.getElementById('listSearchRow');
+                                if (searchRow && searchRow.classList.contains('active') && !input.value) {
+                                    collapseListSearch();
+                                }
+                            }, 200);
+                        });
+                    }
+                })();
 
                 function toggleSelection(event, index) {
                     event.stopPropagation();
@@ -11083,20 +11430,11 @@ const translations = {
                 function toggleSelectAll() {
                     const searchInput = document.getElementById('searchInput');
                     const groupFilter = document.getElementById('groupFilter');
-                    const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+                    const searchTerm = searchInput ? searchInput.value : '';
                     const selectedGroup = groupFilter ? groupFilter.value : '';
                     let history = [...allHistoryItems];
                     if (selectedGroup) history = history.filter(item => item.group === selectedGroup);
-                    if (searchTerm) {
-                        history = history.filter(item => {
-                            const start = new Date(item.start);
-                            const end = new Date(item.end);
-                            const dateStr = formatDate(start).toLowerCase();
-                            const startTimeStr = formatDateTime(start).toLowerCase();
-                            const endTimeStr = formatDateTime(end).toLowerCase();
-                            return dateStr.includes(searchTerm) || startTimeStr.includes(searchTerm) || endTimeStr.includes(searchTerm);
-                        });
-                    }
+                    history = filterBySearch(history, searchTerm);
                     const visibleIndices = history.map(item => allHistoryItems.indexOf(item));
                     const allSelected = visibleIndices.every(i => selectedItems.has(i));
                     if (allSelected) visibleIndices.forEach(i => selectedItems.delete(i));
@@ -11105,16 +11443,22 @@ const translations = {
                 }
 
                 function updateActionButtons() {
-                    const moveContainer = document.getElementById('moveGroupContainer');
+                    const moveRow = document.getElementById('moveGroupRow');
                     const deleteBtn = document.getElementById('deleteBtn');
+                    const cancelBtn = document.getElementById('cancelSelectionBtn');
                     const hasSelection = selectedItems.size > 0;
-                    if (moveContainer) {
-                        if (hasSelection) moveContainer.classList.add('active');
-                        else moveContainer.classList.remove('active');
+                    if (moveRow) {
+                        if (hasSelection) moveRow.classList.add('active');
+                        else moveRow.classList.remove('active');
                     }
-                    if (deleteBtn) deleteBtn.disabled = !hasSelection;
-                    const moveCount = document.getElementById('moveCount');
-                    if (moveCount) moveCount.textContent = hasSelection ? `${selectedItems.size}${getText('itemsToMove')}` : '';
+                    if (deleteBtn) {
+                        if (hasSelection) deleteBtn.classList.remove('dim');
+                        else deleteBtn.classList.add('dim');
+                    }
+                    if (cancelBtn) {
+                        if (hasSelection) cancelBtn.classList.remove('dim');
+                        else cancelBtn.classList.add('dim');
+                    }
                 }
 
                 async function deleteSelected() {
@@ -11136,8 +11480,6 @@ const translations = {
                     selectedItems.clear();
                     const sel = document.getElementById('moveGroupSelect');
                     if (sel) sel.selectedIndex = 0;
-                    const moveCount = document.getElementById('moveCount');
-                    if (moveCount) moveCount.textContent = '';
                     loadHistory();
                 }
 
@@ -11588,10 +11930,13 @@ const translations = {
                 async function clearHistory() {
                     const confirmed = await customConfirm(getText('clearHistoryConfirm'), getText('clearAllConfirmTitle'), 'warning.webp');
                     if (confirmed) {
-                        saveData('studyHistory', JSON.stringify([]));
-                        selectedItems.clear();
-                        updateGroupFilter();
-                        loadHistory();
+                        const confirmed2 = await customConfirm(getText('clearHistoryConfirm2'), getText('clearAllConfirmTitle'), 'warning.webp');
+                        if (confirmed2) {
+                            saveData('studyHistory', JSON.stringify([]));
+                            selectedItems.clear();
+                            updateGroupFilter();
+                            loadHistory();
+                        }
                     }
                 }
 
@@ -11624,7 +11969,11 @@ const translations = {
                     'todo_v2_prompt_shown',
                     'todo_priority_colors',
                     'tutorial_completed',
-                    'dev_mode_enabled'
+                    'dev_mode_enabled',
+                    'mini_player_enabled',
+                    'mini_player_hide_skip',
+                    'mini_player_auto_hide',
+                    'mini_player_position'
                 ];
 
                 const IMPORT_BOOLEAN_SETTING_KEYS = [
@@ -11642,7 +11991,9 @@ const translations = {
                     'todo_v2_enabled',
                     'todo_v2_prompt_shown',
                     'tutorial_completed',
-                    'dev_mode_enabled'
+                    'dev_mode_enabled',
+                    'mini_player_enabled',
+                    'mini_player_hide_skip'
                 ];
 
                 const EXPORT_SKIP_LOCALSTORAGE_KEYS = new Set([
@@ -12064,7 +12415,7 @@ const translations = {
                     {
                         titleKey: 'tutorialListFilterTitle',
                         messageKey: 'tutorialListFilterMessage',
-                        target: '.search-box',
+                        target: '.list-toolbar',
                         position: 'bottom',
                         action: 'view',
                         page: 'list'
@@ -13615,7 +13966,7 @@ const translations = {
 
                 function isSettingActive(key) {
                     var val = getData(key);
-                    var defaultOnKeys = ['feature_title_time','feature_history_timeline','feature_loading_anim','feature_focus_mode_display','feature_stop_music_on_timer_end','feature_music_resume_on_tap_after_reload'];
+                    var defaultOnKeys = ['feature_title_time','feature_history_timeline','feature_loading_anim','feature_focus_mode_display','feature_stop_music_on_timer_end','feature_music_resume_on_tap_after_reload','mini_player_enabled'];
                     if (val === null || val === undefined) return defaultOnKeys.indexOf(key) !== -1;
                     return val === 'true';
                 }
@@ -14535,6 +14886,308 @@ const translations = {
                 function flipFlashcard() {
                     // unused — swipe handles flipping
                 }
+
+                // ========== Mini Player ==========
+                let miniPlayerAutoHideTimer = null;
+                let miniPlayerDismissed = false;
+
+                function isMiniPlayerEnabled() {
+                    return getData('mini_player_enabled') !== 'false';
+                }
+
+                function getMiniPlayerAutoHide() {
+                    const v = parseInt(getData('mini_player_auto_hide') || '60', 10);
+                    return isNaN(v) ? 60 : v;
+                }
+
+                function getMiniPlayerPosition() {
+                    return getData('mini_player_position') || 'top-right';
+                }
+
+                function isMiniPlayerHideSkip() {
+                    return getData('mini_player_hide_skip') === 'true';
+                }
+
+                function isOnMusicPage() {
+                    const mp = document.getElementById('musicPage');
+                    return mp && mp.classList.contains('active');
+                }
+
+                function updateMiniPlayerVisibility() {
+                    const popup = document.getElementById('miniPlayerPopup');
+                    if (!popup) return;
+
+                    const audio = document.getElementById('audioPlayer');
+                    const isPlaying = audio && !audio.paused;
+                    const hasSrc = audio && audio.src && audio.getAttribute('src');
+
+                    if (!isMiniPlayerEnabled() || isOnMusicPage() || miniPlayerDismissed || !hasSrc) {
+                        popup.classList.remove('visible');
+                        clearMiniAutoHideTimer();
+                        return;
+                    }
+
+                    if (isPlaying) {
+                        popup.classList.add('visible');
+                        clearMiniAutoHideTimer();
+                    } else {
+                        if (popup.classList.contains('visible')) {
+                            startMiniAutoHideTimer();
+                        }
+                    }
+                }
+
+                function showMiniPlayer() {
+                    miniPlayerDismissed = false;
+                    updateMiniPlayerVisibility();
+                }
+
+                function closeMiniPlayer() {
+                    const popup = document.getElementById('miniPlayerPopup');
+                    if (popup) popup.classList.remove('visible');
+                    miniPlayerDismissed = true;
+                    clearMiniAutoHideTimer();
+                }
+
+                function clearMiniAutoHideTimer() {
+                    if (miniPlayerAutoHideTimer) {
+                        clearTimeout(miniPlayerAutoHideTimer);
+                        miniPlayerAutoHideTimer = null;
+                    }
+                }
+
+                function startMiniAutoHideTimer() {
+                    clearMiniAutoHideTimer();
+                    const seconds = getMiniPlayerAutoHide();
+                    if (seconds <= 0) return;
+                    miniPlayerAutoHideTimer = setTimeout(function() {
+                        const popup = document.getElementById('miniPlayerPopup');
+                        if (popup) popup.classList.remove('visible');
+                        miniPlayerAutoHideTimer = null;
+                    }, seconds * 1000);
+                }
+
+                function syncMiniPlayerUI() {
+                    const audio = document.getElementById('audioPlayer');
+                    const isPlaying = audio && !audio.paused;
+                    const miniIcon = document.getElementById('miniPlayIcon');
+                    if (miniIcon) {
+                        miniIcon.src = isPlaying ? 'pause.webp' : 'play.webp';
+                    }
+                    const titleEl = document.getElementById('miniPlayerTitle');
+                    if (titleEl) {
+                        if (currentMusicIndex >= 0 && musicFiles[currentMusicIndex]) {
+                            titleEl.textContent = musicFiles[currentMusicIndex].title || 'Unknown';
+                        } else {
+                            titleEl.textContent = '---';
+                        }
+                    }
+                    const hideSkip = isMiniPlayerHideSkip();
+                    const prevBtn = document.getElementById('miniPrevBtn');
+                    const nextBtn = document.getElementById('miniNextBtn');
+                    if (prevBtn) prevBtn.style.display = hideSkip ? 'none' : '';
+                    if (nextBtn) nextBtn.style.display = hideSkip ? 'none' : '';
+                }
+
+                let miniPlayerFixed = false;
+
+                function applyMiniPlayerPosition() {
+                    const popup = document.getElementById('miniPlayerPopup');
+                    if (!popup) return;
+                    miniPlayerFixed = false;
+                    const pos = getMiniPlayerPosition();
+                    popup.classList.remove('pos-top-right', 'pos-top-left', 'pos-bottom-right', 'pos-bottom-left');
+                    popup.classList.add('pos-' + pos);
+                    popup.style.position = '';
+                    popup.style.left = '';
+                    popup.style.right = '';
+                    if (pos.startsWith('top')) {
+                        const menu = document.getElementById('mainMenu');
+                        const container = popup.closest('.container');
+                        if (menu && container) {
+                            const menuRect = menu.getBoundingClientRect();
+                            const containerRect = container.getBoundingClientRect();
+                            popup.style.top = (menuRect.bottom - containerRect.top + 4) + 'px';
+                        }
+                        popup.style.bottom = '';
+                    } else {
+                        popup.style.top = '';
+                    }
+                }
+
+                function updateMiniPlayerScroll() {
+                    const popup = document.getElementById('miniPlayerPopup');
+                    if (!popup || !popup.classList.contains('visible')) return;
+                    const pos = getMiniPlayerPosition();
+                    const container = document.querySelector('.container');
+                    if (!container) return;
+
+                    let shouldFix = false;
+                    if (pos.startsWith('top')) {
+                        const menu = document.getElementById('mainMenu');
+                        if (!menu) return;
+                        shouldFix = menu.getBoundingClientRect().bottom < 10;
+                    } else {
+                        shouldFix = container.getBoundingClientRect().bottom > window.innerHeight + 10;
+                    }
+
+                    if (shouldFix && !miniPlayerFixed) {
+                        miniPlayerFixed = true;
+                        popup.style.position = 'fixed';
+                        if (pos.startsWith('top')) {
+                            popup.style.top = '14px';
+                            popup.style.bottom = '';
+                        } else {
+                            popup.style.bottom = '14px';
+                            popup.style.top = '';
+                        }
+                        calcMiniPlayerFixedX();
+                    } else if (!shouldFix && miniPlayerFixed) {
+                        miniPlayerFixed = false;
+                        popup.style.position = '';
+                        popup.style.left = '';
+                        popup.style.right = '';
+                        popup.style.bottom = '';
+                        applyMiniPlayerPosition();
+                    }
+                }
+
+                function calcMiniPlayerFixedX() {
+                    const popup = document.getElementById('miniPlayerPopup');
+                    if (!popup || !miniPlayerFixed) return;
+                    const container = document.querySelector('.container');
+                    if (!container) return;
+                    const pos = getMiniPlayerPosition();
+                    const cr = container.getBoundingClientRect();
+                    const isMobile = window.innerWidth <= 760;
+                    popup.style.left = '';
+                    popup.style.right = '';
+                    var isRight = pos.endsWith('right');
+                    if (isRight) {
+                        popup.style.left = isMobile ? 'auto' : (cr.right + 12) + 'px';
+                        if (isMobile) popup.style.right = '0px';
+                    } else {
+                        popup.style.right = isMobile ? 'auto' : (window.innerWidth - cr.left + 12) + 'px';
+                        if (isMobile) popup.style.left = '0px';
+                    }
+                }
+
+                window.addEventListener('scroll', updateMiniPlayerScroll, { passive: true });
+                window.addEventListener('resize', function() {
+                    if (miniPlayerFixed) calcMiniPlayerFixedX();
+                });
+
+                // Settings toggle functions
+                function toggleMiniPlayerSetting() {
+                    const toggle = document.getElementById('toggleMiniPlayer');
+                    if (!toggle) return;
+                    const isActive = toggle.classList.contains('active');
+                    if (isActive) {
+                        toggle.classList.remove('active');
+                        saveData('mini_player_enabled', 'false');
+                        const popup = document.getElementById('miniPlayerPopup');
+                        if (popup) popup.classList.remove('visible');
+                    } else {
+                        toggle.classList.add('active');
+                        saveData('mini_player_enabled', 'true');
+                        miniPlayerDismissed = false;
+                        updateMiniPlayerVisibility();
+                    }
+                }
+
+                function toggleMiniPlayerHideSkip() {
+                    const toggle = document.getElementById('toggleMiniPlayerHideSkip');
+                    if (!toggle) return;
+                    const isActive = toggle.classList.contains('active');
+                    if (isActive) {
+                        toggle.classList.remove('active');
+                        saveData('mini_player_hide_skip', 'false');
+                    } else {
+                        toggle.classList.add('active');
+                        saveData('mini_player_hide_skip', 'true');
+                    }
+                    syncMiniPlayerUI();
+                }
+
+                function updateMiniPlayerAutoHide() {
+                    const select = document.getElementById('miniPlayerAutoHideSelect');
+                    if (!select) return;
+                    saveData('mini_player_auto_hide', select.value);
+                }
+
+                function updateMiniPlayerPosition() {
+                    const select = document.getElementById('miniPlayerPositionSelect');
+                    if (!select) return;
+                    saveData('mini_player_position', select.value);
+                    applyMiniPlayerPosition();
+                }
+
+                // Hook into existing playback events
+                (function() {
+                    const origUpdatePlayPauseUI = updatePlayPauseUI;
+                    updatePlayPauseUI = function(isPlaying) {
+                        origUpdatePlayPauseUI(isPlaying);
+                        syncMiniPlayerUI();
+                        updateMiniPlayerVisibility();
+                    };
+                })();
+
+                // Hook into showPage to hide/show mini player on page change
+                (function() {
+                    const origShowPage = showPage;
+                    showPage = function(pageName) {
+                        origShowPage(pageName);
+                        if (pageName === 'music') {
+                            const popup = document.getElementById('miniPlayerPopup');
+                            if (popup) popup.classList.remove('visible');
+                            clearMiniAutoHideTimer();
+                        } else {
+                            miniPlayerDismissed = false;
+                            syncMiniPlayerUI();
+                            applyMiniPlayerPosition();
+                            updateMiniPlayerVisibility();
+                        }
+                    };
+                })();
+
+                // Initialize mini player settings on load
+                (function() {
+                    const origOnload = window.onload;
+                    const initMiniPlayer = function() {
+                        setToggleActive('toggleMiniPlayer', isMiniPlayerEnabled());
+                        setToggleActive('toggleMiniPlayerHideSkip', isMiniPlayerHideSkip());
+                        const autoHideSelect = document.getElementById('miniPlayerAutoHideSelect');
+                        if (autoHideSelect) {
+                            const val = getData('mini_player_auto_hide') || '60';
+                            for (let i = 0; i < autoHideSelect.options.length; i++) {
+                                if (autoHideSelect.options[i].value === val) {
+                                    autoHideSelect.value = val;
+                                    break;
+                                }
+                            }
+                        }
+                        const posSelect = document.getElementById('miniPlayerPositionSelect');
+                        if (posSelect) {
+                            posSelect.value = getMiniPlayerPosition();
+                        }
+                        applyMiniPlayerPosition();
+                        syncMiniPlayerUI();
+
+                        const audio = document.getElementById('audioPlayer');
+                        if (audio) {
+                            audio.addEventListener('play', function() {
+                                syncMiniPlayerUI();
+                                miniPlayerDismissed = false;
+                                updateMiniPlayerVisibility();
+                            });
+                            audio.addEventListener('pause', function() {
+                                syncMiniPlayerUI();
+                                updateMiniPlayerVisibility();
+                            });
+                        }
+                    };
+                    window.addEventListener('load', initMiniPlayer);
+                })();
 
             </script>
 </body>

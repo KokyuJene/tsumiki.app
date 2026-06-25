@@ -5524,6 +5524,44 @@ body.dark .fc-formula-popup input {
             width: 26px;
             height: 26px;
         }
+        #fullscreenTimerBtn:hover {
+            opacity: 0.85 !important;
+        }
+        /* Focus Mode Progress Bar */
+        .focus-progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(128, 128, 128, 0.15);
+            border-radius: 3px;
+            margin-top: -10px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        #fullscreenFocusProgressBar {
+            position: absolute;
+            bottom: 32px;
+            left: 10%;
+            width: 80%;
+            height: 8px;
+            margin: 0;
+            background: rgba(128, 128, 128, 0.2);
+            border-radius: 4px;
+        }
+        .focus-progress-bar .focus-progress-fill {
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s linear;
+            border-radius: 3px;
+        }
+        body.light .focus-progress-fill {
+            background: var(--primary-color);
+        }
+        body.dark .focus-progress-fill {
+            background: var(--primary-color-dark);
+        }
+        .focus-progress-bar .focus-progress-fill.break-phase {
+            opacity: 0.5;
+        }
     </style>
 
 </head>
@@ -5759,9 +5797,17 @@ body.dark .fc-formula-popup input {
         </div>
 
         <div id="timerPage" class="page active">
-            <div class="timer" id="timer" style="font-weight: 300;" data-editor-target="timer">00:00:00</div>
+            <div class="timer-wrapper" style="position: relative; display: block; width: 100%;">
+                <div class="timer" id="timer" style="font-weight: 300;" data-editor-target="timer">00:00:00</div>
+                <button id="fullscreenTimerBtn" onclick="toggleFullscreenTimer()" aria-label="フルスクリーン" style="position: absolute; right: 0; bottom: 4px; background: none; border: none; border-radius: 0; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0.45; transition: opacity 0.2s; color: inherit; padding: 0; z-index: 1;">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="22px" viewBox="0 0 960 960" width="22px" fill="currentColor" style="display: block; overflow: hidden;"><path d="M234.26 783q-24.2 0-40.73-16.53Q177 749.94 177 725.74V598.5h25.5v127q0 12 10 22t22 10h127v25.5H234.26Zm364.24 0v-25.5h127q12 0 22-10t10-22v-127H783v127.24q0 24.2-16.53 40.73Q749.94 783 725.74 783H598.5ZM177 361.5v-127.24q0-24.2 16.53-40.73Q210.06 177 234.26 177H361.5v25.5h-127q-12 0-22 10t-10 22v127H177Zm580.5 0v-127q0-12-10-22t-22-10h-127V177h127.24q24.2 0 40.73 16.53Q783 210.06 783 234.26v127.24h-25.5Z"/></svg>
+                </button>
+            </div>
             <div class="timer-display-sub" id="totalTimerDisplay"
                 style="font-size: 1.5rem; opacity: 0.6; margin-top: -30px; margin-bottom: 20px; display: none;">00:00:00
+            </div>
+            <div class="focus-progress-bar" id="mainFocusProgressBar">
+                <div class="focus-progress-fill" id="mainFocusProgressFill"></div>
             </div>
             <div class="group-input">
                 <input type="text" id="groupInput" placeholder="グループ名(任意)" data-i18n="groupPlaceholder">
@@ -8544,6 +8590,7 @@ const translations = {
                         saveData('focus_mode_enabled', 'false');
                         subTimer.style.display = 'none';
                         timer.style.fontSize = '4rem';
+                        hideFocusProgressBar();
 
                         if (!startTime) {
                             timer.textContent = '00:00:00';
@@ -8722,6 +8769,34 @@ const translations = {
                     return { currentState, cycleElapsed, targetDuration, totalBreakTime, netStudyTime: wallElapsed - totalBreakTime };
                 }
 
+                function updateFocusProgressBar(fc) {
+                    const progress = Math.min(100, (fc.cycleElapsed / fc.targetDuration) * 100);
+                    const isBreak = fc.currentState === 'break';
+
+                    const mainBar = document.getElementById('mainFocusProgressBar');
+                    const mainFill = document.getElementById('mainFocusProgressFill');
+                    const fsBar = document.getElementById('fullscreenFocusProgressBar');
+                    const fsFill = document.getElementById('fullscreenFocusProgressFill');
+
+                    if (mainBar) {
+                        mainBar.style.display = 'block';
+                        mainFill.style.width = progress + '%';
+                        mainFill.classList.toggle('break-phase', isBreak);
+                    }
+                    if (fsBar) {
+                        fsBar.style.display = 'block';
+                        fsFill.style.width = progress + '%';
+                        fsFill.classList.toggle('break-phase', isBreak);
+                    }
+                }
+
+                function hideFocusProgressBar() {
+                    var mainBar = document.getElementById('mainFocusProgressBar');
+                    var fsBar = document.getElementById('fullscreenFocusProgressBar');
+                    if (mainBar) mainBar.style.display = 'none';
+                    if (fsBar) fsBar.style.display = 'none';
+                }
+
                 function updateTimer() {
                     if (!startTime) return;
 
@@ -8743,10 +8818,13 @@ const translations = {
                         document.getElementById('timer').textContent = `${targetStr} / ${currentStr}`;
                         document.getElementById('totalTimerDisplay').textContent = totalStr;
                         document.title = `${totalStr} - ${getText('studyTimeManagement')}`;
+
+                        updateFocusProgressBar(fc);
                     } else {
                         const timeStr = formatTime(wallElapsed);
                         document.getElementById('timer').textContent = timeStr;
                         document.title = `${timeStr} - ${getText('studyTimeManagement')}`;
+                        hideFocusProgressBar();
                     }
 
                 }
@@ -8815,6 +8893,7 @@ const translations = {
 
                 function endStudy() {
                     if (timerInterval) clearInterval(timerInterval);
+                    hideFocusProgressBar();
                     document.title = getText('studyTimeManagement');
                     if (isStopMusicOnTimerEndEnabled()) {
                         const audio = document.getElementById('audioPlayer');
@@ -15190,6 +15269,96 @@ const translations = {
                 })();
 
             </script>
+
+        <div id="fullscreenTimerOverlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:99999; flex-direction:column; align-items:center; justify-content:center; cursor:pointer;" onclick="exitFullscreenTimer()">
+            <div id="fullscreenTimerDisplay" style="font-size:min(18vw, 12rem); font-weight:300; font-variant-numeric:tabular-nums; user-select:none;">00:00:00</div>
+            <div id="fullscreenTimerSub" style="font-size:min(6vw, 3.5rem); font-weight:300; opacity:0.6; margin-top:10px; display:none; user-select:none;">00:00:00</div>
+            <button onclick="event.stopPropagation(); exitFullscreenTimer();" style="position:absolute; top:24px; right:24px; background:none; border:none; cursor:pointer; padding:8px;">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+            <div class="focus-progress-bar" id="fullscreenFocusProgressBar">
+                <div class="focus-progress-fill" id="fullscreenFocusProgressFill"></div>
+            </div>
+        </div>
+
+        <script>
+            (function() {
+                let fullscreenTimerInterval = null;
+
+                window.toggleFullscreenTimer = function() {
+                    const overlay = document.getElementById('fullscreenTimerOverlay');
+                    const isDark = document.body.classList.contains('dark');
+
+                    if (isDark) {
+                        overlay.style.backgroundColor = '#000000';
+                        overlay.style.color = 'var(--primary-color-dark)';
+                    } else {
+                        overlay.style.backgroundColor = '#ffffff';
+                        overlay.style.color = 'var(--primary-color)';
+                    }
+
+                    overlay.style.display = 'flex';
+                    updateFullscreenTimerDisplay();
+                    fullscreenTimerInterval = setInterval(updateFullscreenTimerDisplay, 100);
+
+                    if (document.documentElement.requestFullscreen) {
+                        document.documentElement.requestFullscreen().catch(function() {});
+                    }
+                };
+
+                window.exitFullscreenTimer = function() {
+                    const overlay = document.getElementById('fullscreenTimerOverlay');
+                    overlay.style.display = 'none';
+                    if (fullscreenTimerInterval) {
+                        clearInterval(fullscreenTimerInterval);
+                        fullscreenTimerInterval = null;
+                    }
+                    if (document.fullscreenElement) {
+                        document.exitFullscreen().catch(function() {});
+                    }
+                };
+
+                function updateFullscreenTimerDisplay() {
+                    var timerEl = document.getElementById('timer');
+                    var subEl = document.getElementById('totalTimerDisplay');
+                    var fsDisplay = document.getElementById('fullscreenTimerDisplay');
+                    var fsSub = document.getElementById('fullscreenTimerSub');
+
+                    fsDisplay.textContent = timerEl.textContent;
+
+                    if (subEl && subEl.style.display !== 'none') {
+                        fsSub.style.display = 'block';
+                        fsSub.textContent = subEl.textContent;
+                    } else {
+                        fsSub.style.display = 'none';
+                    }
+                }
+
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        var overlay = document.getElementById('fullscreenTimerOverlay');
+                        if (overlay && overlay.style.display === 'flex') {
+                            exitFullscreenTimer();
+                        }
+                    }
+                });
+
+                document.addEventListener('fullscreenchange', function() {
+                    if (!document.fullscreenElement) {
+                        var overlay = document.getElementById('fullscreenTimerOverlay');
+                        if (overlay && overlay.style.display === 'flex') {
+                            overlay.style.display = 'none';
+                            if (fullscreenTimerInterval) {
+                                clearInterval(fullscreenTimerInterval);
+                                fullscreenTimerInterval = null;
+                            }
+                        }
+                    }
+                });
+            })();
+        </script>
 </body>
 
 </html>

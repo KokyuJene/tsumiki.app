@@ -1266,8 +1266,18 @@
             color: #323232;
             border-radius: 24px;
             z-index: 1000;
-            display: none;
             overflow: hidden;
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.95) translateY(-6px);
+            transform-origin: top center;
+            transition: opacity 0.18s ease, transform 0.18s ease;
+        }
+
+        .file-dropdown-menu.open {
+            opacity: 1;
+            pointer-events: auto;
+            transform: scale(1) translateY(0);
         }
 
         .dark .file-dropdown-menu {
@@ -1279,7 +1289,7 @@
             padding: 10px 14px;
             cursor: pointer;
             font-size: 0.9rem;
-            transition: all 0.2s;
+            transition: background 0.15s;
         }
 
         .file-dropdown-menu .dropdown-item:hover {
@@ -1771,10 +1781,17 @@
 
         .playlist-item-title {
             font-weight: 400;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            min-width: 0;
+        }
+        .playlist-item-title .title-text {
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            font-size: 0.9rem;
+            flex: 1;
+            min-width: 0;
         }
 
         .playlist-item.playing .playlist-item-title {
@@ -1968,7 +1985,8 @@
 
         #customConfirmOverlay,
         #renameOverlay,
-        #playlistRenameOverlay {
+        #playlistRenameOverlay,
+        #youtubeUrlOverlay {
             z-index: 10020;
         }
 
@@ -5488,6 +5506,8 @@ body.dark .fc-formula-popup input {
             color: inherit;
         }
         .mini-player-close:hover { opacity: 1; }
+        .mini-player-popup.yt-active .mini-player-close { display: none; }
+        .playlist-item.yt-item-hidden { display: none !important; }
         .mini-player-title {
             width: 100%;
             overflow: hidden;
@@ -5524,6 +5544,81 @@ body.dark .fc-formula-popup input {
             width: 26px;
             height: 26px;
         }
+
+        /* ===== YouTube Player ===== */
+        #ytPlayerContainer {
+            position: fixed;
+            z-index: 100;
+            display: none;
+            background: #000;
+            overflow: hidden;
+            pointer-events: auto;
+        }
+        #ytPlayerContainer iframe {
+            width: 100% !important;
+            height: 100% !important;
+            display: block;
+            border: none;
+        }
+        #ytMusicZone {
+            width: 100%;
+            display: none;
+            border-radius: 8px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        #ytMusicZone::before {
+            content: '';
+            display: block;
+            padding-top: 56.25%;
+        }
+        #ytMiniZone {
+            width: 100%;
+            display: none;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        #ytMiniZone::before {
+            content: '';
+            display: block;
+            padding-top: 56.25%;
+        }
+        /* YouTube SVG badge in playlist */
+        .yt-svg-badge {
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 5px;
+            flex-shrink: 0;
+            line-height: 0;
+        }
+        .yt-svg-badge .yt-path { fill: #ff0000; }
+        .yt-svg-badge .yt-tri { fill: #fff; }
+
+        .music-display-panel.yt-mode .music-progress-section { display: none; }
+        .music-display-panel.yt-mode .volume-control-group { display: none; }
+        .mini-player-popup.yt-active { width: min(480px, calc(100vw - 24px)); }
+        @media (max-width: 760px) {
+            .mini-player-popup.yt-active { width: 70vw; }
+        }
+
+        /* Mini player drag handle */
+        .mini-player-drag-handle {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: grab;
+            padding: 2px 0 4px;
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+            opacity: 0.35;
+            transition: opacity 0.2s;
+        }
+        .mini-player-drag-handle:hover { opacity: 0.75; }
+        .mini-player-popup.dragging { user-select: none; -webkit-user-select: none; }
+        .mini-player-popup.dragging .mini-player-drag-handle { cursor: grabbing; opacity: 0.9; }
+
         #fullscreenTimerBtn:hover {
             opacity: 0.85 !important;
         }
@@ -5619,6 +5714,19 @@ body.dark .fc-formula-popup input {
             <div class="custom-confirm-buttons">
                 <button class="custom-confirm-cancel" id="playlistRenameCancelBtn" data-i18n="cancelButton">キャンセル</button>
                 <button class="custom-confirm-ok" id="playlistRenameOkBtn" data-i18n="saveButton">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="custom-confirm-overlay" id="youtubeUrlOverlay">
+        <div class="custom-confirm-dialog">
+            <div class="custom-confirm-title" data-i18n="addYoutubeMusic">Youtube動画を追加</div>
+            <input type="url" id="youtubeUrlInput" placeholder="YouTube URL" data-i18n-placeholder="youtubeUrlPlaceholder"
+                style="width:100%; padding:12px 15px; border:none; border-radius:24px; font-size:0.95rem; font-family:inherit; margin-bottom:10px;">
+            <div id="youtubeUrlError" style="display:none; color:#e74c3c; font-size:0.8rem; margin-bottom:10px; padding: 0 4px;"></div>
+            <div class="custom-confirm-buttons">
+                <button class="custom-confirm-cancel" id="youtubeUrlCancelBtn" data-i18n="cancelButton">キャンセル</button>
+                <button class="custom-confirm-ok" id="youtubeUrlOkBtn" data-i18n="addButton">追加</button>
             </div>
         </div>
     </div>
@@ -5768,11 +5876,22 @@ body.dark .fc-formula-popup input {
     <div class="editor-mini-menu-backdrop" id="editorMiniMenuBackdrop" onclick="closeEditorMiniMenu()"></div>
     <div class="editor-mini-menu" id="editorMiniMenu"></div>
 
+    <!-- YouTube fixed overlay player -->
+    <div id="ytPlayerContainer"></div>
+
     <div class="container">
         <!-- Mini Music Player Popup -->
         <div id="miniPlayerPopup" class="mini-player-popup pos-top-right">
+            <div id="miniPlayerDragHandle" class="mini-player-drag-handle" title="ドラッグして移動">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="10" viewBox="0 0 28 10">
+                    <rect x="2" y="0" width="24" height="2" rx="1" fill="currentColor"/>
+                    <rect x="2" y="4" width="24" height="2" rx="1" fill="currentColor"/>
+                    <rect x="2" y="8" width="24" height="2" rx="1" fill="currentColor"/>
+                </svg>
+            </div>
             <button class="mini-player-close" id="miniPlayerClose" onclick="closeMiniPlayer()" aria-label="閉じる">&times;</button>
             <div class="mini-player-title" id="miniPlayerTitle">---</div>
+            <div id="ytMiniZone"></div>
             <div class="mini-player-controls">
                 <button class="mini-player-btn mini-prev-btn" id="miniPrevBtn" onclick="playPrevious()" aria-label="前へ">
                     <img src="prev.webp" alt="前へ">
@@ -5920,13 +6039,15 @@ body.dark .fc-formula-popup input {
                             aria-haspopup="true">
                             <img id="musicDropdownArrow" class="file-select-arrow" src="arrow_down.webp" alt="メニュー"
                                 data-i18n-alt="menu">
-                            <span class="file-select-text" data-i18n="selectFile">ファイルを選択</span>
+                            <span class="file-select-text" data-i18n="addMusicButton">音楽を追加</span>
                         </label>
                         <input type="file" id="musicFileInput" accept=".mp3,.wav,.flac,.m4a,.aac,.ogg,.webm,audio/*"
                             onchange="addMusicFile(event)" multiple style="display:none;">
 
                         <div class="file-dropdown-menu" id="musicDropdownMenu" role="menu" aria-hidden="true">
-                            <div class="dropdown-item" id="chooseFolderItem" data-i18n="selectFolder">フォルダを選択</div>
+                            <div class="dropdown-item" id="addFileItem" data-i18n="selectFile">ファイルを追加</div>
+                            <div class="dropdown-item" id="chooseFolderItem" data-i18n="selectFolder">フォルダ内を一括追加</div>
+                            <div class="dropdown-item" id="addYoutubeItem" data-i18n="addYoutubeMusic" style="display:none;">Youtube動画を追加</div>
                         </div>
 
                         <input type="file" id="musicFolderInput" webkitdirectory directory multiple
@@ -5939,6 +6060,8 @@ body.dark .fc-formula-popup input {
                 <div class="music-display-panel" data-editor-target="musicPlayer">
                     <div class="music-info-header">
                         <div class="music-title-display" id="musicTitleDisplay"  data-i18n="musicSelectPrompt">楽曲を選択してください</div>
+                        <!-- YouTube video zone placeholder -->
+                        <div id="ytMusicZone"></div>
                         <div class="music-progress-section">
                             <div class="time-display" id="timeDisplay">0:00 / 0:00</div>
                             <div class="progress-wrapper">
@@ -6137,6 +6260,7 @@ body.dark .fc-formula-popup input {
                         <div class="toggle-slider"></div>
                     </div>
                 </div>
+                <div id="musicRelatedSettings">
                 <div class="toggle-item">
                     <span data-i18n="stopMusicOnTimerEnd">タイマー終了時に音楽を一時停止</span>
                     <div class="toggle-switch" id="toggleStopMusicOnTimerEnd" onclick="toggleStopMusicOnTimerEnd()">
@@ -6171,6 +6295,15 @@ body.dark .fc-formula-popup input {
                     設定した時間を過ぎると、再開は手動になります。
                 </div>
                 <div class="toggle-item">
+                    <span data-i18n="youtubeMusicEnabled">音楽にYoutube動画を追加</span>
+                    <div class="toggle-switch" id="toggleYoutubeMusic" onclick="toggleYoutubeMusicSetting()">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <div class="setting-note" id="youtubeMusicNote" style="display:none;" data-i18n="youtubeMusicNote">
+                    ミニプレイヤーが常にONになります。
+                </div>
+                <div class="toggle-item">
                     <span data-i18n="miniPlayerEnabled">ミニプレイヤーを表示</span>
                     <div class="toggle-switch" id="toggleMiniPlayer" onclick="toggleMiniPlayerSetting()">
                         <div class="toggle-slider"></div>
@@ -6199,7 +6332,7 @@ body.dark .fc-formula-popup input {
                         <span data-i18n="seconds">秒</span>
                     </div>
                 </div>
-                <div class="toggle-item">
+                <div class="toggle-item" id="miniPlayerPositionItem">
                     <span data-i18n="miniPlayerPositionLabel">ミニプレイヤーの位置</span>
                     <div class="toggle-controls">
                         <div class="custom-select" style="width: 120px;">
@@ -6213,6 +6346,13 @@ body.dark .fc-formula-popup input {
                         </div>
                     </div>
                 </div>
+                <div class="toggle-item">
+                    <span data-i18n="miniPlayerFreePlace">ミニプレイヤーの自由設置</span>
+                    <div class="toggle-switch" id="toggleMiniPlayerFreePlace" onclick="toggleMiniPlayerFreePlace()">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                </div><!-- /#musicRelatedSettings -->
                 <div style="margin-top: 14px;">
                     <button class="secondary" style="width: 100%;" onclick="openTodoPriorityColorModal()" data-i18n="todoPriorityColorSettingsButton">
                         ToDo優先度カラーを設定
@@ -6789,6 +6929,12 @@ body.dark .fc-formula-popup input {
                 let isLoop = false;
                 let isShuffle = false;
                 let _musicDB = null;
+                // YouTube player state
+                let ytPlayer = null;
+                let ytPlayerApiReady = false;
+                let ytPlayerPendingVideoId = null;
+                let ytPlayerIsPlaying = false;
+                let ytPlayerPendingSeekTime = 0;
                 const NO_COOKIE_FALLBACK_KEYS = new Set([
                     'music_playlists_v2'
                 ]);
@@ -6897,8 +7043,19 @@ const translations = {
                         dailyTimelineNoSessions: 'この日の記録はありません',
 
                         // 音楽プレイヤー
-                        selectFile: 'ファイルを選択',
-                        selectFolder: 'フォルダを選択',
+                        addMusicButton: '音楽を追加',
+                        selectFile: 'ファイルを追加',
+                        selectFolder: 'フォルダ内を一括追加',
+                        addYoutubeMusic: 'Youtube動画を追加',
+                        youtubeUrlPlaceholder: 'YouTube URL を入力 (youtube.com/watch?v=, youtu.be/)',
+                        youtubeInvalidUrl: '無効なURLです。対応形式: youtube.com/watch?v= / youtu.be/',
+                        youtubeMusicEnabled: 'プレイリストにYoutube動画を追加',
+                        youtubeMusicNote: 'ミニプレイヤーが常にONになります。',
+                        menuMusicYt: '再生',
+                        musicPlayerYt: '再生プレイヤー',
+                        musicSelectPromptYt: '動画/楽曲を選択してください',
+                        addMusicButtonYt: '動画/音楽を追加',
+                        miniPlayerFreePlace: 'ミニプレイヤーの自由設置',
                         previous: '前へ',
                         play: '再生',
                         pause: '一時停止',
@@ -7385,8 +7542,19 @@ const translations = {
                         dailyTimelineNoSessions: 'No sessions on this day',
 
                         // Music Player
-                        selectFile: 'Select File',
-                        selectFolder: 'Select Folder',
+                        addMusicButton: 'Add Music',
+                        selectFile: 'Add File',
+                        selectFolder: 'Add Folder',
+                        addYoutubeMusic: 'Add YouTube Video',
+                        youtubeUrlPlaceholder: 'Enter YouTube URL (youtube.com/watch?v=, youtu.be/)',
+                        youtubeInvalidUrl: 'Invalid URL. Supported: youtube.com/watch?v= / youtu.be/',
+                        youtubeMusicEnabled: 'Add YouTube Videos to Playlist',
+                        youtubeMusicNote: 'Mini player will always be enabled.',
+                        menuMusicYt: 'Player',
+                        musicPlayerYt: 'Player',
+                        musicSelectPromptYt: 'Select a video/track',
+                        addMusicButtonYt: 'Add Video/Music',
+                        miniPlayerFreePlace: 'Free Placement Mode',
                         previous: 'Previous',
                         play: 'Play',
                         pause: 'Pause',
@@ -8269,31 +8437,37 @@ const translations = {
                     localStorage.removeItem('music_resume_index');
                     localStorage.removeItem('music_resume_time');
                     localStorage.removeItem('music_resume_saved_at');
+                    localStorage.removeItem('music_resume_is_yt');
                     setCookie('music_resume_index', '', -1);
                     setCookie('music_resume_time', '', -1);
                     setCookie('music_resume_saved_at', '', -1);
                 }
 
                 function saveMusicResumeStateForReload() {
-                    const audio = document.getElementById('audioPlayer');
-                    if (!audio) return;
+                    if (!isMusicResumeOnTapEnabled()) { clearMusicResumeState(); return; }
+                    if (currentMusicIndex < 0 || !musicFiles[currentMusicIndex]) { clearMusicResumeState(); return; }
 
-                    const canResume = (
-                        isMusicResumeOnTapEnabled() &&
-                        currentMusicIndex >= 0 &&
-                        !!musicFiles[currentMusicIndex] &&
-                        !audio.paused
-                    );
+                    const isYt = isCurrentTrackYoutube();
+                    let isPlaying = false;
+                    let currentTime = 0;
 
-                    if (!canResume) {
-                        clearMusicResumeState();
-                        return;
+                    if (isYt) {
+                        isPlaying = ytPlayerIsPlaying;
+                        try { currentTime = Math.max(0, ytPlayer && ytPlayer.getCurrentTime ? ytPlayer.getCurrentTime() : 0); } catch(e) {}
+                    } else {
+                        const audio = document.getElementById('audioPlayer');
+                        if (!audio) { clearMusicResumeState(); return; }
+                        isPlaying = !audio.paused;
+                        currentTime = Math.max(0, audio.currentTime || 0);
                     }
+
+                    if (!isPlaying) { clearMusicResumeState(); return; }
 
                     saveData('music_resume_pending', 'true');
                     saveData('music_resume_index', String(currentMusicIndex));
-                    saveData('music_resume_time', String(Math.max(0, audio.currentTime || 0)));
+                    saveData('music_resume_time', String(currentTime));
                     saveData('music_resume_saved_at', String(Date.now()));
+                    saveData('music_resume_is_yt', isYt ? 'true' : 'false');
                 }
 
                 function setupMusicResumeOnNextGesture() {
@@ -8338,18 +8512,22 @@ const translations = {
                             return;
                         }
 
+                        const isResumeYt = getData('music_resume_is_yt') === 'true';
+
                         playMusic(savedIndex);
 
-                        const applySeek = () => {
-                            if (savedTime > 0) {
-                                try {
-                                    audio.currentTime = savedTime;
-                                } catch (_) {}
-                            }
-                        };
-
-                        if (audio.readyState >= 1) applySeek();
-                        else audio.addEventListener('loadedmetadata', applySeek, { once: true });
+                        if (isResumeYt) {
+                            // YouTube: seek via pending variable; onStateChange PLAYING will apply it
+                            if (savedTime > 0) ytPlayerPendingSeekTime = savedTime;
+                        } else {
+                            const applySeek = () => {
+                                if (savedTime > 0) {
+                                    try { audio.currentTime = savedTime; } catch (_) {}
+                                }
+                            };
+                            if (audio.readyState >= 1) applySeek();
+                            else audio.addEventListener('loadedmetadata', applySeek, { once: true });
+                        }
 
                         clearMusicResumeState();
                         cleanup();
@@ -8366,6 +8544,12 @@ const translations = {
                     }
                 }
 
+                function updateMusicRelatedSettingsVisibility() {
+                    const el = document.getElementById('musicRelatedSettings');
+                    if (!el) return;
+                    el.style.display = getData('feature_music') === 'true' ? '' : 'none';
+                }
+
                 function toggleFeature(feature) {
                     const toggle = document.getElementById(`toggle${feature.charAt(0).toUpperCase() + feature.slice(1)}`);
                     const isActive = toggle.classList.contains('active');
@@ -8378,6 +8562,7 @@ const translations = {
                         addMenuButton(feature);
                         saveData(`feature_${feature}`, 'true');
                     }
+                    if (feature === 'music') updateMusicRelatedSettingsVisibility();
                 }
 
                 function toggleTitleTime() {
@@ -9042,7 +9227,7 @@ const translations = {
                         playlists: musicPlaylists.map(p => ({
                             id: p.id,
                             name: p.name,
-                            tracks: Array.isArray(p.tracks) ? p.tracks.map(t => ({ id: t.id, title: t.title })) : []
+                            tracks: Array.isArray(p.tracks) ? p.tracks.map(t => (t.youtubeId ? { id: t.id, title: t.title, youtubeId: t.youtubeId } : { id: t.id, title: t.title })) : []
                         }))
                     }));
                     if (!ok) {
@@ -9057,7 +9242,7 @@ const translations = {
                     ensurePlaylistsState();
                     const active = getActivePlaylistMeta();
                     if (!active) return;
-                    active.tracks = musicFiles.map(m => ({ id: m.id, title: m.title }));
+                    active.tracks = musicFiles.map(m => (m.youtubeId ? { id: m.id, title: m.title, youtubeId: m.youtubeId } : { id: m.id, title: m.title }));
                 }
 
                 async function loadActivePlaylistFilesFromMeta() {
@@ -9069,6 +9254,11 @@ const translations = {
                     const missingIds = [];
                     for (const item of active.tracks) {
                         if (!item || item.id == null) continue;
+                        // YouTube tracks don't need blob loading
+                        if (item.youtubeId) {
+                            musicFiles.push({ url: `youtube:${item.youtubeId}`, title: normalizeMusicTitle(item.title || item.youtubeId), id: item.id, youtubeId: item.youtubeId });
+                            continue;
+                        }
                         try {
                             const blob = await getFileBlobFromDB(item.id);
                             if (!blob) {
@@ -9121,13 +9311,13 @@ const translations = {
                     }
                     if (playlistCount) playlistCount.textContent = musicFiles.length;
                     playlistDiv.innerHTML = musicFiles.map((item, index) => `
-        <div class="playlist-item ${index === currentMusicIndex ? 'playing' : ''} ${playlistSelectMode ? 'select-mode' : ''} ${selectedMusicItems.has(index) ? 'selected' : ''}" data-index="${index}">
+        <div class="playlist-item ${index === currentMusicIndex ? 'playing' : ''} ${playlistSelectMode ? 'select-mode' : ''} ${selectedMusicItems.has(index) ? 'selected' : ''} ${item.youtubeId && !isYoutubeMusicEnabled() ? 'yt-item-hidden' : ''}" data-index="${index}">
             <div style="display:flex; align-items:center; gap:8px; flex:1; min-width:0;">
                 <img src="${getDragHandleSrc(index === currentMusicIndex)}" class="drag-handle" data-index="${index}" draggable="true" aria-label="${getText('dragHandle')}" data-i18n-aria="dragHandle" alt="">
                 ${playlistSelectMode ? `<input type="checkbox" class="playlist-item-checkbox" data-index="${index}" ${selectedMusicItems.has(index) ? 'checked' : ''} onclick="event.stopPropagation(); togglePlaylistItemSelection(${index}, this.checked)">` : ''}
                 <div class="playlist-item-info" style="flex:1; min-width:0;">
                     <div class="playlist-item-title">
-                        <span class="title-text">${escapeHtml(item.title)}</span>
+                        ${item.youtubeId ? '<svg class="yt-svg-badge" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid" viewBox="0 0 256 180" width="20" height="14" aria-label="YouTube"><path class="yt-path" d="M250.346 28.075A32.18 32.18 0 0 0 227.69 5.418C207.824 0 127.87 0 127.87 0S47.912.164 28.046 5.582A32.18 32.18 0 0 0 5.39 28.24c-6.009 35.298-8.34 89.084.165 122.97a32.18 32.18 0 0 0 22.656 22.657c19.866 5.418 99.822 5.418 99.822 5.418s79.955 0 99.82-5.418a32.18 32.18 0 0 0 22.657-22.657c6.338-35.348 8.291-89.1-.164-123.134Z"/><path class="yt-tri" d="m102.421 128.06 66.328-38.418-66.328-38.418z"/></svg>' : ''}<span class="title-text">${escapeHtml(item.title)}</span>
                     </div>
                 </div>
             </div>
@@ -9909,13 +10099,42 @@ const translations = {
                 function playMusic(index) {
                     if (!musicFiles[index]) return;
 
+                    const track = musicFiles[index];
+                    userInitiatedPause = false;
+                    currentMusicIndex = index;
+
+                    if (track.youtubeId) {
+                        // YouTube track: stop audio player and launch YouTube
+                        const audio = document.getElementById('audioPlayer');
+                        if (audio) { audio.pause(); audio.removeAttribute('src'); }
+                        ytPlayerIsPlaying = false;
+
+                        loadPlaylist();
+                        updateMusicTitleDisplay();
+                        updateMusicPlayerModeUI();
+
+                        playYoutubeTrack(track.youtubeId);
+
+                        saveData('music_current_playlist_id', currentPlaylistId);
+                        if (track.id != null) saveData('music_current_track_id', String(track.id));
+
+                        syncMiniPlayerUI();
+                        updateMiniPlayerVisibility();
+                        return;
+                    }
+
+                    // Regular audio track: stop YouTube if active
+                    if (ytPlayer && ytPlayerIsPlaying) {
+                        try { ytPlayer.stopVideo(); } catch(e) {}
+                        ytPlayerIsPlaying = false;
+                    }
+                    updateMusicPlayerModeUI();
+
                     const audio = document.getElementById('audioPlayer');
                     if (!audio) return;
 
-                    userInitiatedPause = false;
-                    currentMusicIndex = index;
-                    if (audio.getAttribute('src') !== musicFiles[index].url) {
-                        audio.src = musicFiles[index].url;
+                    if (audio.getAttribute('src') !== track.url) {
+                        audio.src = track.url;
                     }
 
                     // iOS の場合、バックグラウンド復帰後などで play() が拒否されることがあるため、リトライを行う
@@ -9927,8 +10146,8 @@ const translations = {
                     });
 
                     saveData('music_current_playlist_id', currentPlaylistId);
-                    if (musicFiles[index] && musicFiles[index].id != null) {
-                        saveData('music_current_track_id', String(musicFiles[index].id));
+                    if (track.id != null) {
+                        saveData('music_current_track_id', String(track.id));
                     }
                     loadPlaylist();
                     updateMusicTitleDisplay();
@@ -9941,7 +10160,7 @@ const translations = {
                         if (currentMusicIndex >= 0 && musicFiles[currentMusicIndex]) {
                             titleDisplay.textContent = musicFiles[currentMusicIndex].title || 'Unknown track';
                         } else {
-                            titleDisplay.textContent = getText('musicSelectPrompt');
+                            titleDisplay.textContent = getText(isYoutubeMusicEnabled() ? 'musicSelectPromptYt' : 'musicSelectPrompt');
                         }
                     }
                 }
@@ -10007,6 +10226,32 @@ const translations = {
                 }
 
                 function togglePlay() {
+                    // Handle YouTube track
+                    if (isCurrentTrackYoutube()) {
+                        if (ytPlayerIsPlaying) {
+                            if (ytPlayer) try { ytPlayer.pauseVideo(); } catch(e) {}
+                            ytPlayerIsPlaying = false;
+                            updatePlayPauseUI(false);
+                        } else {
+                            if (!musicFiles.length) { updatePlayPauseUI(false); return; }
+                            if (currentMusicIndex < 0 || currentMusicIndex >= musicFiles.length) {
+                                playMusic(0);
+                                return;
+                            }
+                            if (ytPlayer && typeof ytPlayer.playVideo === 'function') {
+                                try { ytPlayer.playVideo(); } catch(e) {}
+                                ytPlayerIsPlaying = true;
+                                updatePlayPauseUI(true);
+                            } else {
+                                playMusic(currentMusicIndex);
+                                return;
+                            }
+                        }
+                        syncMiniPlayerUI();
+                        updateMiniPlayerVisibility();
+                        return;
+                    }
+
                     const audio = document.getElementById('audioPlayer');
                     if (!audio) return;
 
@@ -13408,37 +13653,34 @@ const translations = {
                     });
 
                     (function () {
-                        const dropdownArrow = document.getElementById('musicDropdownArrow');
                         const dropdownMenu = document.getElementById('musicDropdownMenu');
+                        const addFileItem = document.getElementById('addFileItem');
                         const chooseFolder = document.getElementById('chooseFolderItem');
+                        const addYoutubeItem = document.getElementById('addYoutubeItem');
                         const folderInput = document.getElementById('musicFolderInput');
                         const fileLabel = document.querySelector('.file-select-label');
 
                         function closeMenu() {
-                            if (dropdownMenu) { dropdownMenu.style.display = 'none'; dropdownMenu.setAttribute('aria-hidden', 'true'); }
-                            if (dropdownArrow) dropdownArrow.setAttribute('aria-expanded', 'false');
+                            if (dropdownMenu) { dropdownMenu.classList.remove('open'); dropdownMenu.setAttribute('aria-hidden', 'true'); }
                         }
 
                         function openMenu() {
-                            if (dropdownMenu) { dropdownMenu.style.display = 'block'; dropdownMenu.setAttribute('aria-hidden', 'false'); }
-                            if (dropdownArrow) dropdownArrow.setAttribute('aria-expanded', 'true');
+                            if (dropdownMenu) { dropdownMenu.classList.add('open'); dropdownMenu.setAttribute('aria-hidden', 'false'); }
                         }
 
-                        if (dropdownArrow) {
-                            dropdownArrow.addEventListener('click', (e) => {
-                                e.stopPropagation();
-                                if (!dropdownMenu) return;
-                                if (dropdownMenu.style.display === 'block') closeMenu();
-                                else openMenu();
-                            });
-                            dropdownArrow.addEventListener('mousedown', (e) => e.stopPropagation());
-                            dropdownArrow.addEventListener('pointerdown', (e) => e.stopPropagation());
-                            dropdownArrow.addEventListener('touchstart', (e) => e.stopPropagation());
-                        }
-
+                        // Clicking the label button toggles the dropdown
                         if (fileLabel) {
                             fileLabel.addEventListener('click', (e) => {
-                                if (e.target && e.target.closest && e.target.closest('.file-select-arrow')) return;
+                                e.stopPropagation();
+                                if (!dropdownMenu) return;
+                                if (dropdownMenu.classList.contains('open')) closeMenu();
+                                else openMenu();
+                            });
+                        }
+
+                        if (addFileItem) {
+                            addFileItem.addEventListener('click', (e) => {
+                                e.stopPropagation();
                                 const fileInput = document.getElementById('musicFileInput');
                                 if (fileInput) fileInput.click();
                                 closeMenu();
@@ -13453,11 +13695,22 @@ const translations = {
                             });
                         }
 
+                        if (addYoutubeItem) {
+                            addYoutubeItem.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                closeMenu();
+                                openYoutubeDialog();
+                            });
+                        }
+
                         document.addEventListener('click', (e) => {
                             const target = e.target;
-                            if (!dropdownMenu) return;
-                            if (!dropdownMenu.contains(target) && target !== dropdownArrow) closeMenu();
+                            if (!dropdownMenu || !dropdownMenu.classList.contains('open')) return;
+                            if (!dropdownMenu.contains(target) && !(fileLabel && fileLabel.contains(target))) closeMenu();
                         });
+
+                        // Initialize YouTube menu item visibility on load
+                        updateAddYoutubeMenuItem();
                     })();
                     // 初回訪問時のチュートリアル表示
                     setTimeout(() => {
@@ -14966,12 +15219,304 @@ const translations = {
                     // unused — swipe handles flipping
                 }
 
+                // ========== YouTube Music ==========
+
+                function isYoutubeMusicEnabled() {
+                    return getData('youtube_music_enabled') === 'true';
+                }
+
+                function toggleYoutubeMusicSetting() {
+                    const toggle = document.getElementById('toggleYoutubeMusic');
+                    if (!toggle) return;
+                    const isActive = toggle.classList.contains('active');
+                    if (isActive) {
+                        toggle.classList.remove('active');
+                        saveData('youtube_music_enabled', 'false');
+                        // Stop YouTube playback immediately if a YT track is active
+                        if (isCurrentTrackYoutube()) {
+                            try { if (ytPlayer && ytPlayer.stopVideo) ytPlayer.stopVideo(); } catch(e) {}
+                            ytPlayerIsPlaying = false;
+                            const ytc = document.getElementById('ytPlayerContainer');
+                            if (ytc) ytc.style.display = 'none';
+                            updateMusicPlayerModeUI();
+                            syncMiniPlayerUI();
+                            updateMiniPlayerVisibility();
+                        }
+                        // Re-render playlist to hide YT items
+                        if (typeof loadPlaylist === 'function') loadPlaylist();
+                    } else {
+                        toggle.classList.add('active');
+                        saveData('youtube_music_enabled', 'true');
+                        loadYoutubeApi();
+                        // Re-render playlist to show YT items again
+                        if (typeof loadPlaylist === 'function') loadPlaylist();
+                    }
+                    updateYoutubeMusicSettingsUI();
+                    updateAddYoutubeMenuItem();
+                }
+
+                function updateYoutubeMusicSettingsUI() {
+                    const note = document.getElementById('youtubeMusicNote');
+                    const miniToggle = document.getElementById('toggleMiniPlayer');
+                    const enabled = isYoutubeMusicEnabled();
+                    if (note) note.style.display = enabled ? 'block' : 'none';
+                    if (miniToggle) {
+                        miniToggle.style.opacity = enabled ? '0.5' : '';
+                        miniToggle.style.pointerEvents = enabled ? 'none' : '';
+                        if (enabled && !miniToggle.classList.contains('active')) {
+                            miniToggle.classList.add('active');
+                        }
+                    }
+                    updateMusicPageLabels();
+                }
+
+                function updateMusicPageLabels() {
+                    const isYt = isYoutubeMusicEnabled();
+                    document.querySelectorAll('[data-i18n="menuMusic"]').forEach(el => {
+                        el.textContent = getText(isYt ? 'menuMusicYt' : 'menuMusic');
+                    });
+                    document.querySelectorAll('[data-i18n="musicPlayer"]').forEach(el => {
+                        el.textContent = getText(isYt ? 'musicPlayerYt' : 'musicPlayer');
+                    });
+                    document.querySelectorAll('[data-i18n="addMusicButton"]').forEach(el => {
+                        el.textContent = getText(isYt ? 'addMusicButtonYt' : 'addMusicButton');
+                    });
+                    updateMusicTitleDisplay();
+                }
+
+                function updateAddYoutubeMenuItem() {
+                    const item = document.getElementById('addYoutubeItem');
+                    if (item) item.style.display = isYoutubeMusicEnabled() ? 'block' : 'none';
+                }
+
+                function loadYoutubeApi() {
+                    if (window._ytApiLoaded || window._ytApiLoading) return;
+                    window._ytApiLoading = true;
+                    const tag = document.createElement('script');
+                    tag.src = 'https://www.youtube.com/iframe_api';
+                    tag.onload = function() { window._ytApiLoaded = true; };
+                    document.head.appendChild(tag);
+                }
+
+                window.onYouTubeIframeAPIReady = function() {
+                    ytPlayerApiReady = true;
+                    if (ytPlayerPendingVideoId) {
+                        const vid = ytPlayerPendingVideoId;
+                        ytPlayerPendingVideoId = null;
+                        createYoutubePlayer(vid);
+                    }
+                };
+
+                function createYoutubePlayer(videoId) {
+                    const container = document.getElementById('ytPlayerContainer');
+                    if (!container) return;
+                    if (ytPlayer) {
+                        try { ytPlayer.destroy(); } catch(e) {}
+                        ytPlayer = null;
+                    }
+                    container.innerHTML = '<div id="ytPlayerInner"></div>';
+                    ytPlayer = new YT.Player('ytPlayerInner', {
+                        videoId: videoId,
+                        playerVars: { autoplay: 1, controls: 1, rel: 0, playsinline: 1, enablejsapi: 1 },
+                        events: {
+                            onReady: function(e) {
+                                e.target.playVideo();
+                                repositionYtPlayer();
+                            },
+                            onStateChange: function(e) {
+                                if (e.data === YT.PlayerState.PLAYING) {
+                                    ytPlayerIsPlaying = true;
+                                    updatePlayPauseUI(true);
+                                    syncMiniPlayerUI();
+                                    updateMiniPlayerVisibility();
+                                    repositionYtPlayer();
+                                    if (ytPlayerPendingSeekTime > 0) {
+                                        try { e.target.seekTo(ytPlayerPendingSeekTime, true); } catch(_) {}
+                                        ytPlayerPendingSeekTime = 0;
+                                    }
+                                } else if (e.data === YT.PlayerState.PAUSED) {
+                                    ytPlayerIsPlaying = false;
+                                    updatePlayPauseUI(false);
+                                    syncMiniPlayerUI();
+                                    updateMiniPlayerVisibility();
+                                } else if (e.data === YT.PlayerState.ENDED) {
+                                    ytPlayerIsPlaying = false;
+                                    updatePlayPauseUI(false);
+                                    if (!isLoop) playNext();
+                                    else if (ytPlayer) { try { ytPlayer.playVideo(); } catch(err) {} }
+                                }
+                            }
+                        }
+                    });
+                }
+
+                function playYoutubeTrack(videoId) {
+                    if (!ytPlayerApiReady) {
+                        ytPlayerPendingVideoId = videoId;
+                        loadYoutubeApi();
+                        return;
+                    }
+                    if (ytPlayer && typeof ytPlayer.loadVideoById === 'function') {
+                        try {
+                            ytPlayer.loadVideoById(videoId);
+                            updatePlayPauseUI(true);
+                            ytPlayerIsPlaying = true;
+                        } catch(e) {
+                            createYoutubePlayer(videoId);
+                        }
+                    } else {
+                        createYoutubePlayer(videoId);
+                    }
+                }
+
+                function parseYoutubeId(url) {
+                    const m = url.match(/(?:youtube\.com\/watch\?(?:[^#&]*&)*v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+                    return m ? m[1] : null;
+                }
+
+                function isCurrentTrackYoutube() {
+                    const track = musicFiles[currentMusicIndex];
+                    return !!(track && track.youtubeId);
+                }
+
+                function updateMusicPlayerModeUI() {
+                    const panel = document.querySelector('.music-display-panel');
+                    const ytZone = document.getElementById('ytMusicZone');
+                    const ytMini = document.getElementById('ytMiniZone');
+                    const miniPopup = document.getElementById('miniPlayerPopup');
+                    const isYt = isCurrentTrackYoutube();
+                    if (panel) { if (isYt) panel.classList.add('yt-mode'); else panel.classList.remove('yt-mode'); }
+                    if (ytZone) ytZone.style.display = isYt ? 'block' : 'none';
+                    if (ytMini) ytMini.style.display = isYt ? 'block' : 'none';
+                    if (miniPopup) { if (isYt) miniPopup.classList.add('yt-active'); else miniPopup.classList.remove('yt-active'); }
+                    repositionYtPlayer();
+                }
+
+                function repositionYtPlayer() {
+                    const container = document.getElementById('ytPlayerContainer');
+                    if (!container) return;
+                    const isYt = isCurrentTrackYoutube();
+                    if (!isYt) { container.style.display = 'none'; return; }
+                    const isMusic = isOnMusicPage();
+                    const miniPopup = document.getElementById('miniPlayerPopup');
+                    const miniVisible = miniPopup && miniPopup.classList.contains('visible');
+                    if (isMusic) {
+                        const zone = document.getElementById('ytMusicZone');
+                        if (!zone || zone.style.display === 'none') { container.style.display = 'none'; return; }
+                        const rect = zone.getBoundingClientRect();
+                        if (rect.width < 2 || rect.height < 2) { container.style.display = 'none'; return; }
+                        container.style.cssText = `display:block; position:fixed; top:${rect.top}px; left:${rect.left}px; width:${rect.width}px; height:${rect.height}px; border-radius:8px; z-index:100; background:#000; overflow:hidden; pointer-events:auto;`;
+                    } else if (miniVisible) {
+                        const zone = document.getElementById('ytMiniZone');
+                        if (!zone || zone.style.display === 'none') { container.style.display = 'none'; return; }
+                        const rect = zone.getBoundingClientRect();
+                        if (rect.width < 2 || rect.height < 2) { container.style.display = 'none'; return; }
+                        container.style.cssText = `display:block; position:fixed; top:${rect.top}px; left:${rect.left}px; width:${rect.width}px; height:${rect.height}px; border-radius:6px; z-index:901; background:#000; overflow:hidden; pointer-events:auto;`;
+                    } else {
+                        container.style.display = 'none';
+                    }
+                }
+
+                function openYoutubeDialog() {
+                    const overlay = document.getElementById('youtubeUrlOverlay');
+                    if (!overlay) return;
+                    overlay.classList.add('show');
+                    const input = document.getElementById('youtubeUrlInput');
+                    if (input) { input.value = ''; setTimeout(() => input.focus(), 100); }
+                    const errEl = document.getElementById('youtubeUrlError');
+                    if (errEl) errEl.style.display = 'none';
+                }
+
+                function closeYoutubeDialog() {
+                    const overlay = document.getElementById('youtubeUrlOverlay');
+                    if (overlay) overlay.classList.remove('show');
+                }
+
+                async function confirmYoutubeUrl() {
+                    const input = document.getElementById('youtubeUrlInput');
+                    const errEl = document.getElementById('youtubeUrlError');
+                    if (!input) return;
+                    const url = input.value.trim();
+                    const videoId = parseYoutubeId(url);
+                    if (!videoId) {
+                        if (errEl) { errEl.textContent = getText('youtubeInvalidUrl'); errEl.style.display = 'block'; }
+                        return;
+                    }
+                    closeYoutubeDialog();
+                    const id = Date.now() + Math.random();
+                    let trackTitle = `YouTube: ${videoId}`;
+                    try {
+                        const res = await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`);
+                        if (res.ok) { const data = await res.json(); if (data.title) trackTitle = data.title; }
+                    } catch(e) {}
+                    musicFiles.push({ url: `youtube:${videoId}`, title: trackTitle, id: id, youtubeId: videoId });
+                    savePlaylist();
+                    loadPlaylist();
+                }
+
+                // YouTube dialog event listeners
+                document.getElementById('youtubeUrlOkBtn')?.addEventListener('click', confirmYoutubeUrl);
+                document.getElementById('youtubeUrlCancelBtn')?.addEventListener('click', closeYoutubeDialog);
+                document.getElementById('youtubeUrlOverlay')?.addEventListener('click', (e) => {
+                    if (e.target === e.currentTarget) closeYoutubeDialog();
+                });
+                document.getElementById('youtubeUrlInput')?.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') { e.preventDefault(); confirmYoutubeUrl(); }
+                    else if (e.key === 'Escape') { e.preventDefault(); closeYoutubeDialog(); }
+                });
+
                 // ========== Mini Player ==========
                 let miniPlayerAutoHideTimer = null;
                 let miniPlayerDismissed = false;
 
                 function isMiniPlayerEnabled() {
+                    if (isYoutubeMusicEnabled()) return true;
                     return getData('mini_player_enabled') !== 'false';
+                }
+
+                function isMiniPlayerFreePlace() {
+                    return getData('mini_player_free_place') === 'true';
+                }
+
+                function toggleMiniPlayerFreePlace() {
+                    const toggle = document.getElementById('toggleMiniPlayerFreePlace');
+                    if (!toggle) return;
+                    const isActive = toggle.classList.contains('active');
+                    if (isActive) {
+                        toggle.classList.remove('active');
+                        saveData('mini_player_free_place', 'false');
+                    } else {
+                        toggle.classList.add('active');
+                        saveData('mini_player_free_place', 'true');
+                    }
+                    updateMiniPlayerPositionSettingVisibility();
+                    applyMiniPlayerPosition();
+                }
+
+                function updateMiniPlayerPositionSettingVisibility() {
+                    const posItem = document.getElementById('miniPlayerPositionItem');
+                    if (posItem) posItem.style.display = isMiniPlayerFreePlace() ? 'none' : '';
+                }
+
+                function applyMiniPlayerFreePosition() {
+                    const popup = document.getElementById('miniPlayerPopup');
+                    if (!popup) return;
+                    popup.classList.remove('pos-top-right', 'pos-top-left', 'pos-bottom-right', 'pos-bottom-left');
+                    popup.style.position = 'fixed';
+                    popup.style.bottom = '';
+                    popup.style.right = '';
+
+                    const xPct = parseFloat(getData('mini_player_free_x') || '80');
+                    const yPct = parseFloat(getData('mini_player_free_y') || '10');
+                    const vw = window.innerWidth;
+                    const vh = window.innerHeight;
+                    const w = popup.offsetWidth || 140;
+                    const h = popup.offsetHeight || 200;
+                    const x = Math.max(0, Math.min(vw - w, (xPct / 100) * vw));
+                    const y = Math.max(0, Math.min(vh - h, (yPct / 100) * vh));
+                    popup.style.left = x + 'px';
+                    popup.style.top = y + 'px';
+                    miniPlayerFixed = true;
                 }
 
                 function getMiniPlayerAutoHide() {
@@ -14997,18 +15542,23 @@ const translations = {
                     if (!popup) return;
 
                     const audio = document.getElementById('audioPlayer');
-                    const isPlaying = audio && !audio.paused;
-                    const hasSrc = audio && audio.src && audio.getAttribute('src');
+                    const isYt = isCurrentTrackYoutube();
+                    const isPlaying = isYt ? ytPlayerIsPlaying : (audio && !audio.paused);
+                    const hasSrc = isYt
+                        ? (currentMusicIndex >= 0 && !!musicFiles[currentMusicIndex])
+                        : (audio && audio.src && audio.getAttribute('src'));
 
                     if (!isMiniPlayerEnabled() || isOnMusicPage() || miniPlayerDismissed || !hasSrc) {
                         popup.classList.remove('visible');
                         clearMiniAutoHideTimer();
+                        if (isYt) repositionYtPlayer();
                         return;
                     }
 
                     if (isPlaying) {
                         popup.classList.add('visible');
                         clearMiniAutoHideTimer();
+                        if (isYt) setTimeout(repositionYtPlayer, 30);
                     } else {
                         if (popup.classList.contains('visible')) {
                             startMiniAutoHideTimer();
@@ -15026,6 +15576,7 @@ const translations = {
                     if (popup) popup.classList.remove('visible');
                     miniPlayerDismissed = true;
                     clearMiniAutoHideTimer();
+                    repositionYtPlayer();
                 }
 
                 function clearMiniAutoHideTimer() {
@@ -15048,7 +15599,8 @@ const translations = {
 
                 function syncMiniPlayerUI() {
                     const audio = document.getElementById('audioPlayer');
-                    const isPlaying = audio && !audio.paused;
+                    const isYt = isCurrentTrackYoutube();
+                    const isPlaying = isYt ? ytPlayerIsPlaying : (audio && !audio.paused);
                     const miniIcon = document.getElementById('miniPlayIcon');
                     if (miniIcon) {
                         miniIcon.src = isPlaying ? 'pause.webp' : 'play.webp';
@@ -15066,95 +15618,188 @@ const translations = {
                     const nextBtn = document.getElementById('miniNextBtn');
                     if (prevBtn) prevBtn.style.display = hideSkip ? 'none' : '';
                     if (nextBtn) nextBtn.style.display = hideSkip ? 'none' : '';
+
+                    // YouTube mini zone
+                    const ytMini = document.getElementById('ytMiniZone');
+                    const miniPopup = document.getElementById('miniPlayerPopup');
+                    if (ytMini) ytMini.style.display = isYt ? 'block' : 'none';
+                    if (miniPopup) {
+                        if (isYt) miniPopup.classList.add('yt-active');
+                        else miniPopup.classList.remove('yt-active');
+                    }
                 }
 
                 let miniPlayerFixed = false;
 
+                function getMiniPlayerTopY() {
+                    const menu = document.getElementById('mainMenu');
+                    if (!menu) return 14;
+                    const mb = menu.getBoundingClientRect().bottom;
+                    return mb > 10 ? mb + 4 : 14;
+                }
+
                 function applyMiniPlayerPosition() {
+                    if (isMiniPlayerFreePlace()) { applyMiniPlayerFreePosition(); return; }
                     const popup = document.getElementById('miniPlayerPopup');
                     if (!popup) return;
-                    miniPlayerFixed = false;
                     const pos = getMiniPlayerPosition();
                     popup.classList.remove('pos-top-right', 'pos-top-left', 'pos-bottom-right', 'pos-bottom-left');
                     popup.classList.add('pos-' + pos);
-                    popup.style.position = '';
-                    popup.style.left = '';
-                    popup.style.right = '';
+
+                    // Always fixed — no more absolute/relative toggle
+                    miniPlayerFixed = true;
+                    popup.style.position = 'fixed';
+                    popup.style.left = 'auto';
+                    popup.style.right = 'auto';
+
                     if (pos.startsWith('top')) {
-                        const menu = document.getElementById('mainMenu');
-                        const container = popup.closest('.container');
-                        if (menu && container) {
-                            const menuRect = menu.getBoundingClientRect();
-                            const containerRect = container.getBoundingClientRect();
-                            popup.style.top = (menuRect.bottom - containerRect.top + 4) + 'px';
-                        }
-                        popup.style.bottom = '';
+                        popup.style.top = getMiniPlayerTopY() + 'px';
+                        popup.style.bottom = 'auto';
                     } else {
-                        popup.style.top = '';
+                        popup.style.top = 'auto';
+                        popup.style.bottom = '14px';
                     }
+                    calcMiniPlayerFixedX();
                 }
 
                 function updateMiniPlayerScroll() {
+                    if (isMiniPlayerFreePlace()) return;
                     const popup = document.getElementById('miniPlayerPopup');
                     if (!popup || !popup.classList.contains('visible')) return;
                     const pos = getMiniPlayerPosition();
-                    const container = document.querySelector('.container');
-                    if (!container) return;
-
-                    let shouldFix = false;
-                    if (pos.startsWith('top')) {
-                        const menu = document.getElementById('mainMenu');
-                        if (!menu) return;
-                        shouldFix = menu.getBoundingClientRect().bottom < 10;
-                    } else {
-                        shouldFix = container.getBoundingClientRect().bottom > window.innerHeight + 10;
-                    }
-
-                    if (shouldFix && !miniPlayerFixed) {
-                        miniPlayerFixed = true;
-                        popup.style.position = 'fixed';
-                        if (pos.startsWith('top')) {
-                            popup.style.top = '14px';
-                            popup.style.bottom = '';
-                        } else {
-                            popup.style.bottom = '14px';
-                            popup.style.top = '';
-                        }
-                        calcMiniPlayerFixedX();
-                    } else if (!shouldFix && miniPlayerFixed) {
-                        miniPlayerFixed = false;
-                        popup.style.position = '';
-                        popup.style.left = '';
-                        popup.style.right = '';
-                        popup.style.bottom = '';
-                        applyMiniPlayerPosition();
-                    }
+                    if (!pos.startsWith('top')) return;
+                    // Update Y as menu scrolls away
+                    popup.style.top = getMiniPlayerTopY() + 'px';
                 }
 
                 function calcMiniPlayerFixedX() {
+                    if (isMiniPlayerFreePlace()) { applyMiniPlayerFreePosition(); return; }
                     const popup = document.getElementById('miniPlayerPopup');
-                    if (!popup || !miniPlayerFixed) return;
+                    if (!popup) return;
                     const container = document.querySelector('.container');
                     if (!container) return;
                     const pos = getMiniPlayerPosition();
                     const cr = container.getBoundingClientRect();
-                    const isMobile = window.innerWidth <= 760;
-                    popup.style.left = '';
-                    popup.style.right = '';
-                    var isRight = pos.endsWith('right');
-                    if (isRight) {
-                        popup.style.left = isMobile ? 'auto' : (cr.right + 12) + 'px';
-                        if (isMobile) popup.style.right = '0px';
+                    const vw = window.innerWidth;
+                    const isMobile = vw <= 760;
+                    // Use actual width if available, else safe minimum fallback
+                    const pw = popup.offsetWidth > 0 ? popup.offsetWidth : 130;
+                    const EDGE = 8;
+                    popup.style.left = 'auto';
+                    popup.style.right = 'auto';
+                    const isRight = pos.endsWith('right');
+                    if (isMobile) {
+                        // Flush to viewport edge on mobile
+                        if (isRight) popup.style.right = EDGE + 'px';
+                        else popup.style.left = EDGE + 'px';
                     } else {
-                        popup.style.right = isMobile ? 'auto' : (window.innerWidth - cr.left + 12) + 'px';
-                        if (isMobile) popup.style.left = '0px';
+                        if (isRight) {
+                            // Space available beside container right edge?
+                            if (vw - cr.right >= pw + 12) {
+                                popup.style.left = (cr.right + 12) + 'px';
+                            } else {
+                                popup.style.right = EDGE + 'px';
+                            }
+                        } else {
+                            // Space available beside container left edge?
+                            if (cr.left >= pw + 12) {
+                                popup.style.right = (vw - cr.left + 12) + 'px';
+                            } else {
+                                popup.style.left = EDGE + 'px';
+                            }
+                        }
                     }
                 }
 
                 window.addEventListener('scroll', updateMiniPlayerScroll, { passive: true });
+                window.addEventListener('scroll', repositionYtPlayer, { passive: true });
                 window.addEventListener('resize', function() {
-                    if (miniPlayerFixed) calcMiniPlayerFixedX();
+                    if (isMiniPlayerFreePlace()) {
+                        applyMiniPlayerFreePosition();
+                    } else {
+                        calcMiniPlayerFixedX();
+                    }
+                    repositionYtPlayer();
                 });
+
+                function initMiniPlayerDrag() {
+                    const popup = document.getElementById('miniPlayerPopup');
+                    const handle = document.getElementById('miniPlayerDragHandle');
+                    if (!popup || !handle) return;
+
+                    let isDragging = false;
+                    let startPX, startPY, startLeft, startTop;
+
+                    handle.addEventListener('pointerdown', function(e) {
+                        e.preventDefault();
+                        handle.setPointerCapture(e.pointerId);
+                        isDragging = true;
+                        popup.classList.add('dragging');
+
+                        const rect = popup.getBoundingClientRect();
+                        startPX = e.clientX;
+                        startPY = e.clientY;
+                        startLeft = rect.left;
+                        startTop = rect.top;
+
+                        // Remove pos-* classes before switching to fixed to avoid
+                        // CSS bottom:0 / right:calc(...) conflicting with inline styles
+                        popup.classList.remove('pos-top-right', 'pos-top-left', 'pos-bottom-right', 'pos-bottom-left');
+                        popup.style.position = 'fixed';
+                        popup.style.left = rect.left + 'px';
+                        popup.style.top = rect.top + 'px';
+                        popup.style.right = 'auto';
+                        popup.style.bottom = 'auto';
+                        miniPlayerFixed = true;
+                    });
+
+                    handle.addEventListener('pointermove', function(e) {
+                        if (!isDragging) return;
+                        const dx = e.clientX - startPX;
+                        const dy = e.clientY - startPY;
+                        const vw = window.innerWidth;
+                        const vh = window.innerHeight;
+                        const w = popup.offsetWidth;
+                        const h = popup.offsetHeight;
+                        const x = Math.max(0, Math.min(vw - w, startLeft + dx));
+                        const y = Math.max(0, Math.min(vh - h, startTop + dy));
+                        popup.style.left = x + 'px';
+                        popup.style.top = y + 'px';
+                    });
+
+                    handle.addEventListener('pointerup', function(e) {
+                        if (!isDragging) return;
+                        isDragging = false;
+                        popup.classList.remove('dragging');
+
+                        const rect = popup.getBoundingClientRect();
+
+                        if (isMiniPlayerFreePlace()) {
+                            const xPct = (rect.left / window.innerWidth) * 100;
+                            const yPct = (rect.top / window.innerHeight) * 100;
+                            saveData('mini_player_free_x', xPct.toFixed(2));
+                            saveData('mini_player_free_y', yPct.toFixed(2));
+                            repositionYtPlayer();
+                        } else {
+                            // Use pointer release position for intuitive corner detection
+                            const isRight = e.clientX > window.innerWidth / 2;
+                            const isBottom = e.clientY > window.innerHeight / 2;
+                            const corner = (isBottom ? 'bottom' : 'top') + '-' + (isRight ? 'right' : 'left');
+                            saveData('mini_player_position', corner);
+                            const posSelect = document.getElementById('miniPlayerPositionSelect');
+                            if (posSelect) posSelect.value = corner;
+                            applyMiniPlayerPosition();
+                            repositionYtPlayer();
+                        }
+                    });
+
+                    handle.addEventListener('lostpointercapture', function() {
+                        if (isDragging) {
+                            isDragging = false;
+                            popup.classList.remove('dragging');
+                        }
+                    });
+                }
 
                 // Settings toggle functions
                 function toggleMiniPlayerSetting() {
@@ -15211,6 +15856,15 @@ const translations = {
                     };
                 })();
 
+                // Patch applyTranslations so YT-mode labels are re-applied after language switches
+                (function() {
+                    const origApplyTranslations = applyTranslations;
+                    applyTranslations = function() {
+                        origApplyTranslations();
+                        updateMusicPageLabels();
+                    };
+                })();
+
                 // Hook into showPage to hide/show mini player on page change
                 (function() {
                     const origShowPage = showPage;
@@ -15220,12 +15874,14 @@ const translations = {
                             const popup = document.getElementById('miniPlayerPopup');
                             if (popup) popup.classList.remove('visible');
                             clearMiniAutoHideTimer();
+                            updateMusicPlayerModeUI();
                         } else {
                             miniPlayerDismissed = false;
                             syncMiniPlayerUI();
                             applyMiniPlayerPosition();
                             updateMiniPlayerVisibility();
                         }
+                        setTimeout(repositionYtPlayer, 60);
                     };
                 })();
 
@@ -15233,8 +15889,16 @@ const translations = {
                 (function() {
                     const origOnload = window.onload;
                     const initMiniPlayer = function() {
+                        setToggleActive('toggleYoutubeMusic', isYoutubeMusicEnabled());
+                        updateYoutubeMusicSettingsUI();
+                        updateAddYoutubeMenuItem();
+                        if (isYoutubeMusicEnabled()) loadYoutubeApi();
+
                         setToggleActive('toggleMiniPlayer', isMiniPlayerEnabled());
                         setToggleActive('toggleMiniPlayerHideSkip', isMiniPlayerHideSkip());
+                        setToggleActive('toggleMiniPlayerFreePlace', isMiniPlayerFreePlace());
+                        updateMiniPlayerPositionSettingVisibility();
+
                         const autoHideSelect = document.getElementById('miniPlayerAutoHideSelect');
                         if (autoHideSelect) {
                             const val = getData('mini_player_auto_hide') || '60';
@@ -15251,6 +15915,8 @@ const translations = {
                         }
                         applyMiniPlayerPosition();
                         syncMiniPlayerUI();
+                        updateMusicRelatedSettingsVisibility();
+                        initMiniPlayerDrag();
 
                         const audio = document.getElementById('audioPlayer');
                         if (audio) {

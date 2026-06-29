@@ -5666,6 +5666,79 @@ body.dark .fc-formula-popup input {
         .focus-progress-bar .focus-progress-fill.break-phase {
             opacity: 0.5;
         }
+
+        /* ===== MENU CUSTOMIZATION ===== */
+
+        /* Background image */
+        body.has-bg-image {
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        body.has-bg-image.bg-pos-top    { background-position: center top; }
+        body.has-bg-image.bg-pos-bottom { background-position: center bottom; }
+        body.has-bg-image.bg-pos-left   { background-position: left center; }
+        body.has-bg-image.bg-pos-right  { background-position: right center; }
+        body.has-bg-image.bg-pos-fit    { background-size: contain; background-position: center center; }
+        body.has-bg-image.bg-pos-repeat { background-size: auto; background-repeat: repeat; }
+
+        /* Menu icons */
+        .menu button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+        .menu-icon { display: flex; align-items: center; justify-content: center; flex-shrink: 0; width: 20px; height: 20px; }
+        .menu-icon svg { width: 20px; height: 20px; display: block; color: inherit; }
+        body.light .menu button.active .menu-icon svg,
+        body.dark  .menu button.active .menu-icon svg { color: white; }
+
+        /* Display mode: text (default) */
+        body.menu-display-text .menu-icon { display: none; }
+        /* Display mode: icon only */
+        body.menu-display-icon .menu-label { display: none; }
+        body.menu-display-icon .menu button { padding: 10px 14px; }
+
+        /* Fixed top menu — sticky (stops at top when scrolling, normal at page top) */
+        body.menu-fixed-on .menu {
+            position: sticky; top: 0;
+            z-index: 900; padding: 12px 20px 8px; margin-bottom: 0;
+        }
+        /* no background on sticky menu — buttons float transparently */
+
+        /* Bottom menu */
+        body.menu-mode-bottom .menu {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            z-index: 900; margin-bottom: 0; border-radius: 0;
+            flex-wrap: wrap; padding: 8px 12px 5px; gap: 8px;
+        }
+        /* no background on bottom menu — buttons float transparently */
+        body.menu-mode-bottom .container { padding-bottom: 90px; }
+        .bottom-menu-logo-inner { display: none; width: 100%; order: 999; text-align: center; padding: 2px 0 1px; }
+        body.menu-mode-bottom .bottom-menu-logo-inner { display: block; }
+        .bottom-menu-logo-inner img { height: 14px; width: auto; opacity: 0.35; pointer-events: none; -webkit-touch-callout: none; }
+        .menu-mode-hint { font-size: 0.68rem; opacity: 0.42; margin-left: 5px; }
+
+
+        /* Menu order settings UI */
+        .menu-order-list { display:flex; flex-direction:column; gap:4px; margin-top:8px; position:relative; }
+        .menu-order-item {
+            display:flex; align-items:center; gap:10px;
+            padding:9px 12px; border-radius:24px; user-select:none;
+            transition:opacity 0.15s;
+        }
+        body.light .menu-order-item { background:var(--panel-light); }
+        body.dark  .menu-order-item { background:var(--panel-dark); }
+        .menu-order-item.mo-dragging { opacity:0.35; }
+        .mo-drag-handle { opacity:0.3; flex-shrink:0; display:flex; align-items:center; cursor:grab; touch-action:none; }
+        .mo-drag-handle:active { cursor:grabbing; }
+        .mo-label { flex:1; font-size:0.92rem; }
+        .mo-toggle { flex-shrink:0; }
+        .mo-toggle .toggle-switch { margin:0; }
+        /* Insert marker */
+        .mo-insert-marker {
+            display:flex; align-items:center; height:10px; pointer-events:none;
+            color:var(--primary-color,#4f7ef7); flex-shrink:0;
+        }
+        .mo-insert-dot { flex-shrink:0; width:8px; height:8px; border-radius:50%; background:currentColor; }
+        .mo-insert-line { flex:1; height:2px; background:currentColor; }
     </style>
 
 </head>
@@ -5919,9 +5992,12 @@ body.dark .fc-formula-popup input {
         </h1>
 
         <div class="menu" id="mainMenu">
-            <button class="active" onclick="showPage('timer')" data-page="timer" data-i18n="menuTimer">タイマー</button>
-            <button onclick="showPage('stats')" data-page="stats" data-i18n="menuStats">統計</button>
-            <button onclick="showPage('list')" data-page="list" data-i18n="menuList">リスト</button>
+            <button class="active" onclick="showPage('timer')" data-page="timer" data-i18n="menuTimer"><span class="menu-label" data-i18n="menuTimer">タイマー</span></button>
+            <button onclick="showPage('stats')" data-page="stats" data-i18n="menuStats"><span class="menu-label" data-i18n="menuStats">統計</span></button>
+            <button onclick="showPage('list')" data-page="list" data-i18n="menuList"><span class="menu-label" data-i18n="menuList">リスト</span></button>
+            <div class="bottom-menu-logo-inner">
+                <img class="tsumiki-logo" src="tsumiki_logo.svg" data-light-src="tsumiki_logo.svg" data-dark-src="tsumiki_logo_akarui.svg" alt="ツミキapp">
+            </div>
         </div>
 
         <div id="timerPage" class="page active">
@@ -6366,6 +6442,75 @@ body.dark .fc-formula-popup input {
                     <button class="secondary" style="width: 100%;" onclick="openTodoPriorityColorModal()" data-i18n="todoPriorityColorSettingsButton">
                         ToDo優先度カラーを設定
                     </button>
+                </div>
+            </div>
+
+            <div class="settings-section" id="menuCustomizeSection">
+                <h2>メニューカスタマイズ</h2>
+
+                <!-- Menu mode -->
+                <div class="toggle-item">
+                    <span>メニューモード<small class="menu-mode-hint" id="menuModeHint"></small></span>
+                    <div class="custom-select" style="width:160px;">
+                        <select id="menuModeSelect" onchange="onMenuModeChange()">
+                            <option value="normal">ノーマル</option>
+                            <option value="bottom">ボトムメニュー</option>
+                        </select>
+                        <div class="select-arrow">▾</div>
+                    </div>
+                </div>
+
+                <!-- Menu display style -->
+                <div class="toggle-item">
+                    <span>メニューの表示方法</span>
+                    <div class="custom-select" style="width:160px;">
+                        <select id="menuDisplaySelect" onchange="onMenuDisplayChange()">
+                            <option value="text">テキスト</option>
+                            <option value="icon">アイコンのみ</option>
+                            <option value="icon_text">アイコン＋テキスト</option>
+                        </select>
+                        <div class="select-arrow">▾</div>
+                    </div>
+                </div>
+
+                <!-- Menu fixed (normal/bottom mode only) -->
+                <div class="toggle-item" id="menuFixedItem">
+                    <span>メニューをトップに固定</span>
+                    <div class="toggle-switch" id="toggleMenuFixed" onclick="onMenuFixedToggle()">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+
+                <!-- Background image -->
+                <div style="margin-top:15px;">
+                    <label style="font-size:0.9rem;opacity:0.8;display:block;margin-bottom:8px;">背景画像</label>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+                        <button class="secondary" onclick="document.getElementById('bgImageInput').click()" style="flex:1;min-width:100px;">画像を選択</button>
+                        <button class="secondary" id="bgImageClearBtn" onclick="clearBgImage()" style="flex:1;min-width:100px;display:none;">画像を削除</button>
+                    </div>
+                    <input type="file" id="bgImageInput" accept="image/*" style="display:none;" onchange="onBgImageSelect(event)">
+                    <div id="bgImageSettings" style="display:none;">
+                        <label style="font-size:0.9rem;opacity:0.8;display:block;margin-bottom:8px;">配置方法</label>
+                        <div class="custom-select" style="width:100%;">
+                            <select id="bgImagePosSelect" onchange="onBgImagePosChange()">
+                                <option value="center">中央から（デフォルト）</option>
+                                <option value="top">上から</option>
+                                <option value="bottom">下から</option>
+                                <option value="left">左から</option>
+                                <option value="right">右から</option>
+                                <option value="fit">デバイスの解像度に合わせる</option>
+                                <option value="repeat">繰り返す</option>
+                            </select>
+                            <div class="select-arrow">▾</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Menu item order and visibility -->
+                <div style="margin-top:15px;">
+                    <label style="font-size:0.9rem;opacity:0.8;display:block;margin-bottom:4px;">メニュー項目・順序</label>
+                    <div class="setting-note" style="margin-bottom:8px;margin-top:0;">ドラッグで並び替え、トグルで表示/非表示</div>
+                    <div class="menu-order-list" id="menuOrderList"></div>
                 </div>
             </div>
 
@@ -8560,22 +8705,28 @@ const translations = {
                 function updateMusicRelatedSettingsVisibility() {
                     const el = document.getElementById('musicRelatedSettings');
                     if (!el) return;
-                    el.style.display = getData('feature_music') === 'true' ? '' : 'none';
+                    const vis = getMenuVisibility();
+                    el.style.display = vis.music ? '' : 'none';
                 }
 
                 function toggleFeature(feature) {
                     const toggle = document.getElementById(`toggle${feature.charAt(0).toUpperCase() + feature.slice(1)}`);
                     const isActive = toggle.classList.contains('active');
-                    if (isActive) {
-                        toggle.classList.remove('active');
-                        removeMenuButton(feature);
-                        saveData(`feature_${feature}`, 'false');
-                    } else {
-                        toggle.classList.add('active');
-                        addMenuButton(feature);
-                        saveData(`feature_${feature}`, 'true');
-                    }
+                    const newVisible = !isActive;
+                    toggle.classList.toggle('active', newVisible);
+                    saveData(`feature_${feature}`, newVisible ? 'true' : 'false');
+
+                    // Sync with unified visibility store
+                    const vis = getMenuVisibility();
+                    vis[feature] = newVisible;
+                    saveMenuVisibility(vis);
+
+                    // Sync menu-order list toggle
+                    const moToggle = document.querySelector(`.menu-order-item[data-mo-key="${feature}"] .toggle-switch`);
+                    if (moToggle) moToggle.classList.toggle('active', newVisible);
+
                     if (feature === 'music') updateMusicRelatedSettingsVisibility();
+                    rebuildMenu();
                 }
 
                 function toggleTitleTime() {
@@ -8610,28 +8761,11 @@ const translations = {
                 }
 
                 function addMenuButton(feature) {
-                    const menu = document.getElementById('mainMenu');
-                    const btnText = feature === 'music' ? getText('menuMusic') : getText('menuTodo');
-                    const existingBtn = Array.from(menu.children).find(btn => btn.getAttribute('data-feature') === feature);
-                    if (!existingBtn) {
-                        const btn = document.createElement('button');
-                        btn.textContent = btnText;
-                        btn.onclick = () => showPage(feature);
-                        btn.setAttribute('data-feature', feature);
-                        btn.setAttribute('data-i18n', feature === 'music' ? 'menuMusic' : 'menuTodo');
-                        menu.appendChild(btn);
-                    } else {
-                        existingBtn.textContent = btnText;
-                    }
-                    if (typeof editorModeActive !== 'undefined' && editorModeActive) {
-                        setTimeout(attachEditorTargets, 50);
-                    }
+                    rebuildMenu();
                 }
 
                 function removeMenuButton(feature) {
-                    const menu = document.getElementById('mainMenu');
-                    const btn = menu.querySelector(`[data-feature="${feature}"]`);
-                    if (btn) btn.remove();
+                    rebuildMenu();
                 }
 
                 function showPage(pageName) {
@@ -8640,7 +8774,12 @@ const translations = {
                         if (isTimerRunning && getData('lock_settings_during_timer') === 'true') {
                             return;
                         }
+                        document.querySelectorAll('.container .page').forEach(page => page.classList.remove('active'));
+                        document.querySelectorAll('.menu button').forEach(btn => btn.classList.remove('active'));
+                        document.getElementById('settingsPage').classList.add('active');
+                        return;
                     }
+
                     document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
                     document.querySelectorAll('.menu button').forEach(btn => btn.classList.remove('active'));
                     const pages = { 'timer': 'timerPage', 'stats': 'statsPage', 'list': 'listPage', 'music': 'musicPage', 'todo': 'todoPage', 'settings': 'settingsPage' };
@@ -8650,6 +8789,7 @@ const translations = {
                         const activeBtn = menuButtons.find(btn => {
                             if (btn.dataset.page === pageName) return true;
                             if (btn.dataset.feature === pageName) return true;
+                            if (btn.dataset.pageKey === pageName) return true;
                             return false;
                         });
                         if (activeBtn) activeBtn.classList.add('active');
@@ -12324,7 +12464,14 @@ const translations = {
                     'mini_player_enabled',
                     'mini_player_hide_skip',
                     'mini_player_auto_hide',
-                    'mini_player_position'
+                    'mini_player_position',
+                    'menu_mode',
+                    'menu_display',
+                    'menu_fixed',
+                    'menu_order',
+                    'menu_visibility',
+                    'bg_image_enabled',
+                    'bg_image_pos'
                 ];
 
                 const IMPORT_BOOLEAN_SETTING_KEYS = [
@@ -13271,6 +13418,473 @@ const translations = {
                     return lang === 'ja' || lang === 'en';
                 }
 
+                // ===== MENU CUSTOMIZATION =====
+
+                const MENU_ICONS = {
+                    timer: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M12 7V12L15.5 14.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="0.9" fill="currentColor"/></svg>`,
+                    stats: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="14" width="3" height="6" rx="1.5" fill="currentColor"/><rect x="10.5" y="9" width="3" height="11" rx="1.5" fill="currentColor"/><rect x="17" y="4" width="3" height="16" rx="1.5" fill="currentColor"/></svg>`,
+                    list:  `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="4" y1="6" x2="12" y2="6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="4" y1="18" x2="16" y2="18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`,
+                    music: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>`,
+                    todo:  `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 13L9 17L19 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+                };
+
+                const MENU_ITEM_KEYS = ['timer', 'stats', 'list', 'music', 'todo'];
+                const MENU_ITEM_I18N = { timer:'menuTimer', stats:'menuStats', list:'menuList', music:'menuMusic', todo:'menuTodo' };
+                const MENU_PAGE_IDS  = { timer:'timerPage', stats:'statsPage', list:'listPage', music:'musicPage', todo:'todoPage' };
+                const MENU_DEFAULT_LABELS = { timer:'タイマー', stats:'統計', list:'リスト', music:'音楽', todo:'ToDo' };
+                const MENU_DEFAULT_ORDER  = ['timer', 'stats', 'list', 'music', 'todo'];
+
+                function getMenuOrder() {
+                    const saved = getData('menu_order');
+                    if (saved) { try { const a = JSON.parse(saved); if (Array.isArray(a) && a.length > 0) return a; } catch(e){} }
+                    return [...MENU_DEFAULT_ORDER];
+                }
+
+                function getMenuVisibility() {
+                    const saved = getData('menu_visibility');
+                    if (saved) {
+                        try {
+                            const o = JSON.parse(saved);
+                            if (o && typeof o === 'object') {
+                                return {
+                                    timer: o.timer !== false,
+                                    stats: o.stats !== false,
+                                    list:  o.list  !== false,
+                                    music: !!o.music,
+                                    todo:  !!o.todo
+                                };
+                            }
+                        } catch(e) {}
+                    }
+                    return {
+                        timer: true, stats: true, list: true,
+                        music: getData('feature_music') === 'true',
+                        todo:  getData('feature_todo')  === 'true'
+                    };
+                }
+
+                function saveMenuVisibility(vis) {
+                    saveData('menu_visibility', JSON.stringify(vis));
+                    saveData('feature_music', vis.music ? 'true' : 'false');
+                    saveData('feature_todo',  vis.todo  ? 'true' : 'false');
+                }
+
+                function saveMenuOrder(order) {
+                    saveData('menu_order', JSON.stringify(order));
+                }
+
+                function getMenuLabel(key) {
+                    return getText(MENU_ITEM_I18N[key]) || MENU_DEFAULT_LABELS[key] || key;
+                }
+
+                function rebuildMenu() {
+                    const menu = document.getElementById('mainMenu');
+                    if (!menu) return;
+
+                    // Preserve the bottom-menu-logo-inner element
+                    const logoInner = menu.querySelector('.bottom-menu-logo-inner');
+
+                    const order      = getMenuOrder();
+                    const vis        = getMenuVisibility();
+                    const displayMode = getData('menu_display') || 'text';
+
+                    // Find currently active page key
+                    const activePageEl = document.querySelector('.page.active');
+                    let currentKey = 'timer';
+                    if (activePageEl) {
+                        const found = Object.entries(MENU_PAGE_IDS).find(([k,v]) => v === activePageEl.id);
+                        if (found) currentKey = found[0];
+                    }
+
+                    menu.innerHTML = '';
+
+                    for (const key of order) {
+                        if (!vis[key]) continue;
+                        const btn = document.createElement('button');
+                        btn.setAttribute('data-page-key', key);
+                        if (key !== 'music' && key !== 'todo') btn.setAttribute('data-page', key);
+                        else btn.setAttribute('data-feature', key);
+
+                        const iconSpan = document.createElement('span');
+                        iconSpan.className = 'menu-icon';
+                        iconSpan.innerHTML = MENU_ICONS[key] || '';
+
+                        const labelSpan = document.createElement('span');
+                        labelSpan.className = 'menu-label';
+                        labelSpan.setAttribute('data-i18n', MENU_ITEM_I18N[key]);
+                        labelSpan.textContent = getMenuLabel(key);
+
+                        if (displayMode === 'icon') {
+                            btn.appendChild(iconSpan);
+                        } else if (displayMode === 'icon_text') {
+                            btn.appendChild(iconSpan);
+                            btn.appendChild(labelSpan);
+                        } else {
+                            btn.appendChild(labelSpan);
+                        }
+
+                        const k = key;
+                        btn.onclick = () => showPage(k);
+                        if (key === currentKey) btn.classList.add('active');
+                        menu.appendChild(btn);
+                    }
+
+                    // Re-append the logo inner
+                    if (logoInner) menu.appendChild(logoInner);
+
+                    // Body display-mode class
+                    document.body.classList.remove('menu-display-text', 'menu-display-icon', 'menu-display-icon_text');
+                    if (displayMode === 'icon')      document.body.classList.add('menu-display-icon');
+                    else if (displayMode === 'icon_text') document.body.classList.add('menu-display-icon_text');
+                    else                             document.body.classList.add('menu-display-text');
+
+                    if (typeof editorModeActive !== 'undefined' && editorModeActive) {
+                        setTimeout(attachEditorTargets, 50);
+                    }
+
+                }
+
+                // ===== MENU MODE =====
+
+                function applyMenuMode(mode) {
+                    document.body.classList.remove('menu-mode-bottom');
+
+                    if (mode === 'bottom') {
+                        document.body.classList.add('menu-mode-bottom');
+                        // Bottom mode and top-fixed are mutually exclusive
+                        if (getData('menu_fixed') === 'true') {
+                            saveData('menu_fixed', 'false');
+                            document.body.classList.remove('menu-fixed-on');
+                            const t = document.getElementById('toggleMenuFixed');
+                            if (t) t.classList.remove('active');
+                        }
+                    } else {
+                        const menuFixed = getData('menu_fixed') === 'true';
+                        if (menuFixed) document.body.classList.add('menu-fixed-on');
+                        else           document.body.classList.remove('menu-fixed-on');
+                    }
+                }
+
+                function onMenuModeChange() {
+                    const select = document.getElementById('menuModeSelect');
+                    const mode   = select.value;
+                    saveData('menu_mode', mode);
+                    applyMenuMode(mode);
+                    updateMenuModeSettingsUI(mode);
+                    const activeInContainer = document.querySelector('.container .page.active');
+                    if (!activeInContainer) showPage('timer');
+                }
+
+                function updateMenuModeSettingsUI(mode) {
+                    const menuFixedItem = document.getElementById('menuFixedItem');
+                    const hint          = document.getElementById('menuModeHint');
+                    // Bottom mode: top-fixed is incompatible — hide it
+                    if (menuFixedItem) menuFixedItem.style.display = mode === 'bottom' ? 'none' : '';
+                    if (hint) hint.textContent = mode === 'bottom' ? 'スマホ向け' : '';
+                }
+
+                function onMenuDisplayChange() {
+                    const display = document.getElementById('menuDisplaySelect').value;
+                    saveData('menu_display', display);
+                    rebuildMenu();
+                }
+
+                function onMenuFixedToggle() {
+                    const toggle   = document.getElementById('toggleMenuFixed');
+                    const isActive = toggle.classList.contains('active');
+                    toggle.classList.toggle('active', !isActive);
+                    saveData('menu_fixed', isActive ? 'false' : 'true');
+                    if (!isActive) document.body.classList.add('menu-fixed-on');
+                    else           document.body.classList.remove('menu-fixed-on');
+                }
+
+                function updateBottomModeNote() { /* removed — note is now inline in settings */ }
+
+                // ===== BACKGROUND IMAGE =====
+
+                let _bgObjectURL = null;
+
+                async function loadBgBlobFromDB() {
+                    try {
+                        const db = await openMusicDB();
+                        return await new Promise((resolve) => {
+                            const tx  = db.transaction('files', 'readonly');
+                            const req = tx.objectStore('files').get('__bg_image__');
+                            req.onsuccess = () => resolve(req.result ? req.result.blob : null);
+                            req.onerror   = () => resolve(null);
+                        });
+                    } catch(e) { return null; }
+                }
+
+                async function saveBgBlobToDB(blob) {
+                    const db = await openMusicDB();
+                    const tx = db.transaction('files', 'readwrite');
+                    tx.objectStore('files').put({ id:'__bg_image__', blob });
+                }
+
+                async function deleteBgBlobFromDB() {
+                    try {
+                        const db = await openMusicDB();
+                        const tx = db.transaction('files', 'readwrite');
+                        tx.objectStore('files').delete('__bg_image__');
+                    } catch(e) {}
+                }
+
+                async function onBgImageSelect(event) {
+                    const file = event.target.files?.[0];
+                    if (!file) return;
+                    await saveBgBlobToDB(file);
+                    saveData('bg_image_enabled', 'true');
+                    const pos = document.getElementById('bgImagePosSelect')?.value || 'center';
+                    saveData('bg_image_pos', pos);
+                    await applyBgImage();
+                }
+
+                function onBgImagePosChange() {
+                    const pos = document.getElementById('bgImagePosSelect')?.value || 'center';
+                    saveData('bg_image_pos', pos);
+                    if (_bgObjectURL) applyBgImageStyle(_bgObjectURL, pos);
+                }
+
+                async function applyBgImage() {
+                    const enabled = getData('bg_image_enabled') === 'true';
+                    if (!enabled) { clearBgImageStyle(); updateBgImageSettingsUI(false); return; }
+
+                    const blob = await loadBgBlobFromDB();
+                    if (!blob) { clearBgImageStyle(); updateBgImageSettingsUI(false); return; }
+
+                    if (_bgObjectURL) URL.revokeObjectURL(_bgObjectURL);
+                    _bgObjectURL = URL.createObjectURL(blob);
+
+                    const pos = getData('bg_image_pos') || 'center';
+                    applyBgImageStyle(_bgObjectURL, pos);
+                    updateBgImageSettingsUI(true, pos);
+                }
+
+                function applyBgImageStyle(url, pos) {
+                    document.body.classList.add('has-bg-image');
+                    document.body.classList.remove('bg-pos-center','bg-pos-top','bg-pos-bottom','bg-pos-left','bg-pos-right','bg-pos-fit','bg-pos-repeat');
+                    document.body.classList.add('bg-pos-' + pos);
+                    document.body.style.backgroundImage = `url(${url})`;
+                }
+
+                function clearBgImageStyle() {
+                    document.body.classList.remove('has-bg-image','bg-pos-center','bg-pos-top','bg-pos-bottom','bg-pos-left','bg-pos-right','bg-pos-fit','bg-pos-repeat');
+                    document.body.style.backgroundImage = '';
+                    if (_bgObjectURL) { URL.revokeObjectURL(_bgObjectURL); _bgObjectURL = null; }
+                }
+
+                function updateBgImageSettingsUI(enabled, pos) {
+                    const clearBtn     = document.getElementById('bgImageClearBtn');
+                    const settingsDiv  = document.getElementById('bgImageSettings');
+                    const posSelect    = document.getElementById('bgImagePosSelect');
+                    if (clearBtn)    clearBtn.style.display    = enabled ? '' : 'none';
+                    if (settingsDiv) settingsDiv.style.display = enabled ? '' : 'none';
+                    if (posSelect && pos) posSelect.value = pos;
+                }
+
+                async function clearBgImage() {
+                    await deleteBgBlobFromDB();
+                    saveData('bg_image_enabled', 'false');
+                    clearBgImageStyle();
+                    updateBgImageSettingsUI(false);
+                    const inp = document.getElementById('bgImageInput');
+                    if (inp) inp.value = '';
+                }
+
+                // ===== MENU ORDER UI =====
+
+                let _moDragSrcIdx = null;
+                let _moTouchState = null;
+                let _moInsertMarkerEl = null;
+
+                function getMoInsertMarker() {
+                    if (!_moInsertMarkerEl) {
+                        _moInsertMarkerEl = document.createElement('div');
+                        _moInsertMarkerEl.className = 'mo-insert-marker';
+                        _moInsertMarkerEl.innerHTML = '<div class="mo-insert-dot"></div><div class="mo-insert-line"></div>';
+                    }
+                    return _moInsertMarkerEl;
+                }
+
+                function showMoInsertMarker(container, insertIdx) {
+                    const marker  = getMoInsertMarker();
+                    const visible = [...container.querySelectorAll('.menu-order-item:not(.mo-dragging)')];
+                    if (insertIdx >= visible.length) {
+                        const last = visible[visible.length - 1];
+                        if (last) container.insertBefore(marker, last.nextSibling);
+                        else container.appendChild(marker);
+                    } else {
+                        container.insertBefore(marker, visible[insertIdx]);
+                    }
+                }
+
+                function hideMoInsertMarker() {
+                    if (_moInsertMarkerEl && _moInsertMarkerEl.parentElement) {
+                        _moInsertMarkerEl.parentElement.removeChild(_moInsertMarkerEl);
+                    }
+                }
+
+                function getMoInsertIdx(container, clientY) {
+                    const visible = [...container.querySelectorAll('.menu-order-item:not(.mo-dragging)')];
+                    for (let i = 0; i < visible.length; i++) {
+                        const r = visible[i].getBoundingClientRect();
+                        if (clientY < r.top + r.height / 2) return i;
+                    }
+                    return visible.length;
+                }
+
+                function reorderMenuItemToIndex(srcIdx, insertIdx) {
+                    if (srcIdx === insertIdx) return;
+                    const order = getMenuOrder();
+                    if (srcIdx < 0 || srcIdx >= order.length) return;
+                    const item = order.splice(srcIdx, 1)[0];
+                    if (srcIdx < insertIdx) insertIdx -= 1;
+                    order.splice(Math.max(0, insertIdx), 0, item);
+                    saveMenuOrder(order);
+                    buildMenuOrderList();
+                    rebuildMenu();
+                }
+
+                function initMenuOrderDnd() {
+                    const container = document.getElementById('menuOrderList');
+                    if (!container || container.dataset.dndReady) return;
+                    container.dataset.dndReady = '1';
+
+                    container.addEventListener('dragover', (e) => {
+                        e.preventDefault();
+                        if (_moDragSrcIdx === null) return;
+                        showMoInsertMarker(container, getMoInsertIdx(container, e.clientY));
+                    });
+                    container.addEventListener('dragleave', (e) => {
+                        if (!container.contains(e.relatedTarget)) hideMoInsertMarker();
+                    });
+                    container.addEventListener('drop', (e) => {
+                        e.preventDefault();
+                        if (_moDragSrcIdx === null) return;
+                        const insertIdx = getMoInsertIdx(container, e.clientY);
+                        const src = _moDragSrcIdx;
+                        hideMoInsertMarker();
+                        _moDragSrcIdx = null;
+                        reorderMenuItemToIndex(src, insertIdx);
+                    });
+
+                    document.addEventListener('touchmove', (e) => {
+                        if (!_moTouchState) return;
+                        e.preventDefault();
+                        const t = e.touches[0];
+                        const insertIdx = getMoInsertIdx(container, t.clientY);
+                        _moTouchState.insertIdx = insertIdx;
+                        showMoInsertMarker(container, insertIdx);
+                    }, { passive: false });
+
+                    document.addEventListener('touchend', () => {
+                        if (!_moTouchState) return;
+                        const src    = _moTouchState.srcIdx;
+                        const insert = _moTouchState.insertIdx !== undefined ? _moTouchState.insertIdx : src;
+                        _moTouchState = null;
+                        hideMoInsertMarker();
+                        const dragging = container.querySelector('.mo-dragging');
+                        if (dragging) dragging.classList.remove('mo-dragging');
+                        reorderMenuItemToIndex(src, insert);
+                    });
+                }
+
+                function buildMenuOrderList() {
+                    const container = document.getElementById('menuOrderList');
+                    if (!container) return;
+                    hideMoInsertMarker();
+                    _moDragSrcIdx = null;
+                    _moTouchState = null;
+                    container.innerHTML = '';
+
+                    const order = getMenuOrder();
+                    const vis   = getMenuVisibility();
+                    const dotsSvg = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="5" r="1.5" fill="currentColor"/><circle cx="15" cy="5" r="1.5" fill="currentColor"/><circle cx="9" cy="12" r="1.5" fill="currentColor"/><circle cx="15" cy="12" r="1.5" fill="currentColor"/><circle cx="9" cy="19" r="1.5" fill="currentColor"/><circle cx="15" cy="19" r="1.5" fill="currentColor"/></svg>`;
+
+                    for (let i = 0; i < order.length; i++) {
+                        const key  = order[i];
+                        const isVis = vis[key];
+                        const item = document.createElement('div');
+                        item.className = 'menu-order-item';
+                        item.setAttribute('data-mo-key', key);
+                        item.setAttribute('data-mo-idx', i);
+                        item.draggable = true;
+
+                        item.innerHTML = `
+                            <span class="mo-drag-handle">${dotsSvg}</span>
+                            <span class="mo-label">${getMenuLabel(key)}</span>
+                            <span class="mo-toggle">
+                                <div class="toggle-switch ${isVis ? 'active' : ''}" onclick="toggleMenuItemVisibility('${key}', this)">
+                                    <div class="toggle-slider"></div>
+                                </div>
+                            </span>
+                        `;
+
+                        item.addEventListener('dragstart', (e) => {
+                            _moDragSrcIdx = parseInt(item.getAttribute('data-mo-idx'));
+                            item.classList.add('mo-dragging');
+                            e.dataTransfer.effectAllowed = 'move';
+                        });
+                        item.addEventListener('dragend', () => {
+                            item.classList.remove('mo-dragging');
+                            hideMoInsertMarker();
+                            if (_moDragSrcIdx !== null) { _moDragSrcIdx = null; }
+                        });
+
+                        const handle = item.querySelector('.mo-drag-handle');
+                        handle.addEventListener('touchstart', () => {
+                            _moTouchState = { srcIdx: parseInt(item.getAttribute('data-mo-idx')), insertIdx: undefined };
+                            item.classList.add('mo-dragging');
+                        }, { passive: true });
+
+                        container.appendChild(item);
+                    }
+                }
+
+                function toggleMenuItemVisibility(key, toggleEl) {
+                    const vis   = getMenuVisibility();
+                    vis[key]    = !vis[key];
+                    saveMenuVisibility(vis);
+                    toggleEl.classList.toggle('active', vis[key]);
+
+                    // Sync legacy settings-page toggles
+                    if (key === 'music') {
+                        const t = document.getElementById('toggleMusic');
+                        if (t) t.classList.toggle('active', vis[key]);
+                        updateMusicRelatedSettingsVisibility();
+                    }
+                    if (key === 'todo') {
+                        const t = document.getElementById('toggleTodo');
+                        if (t) t.classList.toggle('active', vis[key]);
+                    }
+
+                    rebuildMenu();
+                }
+
+                // ===== INIT =====
+
+                async function initMenuCustomization() {
+                    const mode    = getData('menu_mode')    || 'normal';
+                    const display = getData('menu_display') || 'text';
+                    const fixed   = getData('menu_fixed')   === 'true';
+
+                    const modeSelect  = document.getElementById('menuModeSelect');
+                    const dispSelect  = document.getElementById('menuDisplaySelect');
+                    const fixedToggle = document.getElementById('toggleMenuFixed');
+
+                    if (modeSelect)  modeSelect.value  = mode;
+                    if (dispSelect)  dispSelect.value  = display;
+                    if (fixedToggle && fixed) fixedToggle.classList.add('active');
+
+                    applyMenuMode(mode);
+                    updateMenuModeSettingsUI(mode);
+                    buildMenuOrderList();
+                    initMenuOrderDnd();
+                    rebuildMenu();
+                    await applyBgImage();
+                }
+
                 function hasExistingUserData() {
                     const history = safeJsonParse(getData('studyHistory'), []);
                     if (Array.isArray(history) && history.length > 0) return true;
@@ -13402,8 +14016,9 @@ const translations = {
                         saveData('theme', currentTheme);
                     }
                     updateTsumikiLogoSources();
-                    const musicEnabled = getData('feature_music') === 'true';
-                    const todoEnabled = getData('feature_todo') === 'true';
+                    const vis = getMenuVisibility();
+                    const musicEnabled = vis.music;
+                    const todoEnabled  = vis.todo;
 
                     // Initialize Focus Mode Settings
                     const focusInfoEnabled = getData('feature_focus_mode_display') !== 'false'; // Default to true
@@ -13466,14 +14081,10 @@ const translations = {
                         });
                     });
 
-                    if (musicEnabled) {
-                        document.getElementById('toggleMusic').classList.add('active');
-                        addMenuButton('music');
-                    }
-                    if (todoEnabled) {
-                        document.getElementById('toggleTodo').classList.add('active');
-                        addMenuButton('todo');
-                    }
+                    if (musicEnabled) document.getElementById('toggleMusic').classList.add('active');
+                    if (todoEnabled)  document.getElementById('toggleTodo').classList.add('active');
+                    updateMusicRelatedSettingsVisibility();
+                    await initMenuCustomization();
 
                     let history = getData('studyHistory');
                     history = history ? JSON.parse(history) : [];

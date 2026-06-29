@@ -3272,6 +3272,7 @@
 
         /* 汎用入力フィールドスタイル - すべてのテキスト入力欄を統一 */
         .custom-confirm-dialog input[type="text"],
+        .custom-confirm-dialog input[type="url"],
         .calendar-day-add-form input[type="text"] {
             width: 100%;
             padding: 12px 15px;
@@ -3283,34 +3284,40 @@
         }
 
         .light .custom-confirm-dialog input[type="text"],
+        .light .custom-confirm-dialog input[type="url"],
         .light .calendar-day-add-form input[type="text"] {
             background-color: var(--panel-light);
             color: #323232;
         }
 
         .dark .custom-confirm-dialog input[type="text"],
+        .dark .custom-confirm-dialog input[type="url"],
         .dark .calendar-day-add-form input[type="text"] {
             background-color: var(--panel-dark);
             color: #e8e8e8;
         }
 
         .light .custom-confirm-dialog input[type="text"]::placeholder,
+        .light .custom-confirm-dialog input[type="url"]::placeholder,
         .light .calendar-day-add-form input[type="text"]::placeholder {
             color: #8a8a8a;
         }
 
         .dark .custom-confirm-dialog input[type="text"]::placeholder,
+        .dark .custom-confirm-dialog input[type="url"]::placeholder,
         .dark .calendar-day-add-form input[type="text"]::placeholder {
             color: #a8a8a8;
         }
 
         .light .custom-confirm-dialog input[type="text"]:focus,
+        .light .custom-confirm-dialog input[type="url"]:focus,
         .light .calendar-day-add-form input[type="text"]:focus {
             outline: none;
             border-color: var(--primary-color);
         }
 
         .dark .custom-confirm-dialog input[type="text"]:focus,
+        .dark .custom-confirm-dialog input[type="url"]:focus,
         .dark .calendar-day-add-form input[type="text"]:focus {
             outline: none;
             border-color: var(--primary-color-dark);
@@ -5459,7 +5466,7 @@ body.dark .fc-formula-popup input {
         /* Mini Player Popup */
         .mini-player-popup {
             position: absolute;
-            z-index: 900;
+            z-index: 100000;
             background: var(--panel-light);
             border-radius: 24px;
             padding: 12px;
@@ -5575,13 +5582,15 @@ body.dark .fc-formula-popup input {
         #ytMiniZone {
             width: 100%;
             display: none;
-            border-radius: 6px;
+            border-radius: 24px;
             overflow: hidden;
+            z-index: 100005;
         }
         #ytMiniZone::before {
             content: '';
             display: block;
             padding-top: 56.25%;
+            z-index: 100005;
         }
         /* YouTube SVG badge in playlist */
         .yt-svg-badge {
@@ -5722,7 +5731,7 @@ body.dark .fc-formula-popup input {
         <div class="custom-confirm-dialog">
             <div class="custom-confirm-title" data-i18n="addYoutubeMusic">Youtube動画を追加</div>
             <input type="url" id="youtubeUrlInput" placeholder="YouTube URL" data-i18n-placeholder="youtubeUrlPlaceholder"
-                style="width:100%; padding:12px 15px; border:none; border-radius:24px; font-size:0.95rem; font-family:inherit; margin-bottom:10px;">
+                style="margin-bottom:10px;">
             <div id="youtubeUrlError" style="display:none; color:#e74c3c; font-size:0.8rem; margin-bottom:10px; padding: 0 4px;"></div>
             <div class="custom-confirm-buttons">
                 <button class="custom-confirm-cancel" id="youtubeUrlCancelBtn" data-i18n="cancelButton">キャンセル</button>
@@ -5881,7 +5890,7 @@ body.dark .fc-formula-popup input {
 
     <div class="container">
         <!-- Mini Music Player Popup -->
-        <div id="miniPlayerPopup" class="mini-player-popup pos-top-right">
+        <div id="miniPlayerPopup" class="mini-player-popup pos-top-right" data-editor-target="miniPlayer">
             <div id="miniPlayerDragHandle" class="mini-player-drag-handle" title="ドラッグして移動">
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="10" viewBox="0 0 28 10">
                     <rect x="2" y="0" width="24" height="2" rx="1" fill="currentColor"/>
@@ -6783,7 +6792,9 @@ body.dark .fc-formula-popup input {
             <div class="footerrr">
 
                 <div class="copyright" data-i18n="copyright">© ツミキapp / Super Hiko14 / 高級ジェネ™ All rights reserved.</div>
-            
+
+                <div id="appVersionInfo" style="font-size:0.72rem; opacity:0.4; margin: 4px 0 8px; letter-spacing:0.03em;"></div>
+
                 <div class="footer-credit" aria-label="Created by Super Hiko14">
                   <div class="footer-credit-label">Created by</div>
                   <div class="footer-credit-main">Super Hiko14<span class="footer-credit-dot">.</span></div>
@@ -7182,6 +7193,7 @@ const translations = {
                         musicResumeWindowLabel: 'タップ再開の有効時間',
                         musicResumeWindowMinutes: '分',
                         musicResumeWindowNote: '設定した時間を過ぎると、再開は手動になります。',
+                        editorModeMiniPlayer: 'ミニプレイヤー',
                         miniPlayerEnabled: 'ミニプレイヤーを表示',
                         miniPlayerHideSkip: '次/前の曲ボタンを非表示',
                         miniPlayerAutoHideLabel: '停止後の自動非表示時間',
@@ -7647,6 +7659,7 @@ const translations = {
                         musicResumeWindowLabel: 'Tap resume window',
                         musicResumeWindowMinutes: 'min',
                         musicResumeWindowNote: 'After this time, resume is manual.',
+                        editorModeMiniPlayer: 'Mini Player',
                         miniPlayerEnabled: 'Show Mini Player',
                         miniPlayerHideSkip: 'Hide Next/Previous Buttons',
                         miniPlayerAutoHideLabel: 'Auto-hide after stop',
@@ -9666,6 +9679,10 @@ const translations = {
                                 audio.pause();
                                 audio.src = '';
                             }
+                            if (removed && removed.youtubeId) {
+                                try { if (ytPlayer && ytPlayer.stopVideo) ytPlayer.stopVideo(); } catch(e) {}
+                                ytPlayerIsPlaying = false;
+                            }
                             currentMusicIndex = -1;
                             saveData('music_current_track_id', '');
                         } else if (currentMusicIndex > idx) {
@@ -9679,6 +9696,9 @@ const translations = {
                     selectedMusicItems.clear();
                     savePlaylist();
                     loadPlaylist();
+                    updateMusicPlayerModeUI();
+                    syncMiniPlayerUI();
+                    updateMiniPlayerVisibility();
                 }
 
                 function renderPlaylistManager() {
@@ -10348,6 +10368,10 @@ const translations = {
                                 audio.pause();
                                 audio.src = '';
                             }
+                            if (removed && removed.youtubeId) {
+                                try { if (ytPlayer && ytPlayer.stopVideo) ytPlayer.stopVideo(); } catch(e) {}
+                                ytPlayerIsPlaying = false;
+                            }
                             currentMusicIndex = -1;
                             saveData('music_current_track_id', '');
                         } else if (currentMusicIndex > index) {
@@ -10361,6 +10385,9 @@ const translations = {
                         musicFiles.splice(index, 1);
                         savePlaylist();
                         loadPlaylist();
+                        updateMusicPlayerModeUI();
+                        syncMiniPlayerUI();
+                        updateMiniPlayerVisibility();
                     }
                 }
 
@@ -14185,6 +14212,22 @@ const translations = {
                                 ], key: 'graph_location', onChange: function(val) { saveData('graph_location', val); var el=document.getElementById('graphLocation'); if(el) el.value=val; updateGraphs(); } }
                             ]
                         };
+                    },
+                    miniPlayer: function() {
+                        return {
+                            title: getText('editorModeMiniPlayer'),
+                            rows: [
+                                { type: 'toggle', label: getText('miniPlayerEnabled'), id: 'toggleMiniPlayer', key: 'mini_player_enabled', onToggle: function() { toggleMiniPlayerSetting(); } },
+                                { type: 'toggle', label: getText('miniPlayerHideSkip'), id: 'toggleMiniPlayerHideSkip', key: 'mini_player_hide_skip', onToggle: function() { toggleMiniPlayerHideSkip(); } },
+                                { type: 'select', label: getText('miniPlayerAutoHideLabel'), options: [
+                                    {v:'30',t:'30'+getText('seconds')},{v:'60',t:'60'+getText('seconds')},{v:'120',t:'120'+getText('seconds')},{v:'180',t:'180'+getText('seconds')},{v:'300',t:'300'+getText('seconds')},{v:'0',t:getText('miniPlayerNoAutoHide')}
+                                ], key: 'mini_player_auto_hide', onChange: function(val) { var el=document.getElementById('miniPlayerAutoHideSelect'); if(el) el.value=val; updateMiniPlayerAutoHide(); } },
+                                { type: 'select', label: getText('miniPlayerPositionLabel'), options: [
+                                    {v:'top-right',t:getText('posTopRight')},{v:'top-left',t:getText('posTopLeft')},{v:'bottom-right',t:getText('posBottomRight')},{v:'bottom-left',t:getText('posBottomLeft')}
+                                ], key: 'mini_player_position', onChange: function(val) { var el=document.getElementById('miniPlayerPositionSelect'); if(el) el.value=val; updateMiniPlayerPosition(); } },
+                                { type: 'toggle', label: getText('miniPlayerFreePlace'), id: 'toggleMiniPlayerFreePlace', key: 'mini_player_free_place', onToggle: function() { toggleMiniPlayerFreePlace(); } }
+                            ]
+                        };
                     }
                 };
 
@@ -14205,7 +14248,7 @@ const translations = {
                             html += '<div class="toggle-switch' + (isActive ? ' active' : '') + '" data-emm-toggle="' + i + '" onclick="editorMiniMenuToggle(' + i + ')">';
                             html += '<div class="toggle-slider"></div></div>';
                         } else if (row.type === 'select') {
-                            const selectDefaults = {music_resume_window_min:'5',focus_duration:'25',break_duration:'5',graph_type:'bar',graph_period:'30',graph_location:'list'};
+                            const selectDefaults = {music_resume_window_min:'5',focus_duration:'25',break_duration:'5',graph_type:'bar',graph_period:'30',graph_location:'list',mini_player_auto_hide:'60',mini_player_position:'top-right'};
                             const currentVal = getData(row.key) || selectDefaults[row.key] || row.options[0].v;
                             html += '<div class="custom-select" style="width:120px;">';
                             html += '<select data-emm-select="' + i + '" onchange="editorMiniMenuSelect(' + i + ', this.value)">';
@@ -15411,7 +15454,7 @@ const translations = {
                         if (!zone || zone.style.display === 'none') { container.style.display = 'none'; return; }
                         const rect = zone.getBoundingClientRect();
                         if (rect.width < 2 || rect.height < 2) { container.style.display = 'none'; return; }
-                        container.style.cssText = `display:block; position:fixed; top:${rect.top}px; left:${rect.left}px; width:${rect.width}px; height:${rect.height}px; border-radius:6px; z-index:901; background:#000; overflow:hidden; pointer-events:auto;`;
+                        container.style.cssText = `display:block; position:fixed; top:${rect.top}px; left:${rect.left}px; width:${rect.width}px; height:${rect.height}px; border-radius:6px; z-index:100001; background:#000; overflow:hidden; pointer-events:auto;`;
                     } else {
                         container.style.display = 'none';
                     }
@@ -15713,6 +15756,7 @@ const translations = {
 
                 window.addEventListener('scroll', updateMiniPlayerScroll, { passive: true });
                 window.addEventListener('scroll', repositionYtPlayer, { passive: true });
+                setInterval(repositionYtPlayer, 500);
                 window.addEventListener('resize', function() {
                     if (isMiniPlayerFreePlace()) {
                         applyMiniPlayerFreePosition();
@@ -15765,6 +15809,7 @@ const translations = {
                         const y = Math.max(0, Math.min(vh - h, startTop + dy));
                         popup.style.left = x + 'px';
                         popup.style.top = y + 'px';
+                        repositionYtPlayer();
                     });
 
                     handle.addEventListener('pointerup', function(e) {
@@ -16024,6 +16069,18 @@ const translations = {
                     }
                 });
             })();
+        </script>
+
+        <script>
+            fetch('https://about.tsumiki.app/changelog.json')
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    var el = document.getElementById('appVersionInfo');
+                    if (el && data && data[0]) {
+                        el.textContent = data[0].version + '  last update ' + data[0].date;
+                    }
+                })
+                .catch(function() {});
         </script>
 </body>
 

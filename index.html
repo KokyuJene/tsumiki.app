@@ -3669,33 +3669,36 @@
             height: 0;
             pointer-events: none;
             z-index: 4;
-            color: #3a3a3a;
-            opacity: 0.9;
+            color: var(--primary-color, #4f7ef7);
             overflow: visible;
         }
-
-        .dark .drag-insert-marker {
-            color: #e7e7e7;
+        /* dot */
+        .drag-insert-marker::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+            z-index: 4;
+            pointer-events: none;
         }
-
-        /* 横線をリスト端まで伸ばす */
+        /* line */
         .drag-insert-marker::after {
             content: '';
             position: absolute;
-            left: 8px;
+            left: 10px;
             right: 0;
             top: 0;
             transform: translateY(-50%);
-            height: 3px;
+            height: 2px;
             background: currentColor;
-            border-radius: 2px;
-            opacity: 0.95;
+            border-radius: 1px;
             pointer-events: none;
             z-index: 3;
-        }
-
-        .dark .drag-insert-marker::after {
-            background: currentColor;
         }
 
         .playlist-manager-add-row {
@@ -5669,19 +5672,8 @@ body.dark .fc-formula-popup input {
 
         /* ===== MENU CUSTOMIZATION ===== */
 
-        /* Background image */
-        body.has-bg-image {
-            background-size: cover;
-            background-position: center center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-        }
-        body.has-bg-image.bg-pos-top    { background-position: center top; }
-        body.has-bg-image.bg-pos-bottom { background-position: center bottom; }
-        body.has-bg-image.bg-pos-left   { background-position: left center; }
-        body.has-bg-image.bg-pos-right  { background-position: right center; }
-        body.has-bg-image.bg-pos-fit    { background-size: contain; background-position: center center; }
-        body.has-bg-image.bg-pos-repeat { background-size: auto; background-repeat: repeat; }
+        /* Bottom mode: hide top logo */
+        body.menu-mode-bottom h1 { display: none; }
 
         /* Menu icons */
         .menu button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
@@ -5699,7 +5691,7 @@ body.dark .fc-formula-popup input {
         /* Fixed top menu — sticky (stops at top when scrolling, normal at page top) */
         body.menu-fixed-on .menu {
             position: sticky; top: 0;
-            z-index: 900; padding: 12px 20px 8px; margin-bottom: 0;
+            z-index: 900; padding: 12px 0 8px; margin-bottom: 0;
         }
         /* no background on sticky menu — buttons float transparently */
 
@@ -5710,7 +5702,9 @@ body.dark .fc-formula-popup input {
             flex-wrap: wrap; padding: 8px 12px 5px; gap: 8px;
         }
         /* no background on bottom menu — buttons float transparently */
-        body.menu-mode-bottom .container { padding-bottom: 90px; }
+        /* body padding shifts flex centering to center of area above the fixed menu */
+        body.menu-mode-bottom { padding-bottom: 60px; }
+        body.menu-mode-bottom .container { padding-bottom: 0; }
         .bottom-menu-logo-inner { display: none; width: 100%; order: 999; text-align: center; padding: 2px 0 1px; }
         body.menu-mode-bottom .bottom-menu-logo-inner { display: block; }
         .bottom-menu-logo-inner img { height: 14px; width: auto; opacity: 0.35; pointer-events: none; -webkit-touch-callout: none; }
@@ -5732,13 +5726,6 @@ body.dark .fc-formula-popup input {
         .mo-label { flex:1; font-size:0.92rem; }
         .mo-toggle { flex-shrink:0; }
         .mo-toggle .toggle-switch { margin:0; }
-        /* Insert marker */
-        .mo-insert-marker {
-            display:flex; align-items:center; height:10px; pointer-events:none;
-            color:var(--primary-color,#4f7ef7); flex-shrink:0;
-        }
-        .mo-insert-dot { flex-shrink:0; width:8px; height:8px; border-radius:50%; background:currentColor; }
-        .mo-insert-line { flex:1; height:2px; background:currentColor; }
     </style>
 
 </head>
@@ -6448,18 +6435,6 @@ body.dark .fc-formula-popup input {
             <div class="settings-section" id="menuCustomizeSection">
                 <h2>メニューカスタマイズ</h2>
 
-                <!-- Menu mode -->
-                <div class="toggle-item">
-                    <span>メニューモード<small class="menu-mode-hint" id="menuModeHint"></small></span>
-                    <div class="custom-select" style="width:160px;">
-                        <select id="menuModeSelect" onchange="onMenuModeChange()">
-                            <option value="normal">ノーマル</option>
-                            <option value="bottom">ボトムメニュー</option>
-                        </select>
-                        <div class="select-arrow">▾</div>
-                    </div>
-                </div>
-
                 <!-- Menu display style -->
                 <div class="toggle-item">
                     <span>メニューの表示方法</span>
@@ -6473,7 +6448,7 @@ body.dark .fc-formula-popup input {
                     </div>
                 </div>
 
-                <!-- Menu fixed (normal/bottom mode only) -->
+                <!-- Menu fixed top -->
                 <div class="toggle-item" id="menuFixedItem">
                     <span>メニューをトップに固定</span>
                     <div class="toggle-switch" id="toggleMenuFixed" onclick="onMenuFixedToggle()">
@@ -6481,28 +6456,11 @@ body.dark .fc-formula-popup input {
                     </div>
                 </div>
 
-                <!-- Background image -->
-                <div style="margin-top:15px;">
-                    <label style="font-size:0.9rem;opacity:0.8;display:block;margin-bottom:8px;">背景画像</label>
-                    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
-                        <button class="secondary" onclick="document.getElementById('bgImageInput').click()" style="flex:1;min-width:100px;">画像を選択</button>
-                        <button class="secondary" id="bgImageClearBtn" onclick="clearBgImage()" style="flex:1;min-width:100px;display:none;">画像を削除</button>
-                    </div>
-                    <input type="file" id="bgImageInput" accept="image/*" style="display:none;" onchange="onBgImageSelect(event)">
-                    <div id="bgImageSettings" style="display:none;">
-                        <label style="font-size:0.9rem;opacity:0.8;display:block;margin-bottom:8px;">配置方法</label>
-                        <div class="custom-select" style="width:100%;">
-                            <select id="bgImagePosSelect" onchange="onBgImagePosChange()">
-                                <option value="center">中央から（デフォルト）</option>
-                                <option value="top">上から</option>
-                                <option value="bottom">下から</option>
-                                <option value="left">左から</option>
-                                <option value="right">右から</option>
-                                <option value="fit">デバイスの解像度に合わせる</option>
-                                <option value="repeat">繰り返す</option>
-                            </select>
-                            <div class="select-arrow">▾</div>
-                        </div>
+                <!-- Menu fixed bottom -->
+                <div class="toggle-item" id="menuBottomItem">
+                    <span>メニューを下に固定</span>
+                    <div class="toggle-switch" id="toggleMenuBottom" onclick="onMenuBottomToggle()">
+                        <div class="toggle-slider"></div>
                     </div>
                 </div>
 
@@ -12469,9 +12427,7 @@ const translations = {
                     'menu_display',
                     'menu_fixed',
                     'menu_order',
-                    'menu_visibility',
-                    'bg_image_enabled',
-                    'bg_image_pos'
+                    'menu_visibility'
                 ];
 
                 const IMPORT_BOOLEAN_SETTING_KEYS = [
@@ -13421,11 +13377,12 @@ const translations = {
                 // ===== MENU CUSTOMIZATION =====
 
                 const MENU_ICONS = {
-                    timer: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M12 7V12L15.5 14.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="0.9" fill="currentColor"/></svg>`,
-                    stats: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="14" width="3" height="6" rx="1.5" fill="currentColor"/><rect x="10.5" y="9" width="3" height="11" rx="1.5" fill="currentColor"/><rect x="17" y="4" width="3" height="16" rx="1.5" fill="currentColor"/></svg>`,
-                    list:  `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="4" y1="6" x2="12" y2="6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="4" y1="18" x2="16" y2="18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`,
-                    music: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>`,
-                    todo:  `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 13L9 17L19 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+                    timer:    `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M12 7V12L15.5 14.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="0.9" fill="currentColor"/></svg>`,
+                    stats:    `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4.5" y="14" width="2" height="6" rx="1" fill="currentColor"/><rect x="11" y="9" width="2" height="11" rx="1" fill="currentColor"/><rect x="17.5" y="4" width="2" height="16" rx="1" fill="currentColor"/></svg>`,
+                    list:     `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="4" y1="6" x2="12" y2="6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="4" y1="18" x2="16" y2="18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`,
+                    music:    `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>`,
+                    music_yt: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 4.5L19.5 12L7 19.5V4.5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+                    todo:     `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 13L9 17L19 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`
                 };
 
                 const MENU_ITEM_KEYS = ['timer', 'stats', 'list', 'music', 'todo'];
@@ -13507,7 +13464,8 @@ const translations = {
 
                         const iconSpan = document.createElement('span');
                         iconSpan.className = 'menu-icon';
-                        iconSpan.innerHTML = MENU_ICONS[key] || '';
+                        const iconKey = (key === 'music' && isYoutubeMusicEnabled()) ? 'music_yt' : key;
+                        iconSpan.innerHTML = MENU_ICONS[iconKey] || '';
 
                         const labelSpan = document.createElement('span');
                         labelSpan.className = 'menu-label';
@@ -13542,45 +13500,52 @@ const translations = {
                         setTimeout(attachEditorTargets, 50);
                     }
 
+                    requestAnimationFrame(syncBottomMenuPadding);
                 }
 
                 // ===== MENU MODE =====
 
                 function applyMenuMode(mode) {
-                    document.body.classList.remove('menu-mode-bottom');
-
+                    document.body.classList.toggle('menu-mode-bottom', mode === 'bottom');
                     if (mode === 'bottom') {
-                        document.body.classList.add('menu-mode-bottom');
-                        // Bottom mode and top-fixed are mutually exclusive
-                        if (getData('menu_fixed') === 'true') {
-                            saveData('menu_fixed', 'false');
-                            document.body.classList.remove('menu-fixed-on');
-                            const t = document.getElementById('toggleMenuFixed');
-                            if (t) t.classList.remove('active');
-                        }
+                        document.body.classList.remove('menu-fixed-on');
+                        requestAnimationFrame(syncBottomMenuPadding);
                     } else {
-                        const menuFixed = getData('menu_fixed') === 'true';
-                        if (menuFixed) document.body.classList.add('menu-fixed-on');
-                        else           document.body.classList.remove('menu-fixed-on');
+                        document.body.classList.toggle('menu-fixed-on', getData('menu_fixed') === 'true');
+                        document.body.style.paddingBottom = '';
                     }
                 }
 
-                function onMenuModeChange() {
-                    const select = document.getElementById('menuModeSelect');
-                    const mode   = select.value;
-                    saveData('menu_mode', mode);
-                    applyMenuMode(mode);
-                    updateMenuModeSettingsUI(mode);
-                    const activeInContainer = document.querySelector('.container .page.active');
-                    if (!activeInContainer) showPage('timer');
+                function syncBottomMenuPadding() {
+                    if (!document.body.classList.contains('menu-mode-bottom')) return;
+                    const menu = document.querySelector('.menu');
+                    if (menu) document.body.style.paddingBottom = menu.offsetHeight + 'px';
+                }
+
+                function onMenuBottomToggle() {
+                    const toggle  = document.getElementById('toggleMenuBottom');
+                    const newOn   = !toggle.classList.contains('active');
+                    toggle.classList.toggle('active', newOn);
+                    if (newOn) {
+                        saveData('menu_mode', 'bottom');
+                        saveData('menu_fixed', 'false');
+                        document.body.classList.remove('menu-fixed-on');
+                        const ft = document.getElementById('toggleMenuFixed');
+                        if (ft) ft.classList.remove('active');
+                    } else {
+                        saveData('menu_mode', 'normal');
+                    }
+                    applyMenuMode(newOn ? 'bottom' : 'normal');
+                    updateMenuModeSettingsUI(newOn ? 'bottom' : 'normal');
                 }
 
                 function updateMenuModeSettingsUI(mode) {
-                    const menuFixedItem = document.getElementById('menuFixedItem');
-                    const hint          = document.getElementById('menuModeHint');
-                    // Bottom mode: top-fixed is incompatible — hide it
-                    if (menuFixedItem) menuFixedItem.style.display = mode === 'bottom' ? 'none' : '';
-                    if (hint) hint.textContent = mode === 'bottom' ? 'スマホ向け' : '';
+                    const menuFixedItem  = document.getElementById('menuFixedItem');
+                    const menuBottomItem = document.getElementById('menuBottomItem');
+                    const topFixed = getData('menu_fixed') === 'true';
+                    // Bottom mode hides top-fixed; top-fixed hides bottom
+                    if (menuFixedItem)  menuFixedItem.style.display  = mode === 'bottom' ? 'none' : '';
+                    if (menuBottomItem) menuBottomItem.style.display = topFixed ? 'none' : '';
                 }
 
                 function onMenuDisplayChange() {
@@ -13590,150 +13555,31 @@ const translations = {
                 }
 
                 function onMenuFixedToggle() {
-                    const toggle   = document.getElementById('toggleMenuFixed');
-                    const isActive = toggle.classList.contains('active');
-                    toggle.classList.toggle('active', !isActive);
-                    saveData('menu_fixed', isActive ? 'false' : 'true');
-                    if (!isActive) document.body.classList.add('menu-fixed-on');
-                    else           document.body.classList.remove('menu-fixed-on');
+                    const toggle = document.getElementById('toggleMenuFixed');
+                    const newOn  = !toggle.classList.contains('active');
+                    toggle.classList.toggle('active', newOn);
+                    saveData('menu_fixed', newOn ? 'true' : 'false');
+                    if (newOn) {
+                        saveData('menu_mode', 'normal');
+                        document.body.classList.remove('menu-mode-bottom');
+                        const bt = document.getElementById('toggleMenuBottom');
+                        if (bt) bt.classList.remove('active');
+                        document.body.classList.add('menu-fixed-on');
+                    } else {
+                        document.body.classList.remove('menu-fixed-on');
+                    }
+                    updateMenuModeSettingsUI('normal');
                 }
 
                 function updateBottomModeNote() { /* removed — note is now inline in settings */ }
 
                 // ===== BACKGROUND IMAGE =====
 
-                let _bgObjectURL = null;
-
-                async function loadBgBlobFromDB() {
-                    try {
-                        const db = await openMusicDB();
-                        return await new Promise((resolve) => {
-                            const tx  = db.transaction('files', 'readonly');
-                            const req = tx.objectStore('files').get('__bg_image__');
-                            req.onsuccess = () => resolve(req.result ? req.result.blob : null);
-                            req.onerror   = () => resolve(null);
-                        });
-                    } catch(e) { return null; }
-                }
-
-                async function saveBgBlobToDB(blob) {
-                    const db = await openMusicDB();
-                    const tx = db.transaction('files', 'readwrite');
-                    tx.objectStore('files').put({ id:'__bg_image__', blob });
-                }
-
-                async function deleteBgBlobFromDB() {
-                    try {
-                        const db = await openMusicDB();
-                        const tx = db.transaction('files', 'readwrite');
-                        tx.objectStore('files').delete('__bg_image__');
-                    } catch(e) {}
-                }
-
-                async function onBgImageSelect(event) {
-                    const file = event.target.files?.[0];
-                    if (!file) return;
-                    await saveBgBlobToDB(file);
-                    saveData('bg_image_enabled', 'true');
-                    const pos = document.getElementById('bgImagePosSelect')?.value || 'center';
-                    saveData('bg_image_pos', pos);
-                    await applyBgImage();
-                }
-
-                function onBgImagePosChange() {
-                    const pos = document.getElementById('bgImagePosSelect')?.value || 'center';
-                    saveData('bg_image_pos', pos);
-                    if (_bgObjectURL) applyBgImageStyle(_bgObjectURL, pos);
-                }
-
-                async function applyBgImage() {
-                    const enabled = getData('bg_image_enabled') === 'true';
-                    if (!enabled) { clearBgImageStyle(); updateBgImageSettingsUI(false); return; }
-
-                    const blob = await loadBgBlobFromDB();
-                    if (!blob) { clearBgImageStyle(); updateBgImageSettingsUI(false); return; }
-
-                    if (_bgObjectURL) URL.revokeObjectURL(_bgObjectURL);
-                    _bgObjectURL = URL.createObjectURL(blob);
-
-                    const pos = getData('bg_image_pos') || 'center';
-                    applyBgImageStyle(_bgObjectURL, pos);
-                    updateBgImageSettingsUI(true, pos);
-                }
-
-                function applyBgImageStyle(url, pos) {
-                    document.body.classList.add('has-bg-image');
-                    document.body.classList.remove('bg-pos-center','bg-pos-top','bg-pos-bottom','bg-pos-left','bg-pos-right','bg-pos-fit','bg-pos-repeat');
-                    document.body.classList.add('bg-pos-' + pos);
-                    document.body.style.backgroundImage = `url(${url})`;
-                }
-
-                function clearBgImageStyle() {
-                    document.body.classList.remove('has-bg-image','bg-pos-center','bg-pos-top','bg-pos-bottom','bg-pos-left','bg-pos-right','bg-pos-fit','bg-pos-repeat');
-                    document.body.style.backgroundImage = '';
-                    if (_bgObjectURL) { URL.revokeObjectURL(_bgObjectURL); _bgObjectURL = null; }
-                }
-
-                function updateBgImageSettingsUI(enabled, pos) {
-                    const clearBtn     = document.getElementById('bgImageClearBtn');
-                    const settingsDiv  = document.getElementById('bgImageSettings');
-                    const posSelect    = document.getElementById('bgImagePosSelect');
-                    if (clearBtn)    clearBtn.style.display    = enabled ? '' : 'none';
-                    if (settingsDiv) settingsDiv.style.display = enabled ? '' : 'none';
-                    if (posSelect && pos) posSelect.value = pos;
-                }
-
-                async function clearBgImage() {
-                    await deleteBgBlobFromDB();
-                    saveData('bg_image_enabled', 'false');
-                    clearBgImageStyle();
-                    updateBgImageSettingsUI(false);
-                    const inp = document.getElementById('bgImageInput');
-                    if (inp) inp.value = '';
-                }
 
                 // ===== MENU ORDER UI =====
 
                 let _moDragSrcIdx = null;
                 let _moTouchState = null;
-                let _moInsertMarkerEl = null;
-
-                function getMoInsertMarker() {
-                    if (!_moInsertMarkerEl) {
-                        _moInsertMarkerEl = document.createElement('div');
-                        _moInsertMarkerEl.className = 'mo-insert-marker';
-                        _moInsertMarkerEl.innerHTML = '<div class="mo-insert-dot"></div><div class="mo-insert-line"></div>';
-                    }
-                    return _moInsertMarkerEl;
-                }
-
-                function showMoInsertMarker(container, insertIdx) {
-                    const marker  = getMoInsertMarker();
-                    const visible = [...container.querySelectorAll('.menu-order-item:not(.mo-dragging)')];
-                    if (insertIdx >= visible.length) {
-                        const last = visible[visible.length - 1];
-                        if (last) container.insertBefore(marker, last.nextSibling);
-                        else container.appendChild(marker);
-                    } else {
-                        container.insertBefore(marker, visible[insertIdx]);
-                    }
-                }
-
-                function hideMoInsertMarker() {
-                    if (_moInsertMarkerEl && _moInsertMarkerEl.parentElement) {
-                        _moInsertMarkerEl.parentElement.removeChild(_moInsertMarkerEl);
-                    }
-                }
-
-                function getMoInsertIdx(container, clientY) {
-                    const visible = [...container.querySelectorAll('.menu-order-item:not(.mo-dragging)')];
-                    for (let i = 0; i < visible.length; i++) {
-                        const r = visible[i].getBoundingClientRect();
-                        if (clientY < r.top + r.height / 2) return i;
-                    }
-                    return visible.length;
-                }
-
                 function reorderMenuItemToIndex(srcIdx, insertIdx) {
                     if (srcIdx === insertIdx) return;
                     const order = getMenuOrder();
@@ -13751,20 +13597,24 @@ const translations = {
                     if (!container || container.dataset.dndReady) return;
                     container.dataset.dndReady = '1';
 
+                    const getMoItems = () => Array.from(container.querySelectorAll('.menu-order-item'));
+
                     container.addEventListener('dragover', (e) => {
                         e.preventDefault();
                         if (_moDragSrcIdx === null) return;
-                        showMoInsertMarker(container, getMoInsertIdx(container, e.clientY));
+                        const items = getMoItems();
+                        setInsertIndicator(container, items, getInsertIndexByClientY(items, e.clientY));
                     });
                     container.addEventListener('dragleave', (e) => {
-                        if (!container.contains(e.relatedTarget)) hideMoInsertMarker();
+                        if (!container.contains(e.relatedTarget)) clearInsertIndicator(container, null);
                     });
                     container.addEventListener('drop', (e) => {
                         e.preventDefault();
                         if (_moDragSrcIdx === null) return;
-                        const insertIdx = getMoInsertIdx(container, e.clientY);
-                        const src = _moDragSrcIdx;
-                        hideMoInsertMarker();
+                        const items     = getMoItems();
+                        const insertIdx = getInsertIndexByClientY(items, e.clientY);
+                        const src       = _moDragSrcIdx;
+                        clearInsertIndicator(container, null);
                         _moDragSrcIdx = null;
                         reorderMenuItemToIndex(src, insertIdx);
                     });
@@ -13772,10 +13622,11 @@ const translations = {
                     document.addEventListener('touchmove', (e) => {
                         if (!_moTouchState) return;
                         e.preventDefault();
-                        const t = e.touches[0];
-                        const insertIdx = getMoInsertIdx(container, t.clientY);
-                        _moTouchState.insertIdx = insertIdx;
-                        showMoInsertMarker(container, insertIdx);
+                        const t     = e.touches[0];
+                        const items = getMoItems();
+                        const idx   = getInsertIndexByClientY(items, t.clientY);
+                        _moTouchState.insertIdx = idx;
+                        setInsertIndicator(container, items, idx);
                     }, { passive: false });
 
                     document.addEventListener('touchend', () => {
@@ -13783,7 +13634,7 @@ const translations = {
                         const src    = _moTouchState.srcIdx;
                         const insert = _moTouchState.insertIdx !== undefined ? _moTouchState.insertIdx : src;
                         _moTouchState = null;
-                        hideMoInsertMarker();
+                        clearInsertIndicator(container, null);
                         const dragging = container.querySelector('.mo-dragging');
                         if (dragging) dragging.classList.remove('mo-dragging');
                         reorderMenuItemToIndex(src, insert);
@@ -13793,7 +13644,7 @@ const translations = {
                 function buildMenuOrderList() {
                     const container = document.getElementById('menuOrderList');
                     if (!container) return;
-                    hideMoInsertMarker();
+                    clearInsertIndicator(container, null);
                     _moDragSrcIdx = null;
                     _moTouchState = null;
                     container.innerHTML = '';
@@ -13828,7 +13679,8 @@ const translations = {
                         });
                         item.addEventListener('dragend', () => {
                             item.classList.remove('mo-dragging');
-                            hideMoInsertMarker();
+                            const c = document.getElementById('menuOrderList');
+                            if (c) clearInsertIndicator(c, null);
                             if (_moDragSrcIdx !== null) { _moDragSrcIdx = null; }
                         });
 
@@ -13864,25 +13716,24 @@ const translations = {
 
                 // ===== INIT =====
 
-                async function initMenuCustomization() {
+                function initMenuCustomization() {
                     const mode    = getData('menu_mode')    || 'normal';
                     const display = getData('menu_display') || 'text';
                     const fixed   = getData('menu_fixed')   === 'true';
 
-                    const modeSelect  = document.getElementById('menuModeSelect');
-                    const dispSelect  = document.getElementById('menuDisplaySelect');
-                    const fixedToggle = document.getElementById('toggleMenuFixed');
+                    const dispSelect    = document.getElementById('menuDisplaySelect');
+                    const fixedToggle   = document.getElementById('toggleMenuFixed');
+                    const bottomToggle  = document.getElementById('toggleMenuBottom');
 
-                    if (modeSelect)  modeSelect.value  = mode;
-                    if (dispSelect)  dispSelect.value  = display;
-                    if (fixedToggle && fixed) fixedToggle.classList.add('active');
+                    if (dispSelect)   dispSelect.value  = display;
+                    if (fixedToggle)  fixedToggle.classList.toggle('active', fixed);
+                    if (bottomToggle) bottomToggle.classList.toggle('active', mode === 'bottom');
 
                     applyMenuMode(mode);
                     updateMenuModeSettingsUI(mode);
                     buildMenuOrderList();
                     initMenuOrderDnd();
                     rebuildMenu();
-                    await applyBgImage();
                 }
 
                 function hasExistingUserData() {
@@ -14084,7 +13935,7 @@ const translations = {
                     if (musicEnabled) document.getElementById('toggleMusic').classList.add('active');
                     if (todoEnabled)  document.getElementById('toggleTodo').classList.add('active');
                     updateMusicRelatedSettingsVisibility();
-                    await initMenuCustomization();
+                    initMenuCustomization();
 
                     let history = getData('studyHistory');
                     history = history ? JSON.parse(history) : [];
@@ -15907,6 +15758,7 @@ const translations = {
                     }
                     updateYoutubeMusicSettingsUI();
                     updateAddYoutubeMenuItem();
+                    rebuildMenu();
                 }
 
                 function updateYoutubeMusicSettingsUI() {
@@ -16375,6 +16227,7 @@ const translations = {
                         calcMiniPlayerFixedX();
                     }
                     repositionYtPlayer();
+                    syncBottomMenuPadding();
                 });
 
                 function initMiniPlayerDrag() {

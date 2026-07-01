@@ -61,11 +61,6 @@
         }
 
         @font-face {
-            font-family: 'Shirokuma';
-            src: url('001Shirokuma-Regular.otf') format('opentype');
-        }
-
-        @font-face {
             font-family: 'Mushin';
             src: url('mushin.otf') format('opentype');
         }
@@ -410,7 +405,7 @@
             opacity: 0.9;
         }
 
-        /* 日別タイムライン（統計ページ上部） */
+        /* 日別タイムライン(統計ページ上部) */
         .daily-timeline-section {
             margin-bottom: 28px;
         }
@@ -1188,7 +1183,7 @@
             transform: translateX(24px);
         }
 
-        /* Focus mode toggle removed - uses standard toggle-item styling */
+
 
         .music-player {
             margin-bottom: 35px;
@@ -1304,7 +1299,7 @@
             display: none;
         }
 
-        /* Music display panel - modern design */
+        /* 音楽プレイヤー表示パネル */
         .music-display-panel {
             background: var(--panel-light);
             border-radius: 24px;
@@ -1399,7 +1394,7 @@
             height: 16px;
         }
 
-        /* Player main controls */
+        /* プレイヤーメインコントロール */
         .player-main-controls {
             display: flex;
             justify-content: center;
@@ -1456,7 +1451,7 @@
             opacity: 0.9;
         }
 
-        /* Player sub controls */
+        /* プレイヤーサブコントロール */
         .player-sub-controls {
             display: flex;
             justify-content: space-between;
@@ -1563,7 +1558,7 @@
             opacity: 0.8;
         }
 
-        /* Playlist section */
+        /* プレイリストセクション */
         .playlist-section {
             margin-top: 16px;
         }
@@ -1696,7 +1691,7 @@
             position: relative;
         }
 
-        /* Scrollbar styling */
+        /* スクロールバー */
         .playlist::-webkit-scrollbar {
             width: 6px;
         }
@@ -2269,11 +2264,11 @@
             --todo-priority-low: #95a5a6;
             --bg-light: #f8f9fb;
             --bg-dark: #17181d;
-            /* Panel colors - soft/pale defaults */
+            /* パネルカラー(デフォルト) */
             --panel-dark: #474654;
             --panel-dark-2: #3d4454;
             --panel-light: #f0f2f7;
-            /* Light-mode helpers (theme-aware) */
+            /* ライトモード用変数 */
             --panel-light-hover: #e6e8ed;
             --panel-light-2: #f0f2f7;
             --panel-light-border: #dfe1e6;
@@ -2376,14 +2371,14 @@
             --panel-light-focus: #efefef;
         }
 
-        /* Blue theme (default) panel overrides */
+        /* 青テーマ(デフォルト)のパネルカラー */
         body[data-theme="blue"] {
             --panel-dark: #252a38;
             --panel-dark-2: #3d4454;
             --panel-light: #f0f2f7;
         }
 
-        /* Custom styled dropdown for group filter */
+        /* グループフィルタードロップダウン */
         .custom-select {
             position: relative;
             display: inline-block;
@@ -2449,7 +2444,7 @@
             }
         }
 
-        /* About modal styles */
+        /* Aboutモーダル */
         .about-overlay {
             position: fixed;
             inset: 0;
@@ -2507,7 +2502,7 @@
             overflow: hidden;
         }
 
-        /* About button (minimal pill) */
+        /* Aboutボタン */
         .about-link {
             text-align: center;
             margin-top: 12px;
@@ -2568,7 +2563,7 @@
             background: rgba(255, 255, 255, 0.02);
         }
 
-        /* Data management section */
+        /* データ管理セクション */
         .data-management {
             display: flex;
             gap: 12px;
@@ -2632,7 +2627,7 @@
         .group-manage-actions {
             display: flex;
             gap: 8px;
-            margin-bottom: 10px;
+            margin-bottom: 3px;
             flex-wrap: wrap;
             padding: 10px;
             border-radius: 24px;
@@ -2642,14 +2637,6 @@
             padding: 8px 14px;
             font-size: 0.82rem;
             border-radius: 24px;
-        }
-
-        .light .group-manage-actions {
-            background: rgba(0, 0, 0, 0.03);
-        }
-
-        .dark .group-manage-actions {
-            background: rgba(255, 255, 255, 0.06);
         }
 
         .group-manage-list {
@@ -3595,7 +3582,7 @@
             border: 2px dashed #999;
         }
 
-        /* Loading Overlay */
+        /* ローディングオーバーレイ */
         #loadingOverlay {
             position: fixed;
             top: 0;
@@ -3603,7 +3590,7 @@
             width: 100vw;
             height: 100vh;
             background-color: #8ba4b8;
-            /* Initial color (Default blue theme hover) */
+            /* 初期色(青テーマのデフォルト) */
             z-index: 999999;
             pointer-events: none;
         }
@@ -3672,7 +3659,6 @@
             color: var(--primary-color, #4f7ef7);
             overflow: visible;
         }
-        /* dot */
         .drag-insert-marker::before {
             content: '';
             position: absolute;
@@ -3686,7 +3672,6 @@
             z-index: 4;
             pointer-events: none;
         }
-        /* line */
         .drag-insert-marker::after {
             content: '';
             position: absolute;
@@ -4044,7 +4029,7 @@
                 aspect-ratio: auto;
                 height: 45px;
                 max-width: calc((100vw - 24px - 12px) / 7);
-                /* container padding + gap */
+                /* コンテナパディング + ギャップ分を差し引き */
             }
         }
 
@@ -4679,7 +4664,7 @@
             border-color: var(--primary-color-dark);
         }
 
-        /* チェックマーク（常に存在、opacity で表示切替） */
+        /* チェックマーク(常に存在、opacity で表示切替) */
         input[type="checkbox"]::after {
             content: '';
             position: absolute;
@@ -4839,7 +4824,7 @@ body.dark .footer-credit-label { color:#676767; }
   -webkit-text-fill-color:transparent !important; color:transparent !important; font-size:1.2rem;
 }
 
-/* ── Editor Mode ── */
+/* ── エディターモード ── */
 .editor-mode-toggle-section {
     margin-bottom: 25px;
     padding: 15px;
@@ -4955,7 +4940,7 @@ body.dark.editor-mode .menu button[data-page="timer"]:hover {
 }
 .editor-mini-menu-backdrop.visible { display: block; }
 
-/* [+] re-show button */
+/* [+] 再表示ボタン */
 .editor-add-btn {
     position: fixed;
     top: 20px;
@@ -5060,7 +5045,7 @@ body.editor-mode .editor-exit-bar { display: flex; }
     transform: translateX(20px);
 }
 
-/* ── Flashcard (暗記カード) ── */
+/* ── 暗記カード ── */
 .flashcard-stat-btn {
     cursor: pointer;
     transition: transform 0.15s ease, box-shadow 0.15s ease;
@@ -5175,7 +5160,7 @@ body.dark .fc-add-group-row input {
      cursor: pointer; white-space: nowrap;
 }
 
-/* Card editor */
+/* カードエディター */
 .fc-card-list {
     margin: 10px 0;
     position: relative;
@@ -5305,7 +5290,7 @@ body.dark .fc-operator-checks label {
     font-size: 0.82rem;  cursor: pointer;
 }
 
-/* Viewer */
+/* ビューワー */
 .fc-viewer-overlay {
     position: fixed; inset: 0;
     background: rgba(0,0,0,0.85);
@@ -5381,7 +5366,7 @@ body.dark .fc-operator-checks label {
     word-break: break-word;
 }
 
-/* Formula builder */
+/* 数式ビルダー */
 .fc-formula-preview {
     min-height: 44px; padding: 10px 14px;
     border-radius: 24px; margin-bottom: 10px;
@@ -5459,14 +5444,14 @@ body.dark .fc-formula-popup input {
      cursor: pointer; font-size: 0.85rem;
 }
 
-/* Swipe card animation — direction set via inline style */
+/* スワイプアニメーション(方向はインラインスタイルで設定) */
 .fc-card-scene.fc-swiping,
 .fc-no-flip-content.fc-swiping {
     transition: transform 0.18s ease, opacity 0.18s ease;
     opacity: 0;
 }
 
-        /* Mini Player Popup */
+        /* ミニプレイヤー */
         .mini-player-popup {
             position: absolute;
             z-index: 100000;
@@ -5555,7 +5540,7 @@ body.dark .fc-formula-popup input {
             height: 26px;
         }
 
-        /* ===== YouTube Player ===== */
+        /* ===== YouTubeプレイヤー ===== */
         #ytPlayerContainer {
             position: fixed;
             z-index: 100;
@@ -5595,7 +5580,7 @@ body.dark .fc-formula-popup input {
             padding-top: 56.25%;
             z-index: 100005;
         }
-        /* YouTube SVG badge in playlist */
+        /* プレイリストのYouTubeバッジ */
         .yt-svg-badge {
             display: inline-block;
             vertical-align: middle;
@@ -5613,7 +5598,7 @@ body.dark .fc-formula-popup input {
             .mini-player-popup.yt-active { width: 70vw; }
         }
 
-        /* Mini player drag handle */
+        /* ミニプレイヤードラッグハンドル */
         .mini-player-drag-handle {
             width: 100%;
             display: flex;
@@ -5634,7 +5619,7 @@ body.dark .fc-formula-popup input {
         #fullscreenTimerBtn:hover {
             opacity: 0.85 !important;
         }
-        /* Focus Mode Progress Bar */
+        /* フォーカスモードプログレスバー */
         .focus-progress-bar {
             width: 100%;
             height: 6px;
@@ -5670,39 +5655,39 @@ body.dark .fc-formula-popup input {
             opacity: 0.5;
         }
 
-        /* ===== MENU CUSTOMIZATION ===== */
+        /* ===== メニューカスタマイズ ===== */
 
-        /* Bottom mode: hide top logo */
+        /* ボトムメニューモード: 上部ロゴを非表示 */
         body.menu-mode-bottom h1 { display: none; }
 
-        /* Menu icons */
+        /* メニューアイコン */
         .menu button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
         .menu-icon { display: flex; align-items: center; justify-content: center; flex-shrink: 0; width: 20px; height: 20px; }
         .menu-icon svg { width: 20px; height: 20px; display: block; color: inherit; }
         body.light .menu button.active .menu-icon svg,
         body.dark  .menu button.active .menu-icon svg { color: white; }
 
-        /* Display mode: text (default) */
+        /* 表示モード: テキスト(デフォルト) */
         body.menu-display-text .menu-icon { display: none; }
-        /* Display mode: icon only */
+        /* 表示モード: アイコンのみ */
         body.menu-display-icon .menu-label { display: none; }
         body.menu-display-icon .menu button { padding: 10px 14px; }
 
-        /* Fixed top menu — sticky (stops at top when scrolling, normal at page top) */
+        /* 上部固定メニュー(スクロール時に上部へ固定) */
         body.menu-fixed-on .menu {
             position: sticky; top: 0;
-            z-index: 900; padding: 12px 0 8px; margin-bottom: 0;
+            z-index: 900; padding: 12px 0 8px;
         }
-        /* no background on sticky menu — buttons float transparently */
+        /* スティッキーメニューは背景なし(ボタンが透過) */
 
-        /* Bottom menu */
+        /* ボトムメニュー */
         body.menu-mode-bottom .menu {
             position: fixed; bottom: 0; left: 0; right: 0;
             z-index: 900; margin-bottom: 0; border-radius: 0;
             flex-wrap: wrap; padding: 8px 12px 5px; gap: 8px;
         }
-        /* no background on bottom menu — buttons float transparently */
-        /* body padding shifts flex centering to center of area above the fixed menu */
+        /* ボトムメニューは背景なし(ボタンが透過) */
+        /* bodyのパディングで固定メニュー上のエリアを中央揃え */
         body.menu-mode-bottom { padding-bottom: 60px; }
         body.menu-mode-bottom .container { padding-bottom: 0; }
         .bottom-menu-logo-inner { display: none; width: 100%; order: 999; text-align: center; padding: 2px 0 1px; }
@@ -5711,7 +5696,7 @@ body.dark .fc-formula-popup input {
         .menu-mode-hint { font-size: 0.68rem; opacity: 0.42; margin-left: 5px; }
 
 
-        /* Menu order settings UI */
+        /* メニュー順序設定UI */
         .menu-order-list { display:flex; flex-direction:column; gap:4px; margin-top:8px; position:relative; }
         .menu-order-item {
             display:flex; align-items:center; gap:10px;
@@ -5732,7 +5717,7 @@ body.dark .fc-formula-popup input {
 
 <body class="light" data-theme="blue">
     <script>
-        // Apply saved theme/mode immediately before first paint to prevent flash
+        // 初回描画前にテーマ/モードを適用してフラッシュを防ぐ
         try {
             var _m = localStorage.getItem('mode');
             var _t = localStorage.getItem('theme');
@@ -5789,7 +5774,7 @@ body.dark .fc-formula-popup input {
 
     <div class="custom-confirm-overlay" id="youtubeUrlOverlay">
         <div class="custom-confirm-dialog">
-            <div class="custom-confirm-title" data-i18n="addYoutubeMusic">Youtube動画を追加</div>
+            <div class="custom-confirm-title" data-i18n="addYoutubeVideo">Youtube動画を追加</div>
             <input type="url" id="youtubeUrlInput" placeholder="YouTube URL" data-i18n-placeholder="youtubeUrlPlaceholder"
                 style="margin-bottom:10px;">
             <div id="youtubeUrlError" style="display:none; color:#e74c3c; font-size:0.8rem; margin-bottom:10px; padding: 0 4px;"></div>
@@ -6119,7 +6104,7 @@ body.dark .fc-formula-popup input {
                         <div class="file-dropdown-menu" id="musicDropdownMenu" role="menu" aria-hidden="true">
                             <div class="dropdown-item" id="addFileItem" data-i18n="selectFile">ファイルを追加</div>
                             <div class="dropdown-item" id="chooseFolderItem" data-i18n="selectFolder">フォルダ内を一括追加</div>
-                            <div class="dropdown-item" id="addYoutubeItem" data-i18n="addYoutubeMusic" style="display:none;">Youtube動画を追加</div>
+                            <div class="dropdown-item" id="addYoutubeItem" data-i18n="addYoutubeVideo" style="display:none;">Youtube動画を追加</div>
                         </div>
 
                         <input type="file" id="musicFolderInput" webkitdirectory directory multiple
@@ -6367,12 +6352,12 @@ body.dark .fc-formula-popup input {
                     設定した時間を過ぎると、再開は手動になります。
                 </div>
                 <div class="toggle-item">
-                    <span data-i18n="youtubeMusicEnabled">音楽にYoutube動画を追加</span>
-                    <div class="toggle-switch" id="toggleYoutubeMusic" onclick="toggleYoutubeMusicSetting()">
+                    <span data-i18n="youtubeVideoEnabled">音楽にYoutube動画を追加</span>
+                    <div class="toggle-switch" id="toggleYoutubeVideo" onclick="toggleYoutubeVideoSetting()">
                         <div class="toggle-slider"></div>
                     </div>
                 </div>
-                <div class="setting-note" id="youtubeMusicNote" style="display:none;" data-i18n="youtubeMusicNote">
+                <div class="setting-note" id="youtubeVideoNote" style="display:none;" data-i18n="youtubeVideoNote">
                     ミニプレイヤーが常にONになります。
                 </div>
                 <div class="toggle-item">
@@ -7043,7 +7028,7 @@ body.dark .fc-formula-popup input {
                 let isLoop = false;
                 let isShuffle = false;
                 let _musicDB = null;
-                // YouTube player state
+                // YouTubeプレイヤーの状態変数
                 let ytPlayer = null;
                 let ytPlayerApiReady = false;
                 let ytPlayerPendingVideoId = null;
@@ -7160,11 +7145,11 @@ const translations = {
                         addMusicButton: '音楽を追加',
                         selectFile: 'ファイルを追加',
                         selectFolder: 'フォルダ内を一括追加',
-                        addYoutubeMusic: 'Youtube動画を追加',
+                        addYoutubeVideo: 'Youtube動画を追加',
                         youtubeUrlPlaceholder: 'YouTube URL を入力 (youtube.com/watch?v=, youtu.be/)',
                         youtubeInvalidUrl: '無効なURLです。対応形式: youtube.com/watch?v= / youtu.be/',
-                        youtubeMusicEnabled: 'プレイリストにYoutube動画を追加',
-                        youtubeMusicNote: 'ミニプレイヤーが常にONになります。',
+                        youtubeVideoEnabled: 'プレイリストにYoutube動画を追加',
+                        youtubeVideoNote: 'ミニプレイヤーが常にONになります。',
                         menuMusicYt: '再生',
                         musicPlayerYt: '再生プレイヤー',
                         musicSelectPromptYt: '動画/楽曲を選択してください',
@@ -7197,11 +7182,6 @@ const translations = {
                         todoPlaceholder: '新しいタスクを入力',
                         todoAddButton: '追加',
                         addButton: '追加',
-                        // 追加翻訳: ToDo Ver2 / カレンダー関連
-                        todoV2PopupTitle: 'ToDo Ver.2を有効にしますか?',
-                        todoV2PopupMessage: '新しい ToDo Ver.2 では、段階的な完了機能、期間設定、カレンダービューなどの高度な機能が利用できます。',
-                        todoV2ToggleLabel: 'ToDo Ver.2を有効にする',
-                        todoV2Confirm: '決定',
                         calendarAddTodoTitle: '新しい ToDo を追加',
                         calendarAddTodoPlaceholder: 'タスクを入力',
                         todoViewList: 'ToDoリスト',
@@ -7348,7 +7328,7 @@ const translations = {
                         japanese: '日本語',
                         english: 'English',
 
-                        // About
+                        // このサイトについて
                         aboutButton: 'このサイトについて',
                         homePage: 'ホームページ',
                         qaButton: 'よくある質問(Q&A)',
@@ -7433,7 +7413,7 @@ const translations = {
                         importConfirm: 'このデータを読み込みますか?\n履歴: {historyCount}件\nToDo: {todoCount}件',
                         importFailed: 'インポートに失敗しました',
 
-                        // About & QA
+                        // このサイトについて & QA
                         aboutContent: `<div style="text-align: center; margin-bottom: 20px;">
                         <div><img src="1024,1024_icon.png" style="width: 3rem; height: 3rem; margin-bottom: -20px;"></div>
                         <div style="margin-top: 6px;">
@@ -7506,8 +7486,8 @@ const translations = {
                         fcAdd: '追加',
                         fcNormal: '通常',
                         fcMath: '数式',
-                        fcFront: '表面（問題）',
-                        fcBack: '裏面（答え）',
+                        fcFront: '表面(問題)',
+                        fcBack: '裏面(答え)',
                         fcFlip: 'フリップ',
                         fcMinNum: '最小値',
                         fcMaxNum: '最大値',
@@ -7587,7 +7567,6 @@ const translations = {
                         fontUtsukushi: 'Utsukushi Mincho',
                         fontMisaki: 'Misaki Gothic',
                         fontKodenmachou: 'Kodenmachou',
-                        fontShirokuma: 'Shirokuma',
                         licenseButton: 'License',
                         licenseTitle: 'Font Licenses',
 
@@ -7660,11 +7639,11 @@ const translations = {
                         addMusicButton: 'Add Music',
                         selectFile: 'Add File',
                         selectFolder: 'Add Folder',
-                        addYoutubeMusic: 'Add YouTube Video',
+                        addYoutubeVideo: 'Add YouTube Video',
                         youtubeUrlPlaceholder: 'Enter YouTube URL (youtube.com/watch?v=, youtu.be/)',
                         youtubeInvalidUrl: 'Invalid URL. Supported: youtube.com/watch?v= / youtu.be/',
-                        youtubeMusicEnabled: 'Add YouTube Videos to Playlist',
-                        youtubeMusicNote: 'Mini player will always be enabled.',
+                        youtubeVideoEnabled: 'Add YouTube Videos to Playlist',
+                        youtubeVideoNote: 'Mini player will always be enabled.',
                         menuMusicYt: 'Player',
                         musicPlayerYt: 'Player',
                         musicSelectPromptYt: 'Select a video/track',
@@ -8633,7 +8612,7 @@ const translations = {
                         playMusic(savedIndex);
 
                         if (isResumeYt) {
-                            // YouTube: seek via pending variable; onStateChange PLAYING will apply it
+                            // YouTube: シーク位置は保留変数に保存し、onStateChange PLAYING 時に適用する
                             if (savedTime > 0) ytPlayerPendingSeekTime = savedTime;
                         } else {
                             const applySeek = () => {
@@ -8674,12 +8653,12 @@ const translations = {
                     toggle.classList.toggle('active', newVisible);
                     saveData(`feature_${feature}`, newVisible ? 'true' : 'false');
 
-                    // Sync with unified visibility store
+                    // 統合された表示設定ストアと同期
                     const vis = getMenuVisibility();
                     vis[feature] = newVisible;
                     saveMenuVisibility(vis);
 
-                    // Sync menu-order list toggle
+                    // メニュー順序リストのトグルを同期
                     const moToggle = document.querySelector(`.menu-order-item[data-mo-key="${feature}"] .toggle-switch`);
                     if (moToggle) moToggle.classList.toggle('active', newVisible);
 
@@ -8758,10 +8737,10 @@ const translations = {
                     }
                 }
 
-                // Focus Mode Variables
+                // フォーカスモード変数
                 let focusEnabled = false;
-                let devModeEnabled = false; // Developer mode for testing (Shift+J/F to add/remove time)
-                let focusState = 'focus'; // 'focus' or 'break' — only used to detect transitions for sound
+                let devModeEnabled = false; // 開発者モード(Shift+J/F で時間を加算/減算)
+                let focusState = 'focus'; // 'focus' または 'break' — サウンド再生のための状態遷移検知に使用
 
                 function shouldBlockShortcuts() {
                     if (document.body.classList.contains('no-scroll')) return true;
@@ -8776,7 +8755,7 @@ const translations = {
                     return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT';
                 }
 
-                // Developer Mode Functions
+                // 開発者モード関数
                 function toggleDevMode() {
                     const toggle = document.getElementById('toggleDevMode');
                     if (!toggle) return;
@@ -8789,25 +8768,25 @@ const translations = {
                 }
 
                 function addTime(minutes) {
-                    if (!startTime || isPaused) return; // Only when timer is running
+                    if (!startTime || isPaused) return; // タイマー動作中のみ実行
                     startTime -= minutes * 60 * 1000;
                     console.log(`[DEBUG] Time adjusted +${minutes}min. Total elapsed now ~${formatTime(Date.now() - startTime + pausedTime)}`);
                 }
 
                 function removeTime(minutes) {
-                    if (!startTime || isPaused) return; // Only when timer is running
+                    if (!startTime || isPaused) return; // タイマー動作中のみ実行
                     startTime += minutes * 60 * 1000;
                     console.log(`[DEBUG] Time adjusted -${minutes}min. Total elapsed now ~${formatTime(Date.now() - startTime + pausedTime)}`);
                 }
 
-                // Developer Mode Keyboard Handler
-                let devModeKeyIntervals = {}; // Track active continuous key presses
+                // 開発者モードのキーボードハンドラー
+                let devModeKeyIntervals = {}; // 連続キー入力を追跡
                 window.addEventListener('keydown', (e) => {
                     if (shouldBlockShortcuts()) return;
                     if (!devModeEnabled || !startTime) return;
                     if (e.code === 'KeyJ' && e.shiftKey && !devModeKeyIntervals['KeyJ']) {
                         addTime(1);
-                        devModeKeyIntervals['KeyJ'] = setInterval(() => addTime(1), 200); // Repeat every 200ms on hold
+                        devModeKeyIntervals['KeyJ'] = setInterval(() => addTime(1), 200); // 長押し中は200ms毎に繰り返す
                         e.preventDefault();
                     } else if (e.code === 'KeyF' && e.shiftKey && !devModeKeyIntervals['KeyF']) {
                         removeTime(1);
@@ -8858,7 +8837,7 @@ const translations = {
                     const timer = document.getElementById('timer');
                     const subTimer = document.getElementById('totalTimerDisplay');
 
-                    // Determine desired state (load or toggle)
+                    // 目的の状態を決定(ロード時またはトグル時)
                     let newState = !toggle.classList.contains('active');
                     if (isPageLoad) {
                         const savedState = getData('focus_mode_enabled');
@@ -8868,7 +8847,7 @@ const translations = {
                     if (newState) {
                         toggle.classList.add('active');
                         focusEnabled = true;
-                        focusState = 'focus'; // reset transition detector
+                        focusState = 'focus'; // 状態遷移の検知器をリセット
                         saveData('focus_mode_enabled', 'true');
                         subTimer.style.display = 'block';
                         timer.style.fontSize = '3.5rem';
@@ -9038,7 +9017,7 @@ const translations = {
                     return `${formatDateTimeLong(startDate)} - ${formatDateTimeLong(endDate)}`;
                 }
 
-                // Compute focus mode breakdown from wall elapsed (stateless — no circular dependency)
+                // 経過時間からフォーカスモードの状態を計算(ステートレスで循環依存なし)
                 function computeFocusCycle(wallElapsed) {
                     wallElapsed = Math.max(0, wallElapsed);
                     const focusDur = getFocusDurationMs();
@@ -9046,7 +9025,7 @@ const translations = {
                     const cycleDur = focusDur + breakDur;
 
                     const completedCycles = Math.floor(wallElapsed / cycleDur);
-                    const posInCycle = wallElapsed - completedCycles * cycleDur; // avoid floating point issues with %
+                    const posInCycle = wallElapsed - completedCycles * cycleDur; // % 演算の浮動小数点誤差を回避
 
                     let currentState, cycleElapsed, targetDuration, totalBreakTime;
 
@@ -9101,7 +9080,7 @@ const translations = {
                     if (focusEnabled) {
                         const fc = computeFocusCycle(wallElapsed);
 
-                        // Detect state transition → play sound
+                        // 状態遷移を検知してサウンドを再生
                         if (fc.currentState !== focusState) {
                             playFocusSound();
                             focusState = fc.currentState;
@@ -9138,7 +9117,7 @@ const translations = {
                     pauseHistory = [];
                     currentPauseStartIso = null;
 
-                    // Focus Mode Init
+                    // フォーカスモード初期化
                     focusState = 'focus';
 
                     const startTimeStr = new Date().toISOString();
@@ -9153,11 +9132,11 @@ const translations = {
                     timerInterval = setInterval(updateTimer, 100);
                     updateSettingsButtonState();
 
-                    // Update Focus Mode UI state if enabled
+                    // フォーカスモードが有効な場合はUI状態を更新
                     if (focusEnabled) {
                         document.getElementById('totalTimerDisplay').style.display = 'block';
                         document.getElementById('timer').style.fontSize = '3.5rem';
-                        updateTimer(); // Initial update
+                        updateTimer(); // 初回更新
                     }
 
                 }
@@ -9365,7 +9344,7 @@ const translations = {
                     const missingIds = [];
                     for (const item of active.tracks) {
                         if (!item || item.id == null) continue;
-                        // YouTube tracks don't need blob loading
+                        // YouTubeトラックはBlob読み込み不要
                         if (item.youtubeId) {
                             musicFiles.push({ url: `youtube:${item.youtubeId}`, title: normalizeMusicTitle(item.title || item.youtubeId), id: item.id, youtubeId: item.youtubeId });
                             continue;
@@ -9422,7 +9401,7 @@ const translations = {
                     }
                     if (playlistCount) playlistCount.textContent = musicFiles.length;
                     playlistDiv.innerHTML = musicFiles.map((item, index) => `
-        <div class="playlist-item ${index === currentMusicIndex ? 'playing' : ''} ${playlistSelectMode ? 'select-mode' : ''} ${selectedMusicItems.has(index) ? 'selected' : ''} ${item.youtubeId && !isYoutubeMusicEnabled() ? 'yt-item-hidden' : ''}" data-index="${index}">
+        <div class="playlist-item ${index === currentMusicIndex ? 'playing' : ''} ${playlistSelectMode ? 'select-mode' : ''} ${selectedMusicItems.has(index) ? 'selected' : ''} ${item.youtubeId && !isYoutubeVideoEnabled() ? 'yt-item-hidden' : ''}" data-index="${index}">
             <div style="display:flex; align-items:center; gap:8px; flex:1; min-width:0;">
                 <img src="${getDragHandleSrc(index === currentMusicIndex)}" class="drag-handle" data-index="${index}" draggable="true" aria-label="${getText('dragHandle')}" data-i18n-aria="dragHandle" alt="">
                 ${playlistSelectMode ? `<input type="checkbox" class="playlist-item-checkbox" data-index="${index}" ${selectedMusicItems.has(index) ? 'checked' : ''} onclick="event.stopPropagation(); togglePlaylistItemSelection(${index}, this.checked)">` : ''}
@@ -10222,7 +10201,7 @@ const translations = {
                     currentMusicIndex = index;
 
                     if (track.youtubeId) {
-                        // YouTube track: stop audio player and launch YouTube
+                        // YouTubeトラック: 通常の音楽プレイヤーを停止してYouTubeを起動
                         const audio = document.getElementById('audioPlayer');
                         if (audio) { audio.pause(); audio.removeAttribute('src'); }
                         ytPlayerIsPlaying = false;
@@ -10241,7 +10220,7 @@ const translations = {
                         return;
                     }
 
-                    // Regular audio track: stop YouTube if active
+                    // 通常音楽トラック: YouTubeが再生中なら停止
                     if (ytPlayer && ytPlayerIsPlaying) {
                         try { ytPlayer.stopVideo(); } catch(e) {}
                         ytPlayerIsPlaying = false;
@@ -10278,7 +10257,7 @@ const translations = {
                         if (currentMusicIndex >= 0 && musicFiles[currentMusicIndex]) {
                             titleDisplay.textContent = musicFiles[currentMusicIndex].title || 'Unknown track';
                         } else {
-                            titleDisplay.textContent = getText(isYoutubeMusicEnabled() ? 'musicSelectPromptYt' : 'musicSelectPrompt');
+                            titleDisplay.textContent = getText(isYoutubeVideoEnabled() ? 'musicSelectPromptYt' : 'musicSelectPrompt');
                         }
                     }
                 }
@@ -10344,7 +10323,7 @@ const translations = {
                 }
 
                 function togglePlay() {
-                    // Handle YouTube track
+                    // YouTubeトラックの処理
                     if (isCurrentTrackYoutube()) {
                         if (ytPlayerIsPlaying) {
                             if (ytPlayer) try { ytPlayer.pauseVideo(); } catch(e) {}
@@ -11609,10 +11588,6 @@ const translations = {
                     }
                 }
 
-                function toggleTodoV2Setting() {}
-                function syncTodoV2UI() {}
-                function updatePeriodSettingsVisibility() {}
-
                 function isHistoryTimelineEnabled() {
                     return getData('feature_history_timeline') !== 'false';
                 }
@@ -11962,7 +11937,7 @@ const translations = {
                     if (prevGroup && groups.includes(prevGroup)) {
                         groupFilter.value = prevGroup;
                     }
-                    // populate move target select as well
+                    // 移動先セレクトも合わせて更新
                     const moveSel = document.getElementById('moveGroupSelect');
                     if (moveSel) {
                         const prev = moveSel.value;
@@ -12499,7 +12474,7 @@ const translations = {
                         }
                     }
 
-                    // Capture additional settings that may be added later without requiring code updates.
+                    // 将来追加される設定もコード変更なしに取り込める
                     try {
                         for (let i = 0; i < localStorage.length; i++) {
                             const key = localStorage.key(i);
@@ -13074,7 +13049,6 @@ const translations = {
                             overlay.classList.add('show');
                             box.style.display = 'block';
                             arrow.style.display = 'none';
-                            // ... (rest is same)
 
                             document.getElementById('tutorialStepInfo').textContent = '';
                             document.getElementById('tutorialStepInfo').textContent = '';
@@ -13374,7 +13348,7 @@ const translations = {
                     return lang === 'ja' || lang === 'en';
                 }
 
-                // ===== MENU CUSTOMIZATION =====
+                // ===== メニューカスタマイズ =====
 
                 const MENU_ICONS = {
                     timer:    `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M12 7V12L15.5 14.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="0.9" fill="currentColor"/></svg>`,
@@ -13438,14 +13412,14 @@ const translations = {
                     const menu = document.getElementById('mainMenu');
                     if (!menu) return;
 
-                    // Preserve the bottom-menu-logo-inner element
+                    // bottom-menu-logo-inner 要素を保持
                     const logoInner = menu.querySelector('.bottom-menu-logo-inner');
 
                     const order      = getMenuOrder();
                     const vis        = getMenuVisibility();
                     const displayMode = getData('menu_display') || 'text';
 
-                    // Find currently active page key
+                    // 現在アクティブなページキーを取得
                     const activePageEl = document.querySelector('.page.active');
                     let currentKey = 'timer';
                     if (activePageEl) {
@@ -13464,7 +13438,7 @@ const translations = {
 
                         const iconSpan = document.createElement('span');
                         iconSpan.className = 'menu-icon';
-                        const iconKey = (key === 'music' && isYoutubeMusicEnabled()) ? 'music_yt' : key;
+                        const iconKey = (key === 'music' && isYoutubeVideoEnabled()) ? 'music_yt' : key;
                         iconSpan.innerHTML = MENU_ICONS[iconKey] || '';
 
                         const labelSpan = document.createElement('span');
@@ -13487,10 +13461,10 @@ const translations = {
                         menu.appendChild(btn);
                     }
 
-                    // Re-append the logo inner
+                    // ロゴ内部要素を再追加
                     if (logoInner) menu.appendChild(logoInner);
 
-                    // Body display-mode class
+                    // body の表示モードクラスを更新
                     document.body.classList.remove('menu-display-text', 'menu-display-icon', 'menu-display-icon_text');
                     if (displayMode === 'icon')      document.body.classList.add('menu-display-icon');
                     else if (displayMode === 'icon_text') document.body.classList.add('menu-display-icon_text');
@@ -13503,7 +13477,7 @@ const translations = {
                     requestAnimationFrame(syncBottomMenuPadding);
                 }
 
-                // ===== MENU MODE =====
+                // ===== メニューモード =====
 
                 function applyMenuMode(mode) {
                     document.body.classList.toggle('menu-mode-bottom', mode === 'bottom');
@@ -13543,7 +13517,7 @@ const translations = {
                     const menuFixedItem  = document.getElementById('menuFixedItem');
                     const menuBottomItem = document.getElementById('menuBottomItem');
                     const topFixed = getData('menu_fixed') === 'true';
-                    // Bottom mode hides top-fixed; top-fixed hides bottom
+                    // ボトムメニューモードは上部固定メニューを非表示、上部固定はボトムを非表示
                     if (menuFixedItem)  menuFixedItem.style.display  = mode === 'bottom' ? 'none' : '';
                     if (menuBottomItem) menuBottomItem.style.display = topFixed ? 'none' : '';
                 }
@@ -13571,12 +13545,7 @@ const translations = {
                     updateMenuModeSettingsUI('normal');
                 }
 
-                function updateBottomModeNote() { /* removed — note is now inline in settings */ }
-
-                // ===== BACKGROUND IMAGE =====
-
-
-                // ===== MENU ORDER UI =====
+                // ===== メニュー順序UI =====
 
                 let _moDragSrcIdx = null;
                 let _moTouchState = null;
@@ -13700,7 +13669,7 @@ const translations = {
                     saveMenuVisibility(vis);
                     toggleEl.classList.toggle('active', vis[key]);
 
-                    // Sync legacy settings-page toggles
+                    // 旧設定ページのトグルを同期
                     if (key === 'music') {
                         const t = document.getElementById('toggleMusic');
                         if (t) t.classList.toggle('active', vis[key]);
@@ -13714,7 +13683,7 @@ const translations = {
                     rebuildMenu();
                 }
 
-                // ===== INIT =====
+                // ===== 初期化 =====
 
                 function initMenuCustomization() {
                     const mode    = getData('menu_mode')    || 'normal';
@@ -13809,7 +13778,7 @@ const translations = {
 
                 async function initializeRemainingApp() {
 
-                    // Debug helpers for theme persistence (enable to trace where theme changes come from)
+                    // テーマ永続化のデバッグ(テーマ変更の追跡用)
                     const DEBUG_THEME = true;
                     if (DEBUG_THEME) {
                         window.addEventListener('storage', (e) => {
@@ -13861,7 +13830,7 @@ const translations = {
                         const matchedThemeOption = document.querySelector(`.theme-option[data-theme="${theme}"]`);
                         if (matchedThemeOption) matchedThemeOption.classList.add('selected');
                     } else {
-                        // No stored theme found — persist the current body theme to avoid reverting to default unexpectedly
+                        // 保存済みテーマが見つからない場合、現在のテーマを保存して意図しないリセットを防ぐ
                         const currentTheme = document.body.getAttribute('data-theme') || 'blue';
                         console.log('[DEBUG] No stored theme found on load. Saving current body theme ->', currentTheme);
                         saveData('theme', currentTheme);
@@ -13871,8 +13840,8 @@ const translations = {
                     const musicEnabled = vis.music;
                     const todoEnabled  = vis.todo;
 
-                    // Initialize Focus Mode Settings
-                    const focusInfoEnabled = getData('feature_focus_mode_display') !== 'false'; // Default to true
+                    // フォーカスモード設定を初期化
+                    const focusInfoEnabled = getData('feature_focus_mode_display') !== 'false'; // デフォルトはtrue
                     if (focusInfoEnabled) {
                         document.getElementById('toggleFocusDisplay').classList.add('active');
                         document.getElementById('focusModeToggleContainer').style.display = 'block';
@@ -13891,16 +13860,16 @@ const translations = {
                         document.getElementById('breakDurationSelect').value = savedBreakDuration;
                     }
 
-                    // Restore focus mode state
+                    // フォーカスモードの状態を復元
                     const savedFocusState = getData('focus_mode_enabled');
                     if (savedFocusState === 'true') {
-                        // Initialize UI for focus mode without forcing a cycle advance
+                        // サイクルを進めずにフォーカスモードのUIを初期化
                         toggleFocusModeMain(true);
                     } else {
                         toggleFocusModeMain(true);
                     }
 
-                    // Load developer mode state
+                    // 開発者モードの状態を読み込む
                     const savedDevMode = getData('dev_mode_enabled');
                     if (savedDevMode === 'true') {
                         devModeEnabled = true;
@@ -13908,13 +13877,13 @@ const translations = {
                         if (devToggle) devToggle.classList.add('active');
                     }
 
-                    // Persist current theme on visibility change and beforeunload to avoid lost writes
+                    // ページ非表示・アンロード時にテーマを保存して書き込み漏れを防ぐ
 
 
-                    // Defensive: ignore programmatic (synthetic) clicks on theme options which may be triggered by other scripts
+                    // テーマオプションへのプログラム的なクリック(他スクリプト由来)を無視する
                     document.querySelectorAll('.theme-option').forEach(option => {
                         const themeName = option.getAttribute('data-theme');
-                        // Remove inline onclick to avoid duplicate handlers and replace with a trusted-only handler
+                        // 重複ハンドラーを防ぐためinline onclickを削除し、信頼できるハンドラーに差し替え
                         try { option.onclick = null; } catch (e) { /* ignore */ }
                         option.setAttribute('role', 'button');
                         option.tabIndex = 0;
@@ -14157,7 +14126,7 @@ const translations = {
                             if (dropdownMenu) { dropdownMenu.classList.add('open'); dropdownMenu.setAttribute('aria-hidden', 'false'); }
                         }
 
-                        // Clicking the label button toggles the dropdown
+                        // ラベルボタンクリックでドロップダウンを切り替え
                         if (fileLabel) {
                             fileLabel.addEventListener('click', (e) => {
                                 e.stopPropagation();
@@ -14198,7 +14167,7 @@ const translations = {
                             if (!dropdownMenu.contains(target) && !(fileLabel && fileLabel.contains(target))) closeMenu();
                         });
 
-                        // Initialize YouTube menu item visibility on load
+                        // ロード時にYouTubeメニュー項目の表示状態を初期化
                         updateAddYoutubeMenuItem();
                     })();
                     // 初回訪問時のチュートリアル表示
@@ -14288,7 +14257,7 @@ const translations = {
                         }
                     });
 
-                    // Finish loading after all initializations
+                    // 全初期化完了後にローディングを終了
                     finishLoading();
 
                     const savedLanguage = String(getData('app_language') || '').trim().toLowerCase();
@@ -14506,7 +14475,7 @@ const translations = {
                 }
 
                 function initEditorMode() {
-                    // no-op: editor mode is session-only, not persisted
+                    // セッション限定の設定なので保存しない
                 }
 
                 function attachEditorTargets() {
@@ -14842,7 +14811,7 @@ const translations = {
                     dropdown._items = items;
                     requestAnimationFrame(function() { dropdown.classList.add('visible'); });
 
-                    // Close on outside click
+                    // 外側クリックで閉じる
                     setTimeout(function() {
                         document.addEventListener('click', closeEditorAddOnOutside);
                     }, 10);
@@ -14860,7 +14829,7 @@ const translations = {
                         const newState = isSettingActive(item.key);
                         toggleEl.classList.toggle('active', newState);
                     }
-                    // Re-attach editor targets for any new elements
+                    // 新しく追加された要素にエディターターゲットを再設定
                     setTimeout(attachEditorTargets, 50);
                 }
 
@@ -15026,9 +14995,6 @@ const translations = {
                 function initTutorial() {
                     showTutorialWelcome();
                 }
-
-                // Trigger loading overlay wipe animation
-                // Trigger loading overlay wipe animation (Moved to window.onload)
 
                 // ── Flashcard (暗記カード) ──
 
@@ -15687,8 +15653,7 @@ const translations = {
                     overlay.onclick = null;
                 }
 
-                // Render card with NO transition on the inner element,
-                // so the back face is never visible during initial display.
+                // 初期表示時に裏面が見えないようトランジションなしでカードを描画
                 function fcRenderCardNoTransition() {
                     if (fcViewerCards.length === 0) return;
                     var card = fcViewerCards[fcViewerIndex];
@@ -15716,28 +15681,20 @@ const translations = {
                     }
                 }
 
-                function renderFlashcardViewer() {
-                    fcRenderCardNoTransition();
-                }
+                // ========== YouTube動画 ==========
 
-                function flipFlashcard() {
-                    // unused — swipe handles flipping
-                }
-
-                // ========== YouTube Music ==========
-
-                function isYoutubeMusicEnabled() {
+                function isYoutubeVideoEnabled() {
                     return getData('youtube_music_enabled') === 'true';
                 }
 
-                function toggleYoutubeMusicSetting() {
-                    const toggle = document.getElementById('toggleYoutubeMusic');
+                function toggleYoutubeVideoSetting() {
+                    const toggle = document.getElementById('toggleYoutubeVideo');
                     if (!toggle) return;
                     const isActive = toggle.classList.contains('active');
                     if (isActive) {
                         toggle.classList.remove('active');
                         saveData('youtube_music_enabled', 'false');
-                        // Stop YouTube playback immediately if a YT track is active
+                        // YouTubeトラックが再生中なら即座に停止
                         if (isCurrentTrackYoutube()) {
                             try { if (ytPlayer && ytPlayer.stopVideo) ytPlayer.stopVideo(); } catch(e) {}
                             ytPlayerIsPlaying = false;
@@ -15747,24 +15704,24 @@ const translations = {
                             syncMiniPlayerUI();
                             updateMiniPlayerVisibility();
                         }
-                        // Re-render playlist to hide YT items
+                        // プレイリストを再描画してYouTubeアイテムを非表示
                         if (typeof loadPlaylist === 'function') loadPlaylist();
                     } else {
                         toggle.classList.add('active');
                         saveData('youtube_music_enabled', 'true');
                         loadYoutubeApi();
-                        // Re-render playlist to show YT items again
+                        // プレイリストを再描画してYouTubeアイテムを表示
                         if (typeof loadPlaylist === 'function') loadPlaylist();
                     }
-                    updateYoutubeMusicSettingsUI();
+                    updateYoutubeVideoSettingsUI();
                     updateAddYoutubeMenuItem();
                     rebuildMenu();
                 }
 
-                function updateYoutubeMusicSettingsUI() {
-                    const note = document.getElementById('youtubeMusicNote');
+                function updateYoutubeVideoSettingsUI() {
+                    const note = document.getElementById('youtubeVideoNote');
                     const miniToggle = document.getElementById('toggleMiniPlayer');
-                    const enabled = isYoutubeMusicEnabled();
+                    const enabled = isYoutubeVideoEnabled();
                     if (note) note.style.display = enabled ? 'block' : 'none';
                     if (miniToggle) {
                         miniToggle.style.opacity = enabled ? '0.5' : '';
@@ -15777,7 +15734,7 @@ const translations = {
                 }
 
                 function updateMusicPageLabels() {
-                    const isYt = isYoutubeMusicEnabled();
+                    const isYt = isYoutubeVideoEnabled();
                     document.querySelectorAll('[data-i18n="menuMusic"]').forEach(el => {
                         el.textContent = getText(isYt ? 'menuMusicYt' : 'menuMusic');
                     });
@@ -15792,7 +15749,7 @@ const translations = {
 
                 function updateAddYoutubeMenuItem() {
                     const item = document.getElementById('addYoutubeItem');
-                    if (item) item.style.display = isYoutubeMusicEnabled() ? 'block' : 'none';
+                    if (item) item.style.display = isYoutubeVideoEnabled() ? 'block' : 'none';
                 }
 
                 function loadYoutubeApi() {
@@ -15960,7 +15917,7 @@ const translations = {
                     loadPlaylist();
                 }
 
-                // YouTube dialog event listeners
+                // YouTubeダイアログのイベントリスナー
                 document.getElementById('youtubeUrlOkBtn')?.addEventListener('click', confirmYoutubeUrl);
                 document.getElementById('youtubeUrlCancelBtn')?.addEventListener('click', closeYoutubeDialog);
                 document.getElementById('youtubeUrlOverlay')?.addEventListener('click', (e) => {
@@ -15971,12 +15928,12 @@ const translations = {
                     else if (e.key === 'Escape') { e.preventDefault(); closeYoutubeDialog(); }
                 });
 
-                // ========== Mini Player ==========
+                // ========== ミニプレイヤー ==========
                 let miniPlayerAutoHideTimer = null;
                 let miniPlayerDismissed = false;
 
                 function isMiniPlayerEnabled() {
-                    if (isYoutubeMusicEnabled()) return true;
+                    if (isYoutubeVideoEnabled()) return true;
                     return getData('mini_player_enabled') !== 'false';
                 }
 
@@ -16125,7 +16082,7 @@ const translations = {
                     if (prevBtn) prevBtn.style.display = hideSkip ? 'none' : '';
                     if (nextBtn) nextBtn.style.display = hideSkip ? 'none' : '';
 
-                    // YouTube mini zone
+                    // YouTubeミニゾーン
                     const ytMini = document.getElementById('ytMiniZone');
                     const miniPopup = document.getElementById('miniPlayerPopup');
                     if (ytMini) ytMini.style.display = isYt ? 'block' : 'none';
@@ -16152,7 +16109,7 @@ const translations = {
                     popup.classList.remove('pos-top-right', 'pos-top-left', 'pos-bottom-right', 'pos-bottom-left');
                     popup.classList.add('pos-' + pos);
 
-                    // Always fixed — no more absolute/relative toggle
+                    // 常に fixed 配置(absolute/relativeへの切り替えは廃止)
                     miniPlayerFixed = true;
                     popup.style.position = 'fixed';
                     popup.style.left = 'auto';
@@ -16174,7 +16131,7 @@ const translations = {
                     if (!popup || !popup.classList.contains('visible')) return;
                     const pos = getMiniPlayerPosition();
                     if (!pos.startsWith('top')) return;
-                    // Update Y as menu scrolls away
+                    // メニューがスクロールで消える際にY座標を更新
                     popup.style.top = getMiniPlayerTopY() + 'px';
                 }
 
@@ -16188,26 +16145,26 @@ const translations = {
                     const cr = container.getBoundingClientRect();
                     const vw = window.innerWidth;
                     const isMobile = vw <= 760;
-                    // Use actual width if available, else safe minimum fallback
+                    // 実際の幅を使用、なければ安全な最小値にフォールバック
                     const pw = popup.offsetWidth > 0 ? popup.offsetWidth : 130;
                     const EDGE = 8;
                     popup.style.left = 'auto';
                     popup.style.right = 'auto';
                     const isRight = pos.endsWith('right');
                     if (isMobile) {
-                        // Flush to viewport edge on mobile
+                        // モバイルではビューポートの端に押し付ける
                         if (isRight) popup.style.right = EDGE + 'px';
                         else popup.style.left = EDGE + 'px';
                     } else {
                         if (isRight) {
-                            // Space available beside container right edge?
+                            // コンテナ右端の隣にスペースがあるか？
                             if (vw - cr.right >= pw + 12) {
                                 popup.style.left = (cr.right + 12) + 'px';
                             } else {
                                 popup.style.right = EDGE + 'px';
                             }
                         } else {
-                            // Space available beside container left edge?
+                            // コンテナ左端の隣にスペースがあるか？
                             if (cr.left >= pw + 12) {
                                 popup.style.right = (vw - cr.left + 12) + 'px';
                             } else {
@@ -16250,8 +16207,7 @@ const translations = {
                         startLeft = rect.left;
                         startTop = rect.top;
 
-                        // Remove pos-* classes before switching to fixed to avoid
-                        // CSS bottom:0 / right:calc(...) conflicting with inline styles
+                        // fixedへ切替前にpos-*クラスを削除してCSSとインラインスタイルの競合を防ぐ
                         popup.classList.remove('pos-top-right', 'pos-top-left', 'pos-bottom-right', 'pos-bottom-left');
                         popup.style.position = 'fixed';
                         popup.style.left = rect.left + 'px';
@@ -16290,7 +16246,7 @@ const translations = {
                             saveData('mini_player_free_y', yPct.toFixed(2));
                             repositionYtPlayer();
                         } else {
-                            // Use pointer release position for intuitive corner detection
+                            // ポインター離し位置を使って直感的なコーナー検知
                             const isRight = e.clientX > window.innerWidth / 2;
                             const isBottom = e.clientY > window.innerHeight / 2;
                             const corner = (isBottom ? 'bottom' : 'top') + '-' + (isRight ? 'right' : 'left');
@@ -16310,7 +16266,7 @@ const translations = {
                     });
                 }
 
-                // Settings toggle functions
+                // 設定トグル関数
                 function toggleMiniPlayerSetting() {
                     const toggle = document.getElementById('toggleMiniPlayer');
                     if (!toggle) return;
@@ -16355,7 +16311,7 @@ const translations = {
                     applyMiniPlayerPosition();
                 }
 
-                // Hook into existing playback events
+                // 既存の再生イベントにフック
                 (function() {
                     const origUpdatePlayPauseUI = updatePlayPauseUI;
                     updatePlayPauseUI = function(isPlaying) {
@@ -16365,7 +16321,7 @@ const translations = {
                     };
                 })();
 
-                // Patch applyTranslations so YT-mode labels are re-applied after language switches
+                // 言語切り替え後にYTモードのラベルが再適用されるようapplyTranslationsにパッチ
                 (function() {
                     const origApplyTranslations = applyTranslations;
                     applyTranslations = function() {
@@ -16374,7 +16330,7 @@ const translations = {
                     };
                 })();
 
-                // Hook into showPage to hide/show mini player on page change
+                // ページ切り替え時のミニプレイヤー表示制御をshowPageにフック
                 (function() {
                     const origShowPage = showPage;
                     showPage = function(pageName) {
@@ -16394,14 +16350,14 @@ const translations = {
                     };
                 })();
 
-                // Initialize mini player settings on load
+                // ロード時にミニプレイヤー設定を初期化
                 (function() {
                     const origOnload = window.onload;
                     const initMiniPlayer = function() {
-                        setToggleActive('toggleYoutubeMusic', isYoutubeMusicEnabled());
-                        updateYoutubeMusicSettingsUI();
+                        setToggleActive('toggleYoutubeVideo', isYoutubeVideoEnabled());
+                        updateYoutubeVideoSettingsUI();
                         updateAddYoutubeMenuItem();
-                        if (isYoutubeMusicEnabled()) loadYoutubeApi();
+                        if (isYoutubeVideoEnabled()) loadYoutubeApi();
 
                         setToggleActive('toggleMiniPlayer', isMiniPlayerEnabled());
                         setToggleActive('toggleMiniPlayerHideSkip', isMiniPlayerHideSkip());

@@ -89,11 +89,13 @@
         body.light {
             background-color: var(--bg-light);
             color: #323232;
+            --checkbox-accent: var(--primary-color);
         }
 
         body.dark {
             background-color: var(--bg-dark);
             color: #e8e8e8;
+            --checkbox-accent: var(--primary-color-dark);
         }
 
         .container {
@@ -1918,12 +1920,53 @@
             opacity: 0.45;
         }
 
+        .todo-item.completed .todo-priority-dot {
+            opacity: 0.45;
+        }
+
+        /* チェック操作をした瞬間だけ、チェックマークと背景色(アクセントカラー)を一緒にフェードイン/アウトさせる */
+        @keyframes checkmarkFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes checkmarkFadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        @keyframes checkboxFillFadeIn {
+            from { background-color: transparent; }
+            to { background-color: var(--checkbox-accent); }
+        }
+
+        @keyframes checkboxFillFadeOut {
+            from { background-color: var(--checkbox-accent); }
+            to { background-color: transparent; }
+        }
+
+        .todo-just-toggled-on .todo-checkbox::after {
+            animation: checkmarkFadeIn 0.4s ease;
+        }
+
+        .todo-just-toggled-off .todo-checkbox::after {
+            animation: checkmarkFadeOut 0.4s ease;
+        }
+
+        .todo-just-toggled-on .todo-checkbox {
+            animation: checkboxFillFadeIn 0.4s ease;
+        }
+
+        .todo-just-toggled-off .todo-checkbox {
+            animation: checkboxFillFadeOut 0.4s ease;
+        }
+
         .light .todo-item.completed {
-            background-color: rgba(0, 0, 0, 0.01);
+            background-color: color-mix(in srgb, var(--panel-light) 75%, transparent);
         }
 
         .dark .todo-item.completed {
-            background-color: rgba(255, 255, 255, 0.01);
+            background-color: color-mix(in srgb, var(--panel-dark) 75%, transparent);
         }
 
         .todo-checkbox {
@@ -2159,11 +2202,17 @@
         }
 
         @media (max-width: 768px) {
+            /* body に overflow を付けると、body 自身が独立したスクロールコンテナになってしまい
+               position:sticky なメニューがビューポートではなく body 基準になって効かなくなる。
+               html だけに付けることで横スクロール防止としての効果は保ちつつ sticky を壊さない */
+            html {
+                overflow-x: hidden;
+            }
+
             .container {
                 padding: 15px 12px;
                 max-width: 100%;
                 box-sizing: border-box;
-                overflow-x: hidden;
             }
 
             h1 {
@@ -2752,6 +2801,11 @@
             display: flex;
         }
 
+        .tutorial-welcome.welcome-hidden-for-about,
+        .language-selector-overlay.welcome-hidden-for-about {
+            visibility: hidden;
+        }
+
         .tutorial-welcome-content {
             background: transparent;
             color: #1a1a1a;
@@ -2793,6 +2847,24 @@
             padding: 12px 40px;
             font-size: 1rem;
             border-radius: 24px;
+        }
+
+        .tutorial-welcome-about-link {
+            display: inline-block;
+            margin-top: 26px;
+            padding: 6px 4px;
+            border: none;
+            background: transparent;
+            color: inherit;
+            font-size: 0.85rem;
+            opacity: 0.55;
+            text-decoration: underline;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .tutorial-welcome-about-link:hover {
+            opacity: 0.9;
         }
 
         .tutorial-box {
@@ -2904,12 +2976,6 @@
         }
 
         @media (max-width: 768px) {
-            .tutorial-welcome {
-                top: 70px;
-                right: 10px;
-                width: calc(100vw - 20px);
-            }
-
             .tutorial-box {
                 max-width: calc(100vw - 20px);
             }
@@ -3000,16 +3066,25 @@
         }
 
         /* Todo関連の追加スタイル */
-        .todo-priority-high {
-            border-left: 4px solid var(--todo-priority-high);
+        .todo-priority-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-left: 7px;
+            flex-shrink: 0;
         }
 
-        .todo-priority-normal {
-            border-left: 4px solid var(--todo-priority-normal);
+        .todo-priority-high .todo-priority-dot {
+            background-color: var(--todo-priority-high);
         }
 
-        .todo-priority-low {
-            border-left: 4px solid var(--todo-priority-low);
+        .todo-priority-normal .todo-priority-dot {
+            background-color: var(--todo-priority-normal);
+        }
+
+        .todo-priority-low .todo-priority-dot {
+            background-color: var(--todo-priority-low);
         }
 
         .priority-color-overlay {
@@ -3517,6 +3592,7 @@
             align-items: center;
             gap: 12px;
             position: relative;
+            cursor: pointer;
         }
 
         .todo-checkbox {
@@ -3542,6 +3618,8 @@
             justify-content: center;
             cursor: grab;
             user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
             opacity: 0.8;
             margin-right: 4px;
             width: 20px;
@@ -3559,6 +3637,8 @@
             justify-content: center;
             cursor: grab;
             user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
             opacity: 0.75;
             width: 18px;
             height: 18px;
@@ -3919,15 +3999,27 @@
 
         .language-selector {
             display: none;
-            flex-direction: row;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 18px;
+            gap: 0;
             z-index: 10000;
-            font-size: 1.6rem;
-            font-weight: 500;
             color: #1a1a1a;
             position: relative;
+            text-align: center;
+            padding: 20px;
+            animation: welcomeRise 0.5s ease-out;
+        }
+
+        @keyframes welcomeRise {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .dark .language-selector {
@@ -3938,17 +4030,30 @@
             display: flex;
         }
 
-        .language-choice {
+        .welcome-logo {
+            margin-bottom: 24px;
+        }
+
+        .welcome-lang-buttons {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .welcome-lang-text {
+            font-size: 1.1rem;
             cursor: pointer;
+            opacity: 0.75;
             transition: opacity 0.2s ease;
         }
 
-        .language-choice:hover {
-            opacity: 0.7;
+        .welcome-lang-text:hover {
+            opacity: 1;
         }
 
-        .language-separator {
-            opacity: 0.5;
+        .welcome-lang-sep {
+            opacity: 0.35;
         }
 
         .todo-period {
@@ -4011,7 +4116,6 @@
 
         .calendar-day {
             aspect-ratio: 1;
-            border: 1px solid;
             border-radius: 24px;
             padding: 8px;
             cursor: pointer;
@@ -4035,12 +4139,19 @@
 
         .light .calendar-day {
             border-color: rgba(0, 0, 0, 0.1);
-            background: var(--panel-light);
+            --cal-day-c: var(--primary-color);
+            --cal-day-base: var(--panel-light);
         }
 
         .dark .calendar-day {
             border-color: rgba(255, 255, 255, 0.1);
-            background: var(--panel-dark);
+            --cal-day-c: var(--primary-color-dark);
+            --cal-day-base: var(--panel-dark);
+        }
+
+        /* 勉強時間に応じてその日のマスの色を濃くする(要素自身の背景として計算) */
+        .calendar-day {
+            background: color-mix(in srgb, var(--cal-day-c) var(--cal-intensity, 0%), var(--cal-day-base));
         }
 
         .calendar-day:hover {
@@ -4048,11 +4159,11 @@
         }
 
         .light .calendar-day:hover {
-            background: var(--panel-light-hover);
+            --cal-day-base: var(--panel-light-hover);
         }
 
         .dark .calendar-day:hover {
-            background: var(--panel-dark-2);
+            --cal-day-base: var(--panel-dark-2);
         }
 
         .calendar-day-number {
@@ -4111,43 +4222,19 @@
             color: #fff;
         }
 
-        .calendar-day.has-todos {
-            background-color: transparent !important;
-            border-left: 4px solid var(--primary-color) !important;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
-        }
-
-        .dark .calendar-day.has-todos {
-            border-left-color: var(--primary-color-dark) !important;
-            border-bottom-color: rgba(255, 255, 255, 0.1) !important;
-        }
-
+        /* ToDoがある日は日付の下に小さなドットを1つだけ表示(件数はセルを開けば分かるので最小限に) */
         .calendar-todo-indicators {
             display: flex;
             flex-wrap: wrap;
-            gap: 2px;
+            gap: 3px;
+            margin-top: auto;
         }
 
         .calendar-todo-indicator {
-            display: none;
-            /* 従来のドットは非表示 */
-        }
-
-        .calendar-todo-badge {
-            position: absolute;
-            bottom: 4px;
-            right: 4px;
-            background: var(--primary-color);
-            color: white;
-            font-size: 0.65rem;
-            min-width: 16px;
-            height: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 24px;
-            padding: 0 4px;
-            font-weight: bold;
+            display: block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
             pointer-events: none;
         }
 
@@ -4159,12 +4246,6 @@
                 margin-bottom: 2px;
             }
         }
-
-        .light .calendar-todo-badge {
-            color: #fff;
-        }
-
-        /* 重複する定義を削除 */
 
         .light .calendar-todo-indicator {
             background: var(--primary-color);
@@ -4506,6 +4587,41 @@
             cursor: pointer;
         }
 
+        .calendar-day-study-time {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            width: fit-content;
+            padding: 8px 16px;
+            margin-bottom: 16px;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            opacity: 0.85;
+        }
+
+        .calendar-day-study-time.show {
+            display: inline-flex;
+        }
+
+        .light .calendar-day-study-time {
+            background-color: var(--panel-light);
+        }
+
+        .dark .calendar-day-study-time {
+            background-color: var(--panel-dark);
+        }
+
+        .calendar-day-study-time-icon {
+            display: inline-flex;
+            opacity: 0.7;
+        }
+
+        .calendar-day-study-time-icon svg {
+            width: 15px;
+            height: 15px;
+            display: block;
+        }
+
         .calendar-day-todos {
             margin-bottom: 20px;
         }
@@ -4664,32 +4780,29 @@
             border-color: var(--primary-color-dark);
         }
 
-        /* チェックマーク(常に存在、opacity で表示切替) */
+        /* チェックマーク(常に存在、opacity で表示切替。ToDoアイコンと同じチェック形状をmaskで流用) */
         input[type="checkbox"]::after {
             content: '';
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -55%) rotate(45deg);
-            width: 30%;
-            height: 55%;
-            border-bottom: 2px solid white;
-            border-right: 2px solid white;
+            transform: translate(-50%, -50%);
+            width: 72%;
+            height: 72%;
+            background-color: white;
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M5 13L9 17L19 7' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M5 13L9 17L19 7' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            -webkit-mask-size: contain;
+            mask-size: contain;
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+            mask-position: center;
             opacity: 0;
-            transition: opacity 0.2s ease;
         }
 
         input[type="checkbox"]:checked::after {
             opacity: 1;
-        }
-
-        /* ToDo 用にさらに細かく補正 */
-        .todo-checkbox::after {
-            transform: translate(-50%, -55%) rotate(45deg);
-            width: 34%;
-            height: 62%;
-            border-bottom-width: 2px;
-            border-right-width: 2px;
         }
 
         /* ホバー効果 */
@@ -4940,6 +5053,85 @@ body.dark.editor-mode .menu button[data-page="timer"]:hover {
 }
 .editor-mini-menu-backdrop.visible { display: block; }
 
+/* ── 右クリックのクイックナビメニュー(何もない場所を右クリック) ── */
+.quick-nav-menu-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    display: none;
+}
+.quick-nav-menu-backdrop.visible { display: block; }
+
+.quick-nav-menu {
+    position: fixed;
+    z-index: 9999;
+    min-width: 190px;
+    max-width: calc(100vw - 40px);
+    padding: 8px 0;
+    border-radius: 20px;
+    opacity: 0;
+    transform: scale(0.94) translateY(-4px);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    pointer-events: none;
+}
+.quick-nav-menu.visible {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    pointer-events: auto;
+}
+.light .quick-nav-menu { background: var(--panel-light); color: #323232; }
+.dark .quick-nav-menu { background: var(--panel-dark); color: #e8e8e8; }
+
+.quick-nav-menu .qnm-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    cursor: pointer;
+    font-size: 0.88rem;
+    transition: background-color 0.15s ease;
+}
+.quick-nav-menu .qnm-item:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+.dark .quick-nav-menu .qnm-item:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+.quick-nav-menu .qnm-chevron {
+    display: inline-flex;
+    flex-shrink: 0;
+    opacity: 0.4;
+    transform: translateX(0);
+    transition: transform 0.15s ease, opacity 0.15s ease;
+}
+.quick-nav-menu .qnm-item:hover .qnm-chevron {
+    opacity: 0.95;
+    transform: translateX(3px);
+}
+
+.quick-nav-menu .qnm-divider {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px 6px;
+    margin-top: 2px;
+    font-size: 0.66rem;
+    opacity: 0.5;
+    letter-spacing: 0.06em;
+    cursor: default;
+    user-select: none;
+}
+.quick-nav-menu .qnm-divider::before,
+.quick-nav-menu .qnm-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.3;
+}
+
 /* [+] 再表示ボタン */
 .editor-add-btn {
     position: fixed;
@@ -5182,7 +5374,7 @@ body.dark .fc-card-entry {
 }
 .fc-drag-handle {
     display: inline-flex; align-items: center; justify-content: center;
-    cursor: grab; user-select: none; opacity: 0.8;
+    cursor: grab; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; opacity: 0.8;
     width: 20px; height: 20px; flex-shrink: 0;
     touch-action: none;
 }
@@ -5624,7 +5816,7 @@ body.dark .fc-formula-popup input {
             width: 100%;
             height: 6px;
             background: rgba(128, 128, 128, 0.15);
-            border-radius: 3px;
+            border-radius: 999px;
             margin-top: -10px;
             margin-bottom: 15px;
             display: none;
@@ -5637,13 +5829,13 @@ body.dark .fc-formula-popup input {
             height: 8px;
             margin: 0;
             background: rgba(128, 128, 128, 0.2);
-            border-radius: 4px;
+            border-radius: 999px;
         }
         .focus-progress-bar .focus-progress-fill {
             height: 100%;
             width: 0%;
             transition: width 0.3s linear;
-            border-radius: 3px;
+            border-radius: 999px;
         }
         body.light .focus-progress-fill {
             background: var(--primary-color);
@@ -5653,6 +5845,683 @@ body.dark .fc-formula-popup input {
         }
         .focus-progress-bar .focus-progress-fill.break-phase {
             opacity: 0.5;
+        }
+
+        /* ── フォーカスモード セグメント切替 ── */
+        .focus-mode-segment {
+            position: relative;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            width: min(320px, 100%);
+            margin: 0 auto;
+            padding: 4px;
+            border-radius: 999px;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .light .focus-mode-segment {
+            background-color: var(--panel-light);
+        }
+
+        .dark .focus-mode-segment {
+            background-color: var(--panel-dark);
+        }
+
+        .focus-segment-highlight {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: calc(50% - 4px);
+            height: calc(100% - 8px);
+            border-radius: 999px;
+            transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            pointer-events: none;
+        }
+
+        .light .focus-segment-highlight {
+            background-color: var(--primary-color);
+        }
+
+        .dark .focus-segment-highlight {
+            background-color: var(--primary-color-dark);
+        }
+
+        .focus-mode-segment.active .focus-segment-highlight {
+            transform: translateX(100%);
+        }
+
+        .focus-segment-btn {
+            position: relative;
+            z-index: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 9px 10px;
+            border: none;
+            border-radius: 999px;
+            background: transparent;
+            color: inherit;
+            font-size: 0.9rem;
+            cursor: pointer;
+            opacity: 0.55;
+            transition: color 0.25s, opacity 0.25s;
+        }
+
+        .focus-mode-segment:not(.active) .focus-segment-btn[data-mode="normal"],
+        .focus-mode-segment.active .focus-segment-btn[data-mode="focus"] {
+            color: white;
+            opacity: 1;
+        }
+
+        .focus-segment-sub {
+            font-size: 0.72rem;
+            opacity: 0.75;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* ── セッション情報の編集 ── */
+        .session-info-wrap {
+            position: relative;
+            margin: 30px 0;
+        }
+
+        .session-info-wrap .session-info {
+            margin: 0;
+        }
+
+        .session-info.custom-text {
+            white-space: pre-line;
+        }
+
+        .session-info-edit-btn {
+            position: absolute;
+            top: -8px;
+            right: 0;
+            width: 34px;
+            height: 34px;
+            min-width: 34px;
+            padding: 8px;
+            border: none;
+            border-radius: 50%;
+            background: transparent;
+            color: inherit;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s, background-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .session-info-edit-btn svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .session-info-wrap:hover .session-info-edit-btn,
+        .session-info-edit-btn:focus-visible {
+            opacity: 0.5;
+        }
+
+        .session-info-edit-btn:hover {
+            opacity: 0.9;
+        }
+
+        .light .session-info-edit-btn:hover {
+            background-color: var(--panel-light);
+        }
+
+        .dark .session-info-edit-btn:hover {
+            background-color: var(--panel-dark);
+        }
+
+        body.session-running .session-info-edit-btn,
+        body.editor-mode .session-info-edit-btn,
+        .session-info-wrap.editing .session-info-edit-btn {
+            display: none;
+        }
+
+        .session-info-wrap.editing .session-info {
+            display: none;
+        }
+
+        .session-info-editor {
+            display: none;
+        }
+
+        .session-info-wrap.editing .session-info-editor {
+            display: block;
+        }
+
+        .session-info-editor textarea {
+            width: 100%;
+            border: none;
+            border-radius: 24px;
+            padding: 14px 18px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            resize: vertical;
+            min-height: 84px;
+            outline: none;
+            color: inherit;
+        }
+
+        .light .session-info-editor textarea {
+            background-color: var(--panel-light);
+        }
+
+        .dark .session-info-editor textarea {
+            background-color: var(--panel-dark);
+        }
+
+        .session-info-editor-btns {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .session-info-editor-btns button {
+            padding: 8px 20px;
+            font-size: 0.85rem;
+        }
+
+        /* ── About ページャー ── */
+        .about-pager-content {
+            min-height: 300px;
+        }
+
+        .about-page {
+            animation: fadeIn 0.25s ease-out;
+            text-align: center;
+        }
+
+        .about-page h3 {
+            font-size: 1.15rem;
+            margin: 4px 0 10px;
+        }
+
+        .about-page-desc {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            line-height: 1.8;
+            margin-bottom: 16px;
+        }
+
+        .about-demo {
+            border-radius: 24px;
+            padding: 20px;
+            margin: 0 auto;
+            max-width: 430px;
+        }
+
+        .ad-hint {
+            font-size: 0.72rem;
+            opacity: 0.5;
+            margin-bottom: 6px;
+        }
+
+        .about-pager-dots {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 14px;
+        }
+
+        .about-pager-dots .apd-dot {
+            width: 8px;
+            height: 8px;
+            padding: 0;
+            border: none;
+            border-radius: 50%;
+            background: currentColor;
+            opacity: 0.22;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.2s, background-color 0.2s;
+        }
+
+        .about-pager-dots .apd-dot.active {
+            opacity: 1;
+            transform: scale(1.3);
+            background: var(--primary-color);
+        }
+
+        .dark .about-pager-dots .apd-dot.active {
+            background: var(--primary-color-dark);
+        }
+
+        .about-pager-actions button {
+            padding: 9px 20px;
+            font-size: 0.88rem;
+        }
+
+        .about-pager-actions #aboutNextBtn {
+            margin-right: auto;
+        }
+
+        .about-pager-actions button:disabled {
+            opacity: 0.35;
+            pointer-events: none;
+        }
+
+        /* ダイアログ背景と同化しないように */
+        .light .about-pager-actions button.secondary {
+            background-color: var(--bg-light);
+        }
+
+        .dark .about-pager-actions button.secondary {
+            background-color: var(--bg-dark);
+        }
+
+        .ad-chip {
+            display: inline-block;
+            border-radius: 999px;
+            padding: 7px 18px;
+            font-size: 0.78rem;
+            opacity: 0.85;
+        }
+
+        .light .ad-chip {
+            background: var(--bg-light);
+        }
+
+        .dark .ad-chip {
+            background: var(--bg-dark);
+        }
+
+        /* デモ: タイマー */
+        .ad-timer {
+            font-size: 2.1rem;
+            font-weight: 300;
+            font-variant-numeric: tabular-nums;
+            margin: 6px 0 14px;
+        }
+
+        .ad-controls {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .ad-controls button {
+            padding: 9px 22px;
+            font-size: 0.85rem;
+        }
+
+        .ad-result {
+            font-size: 0.8rem;
+            opacity: 0.75;
+            margin-top: 12px;
+            min-height: 1.3em;
+        }
+
+        /* デモ: 統計 */
+        .ad-tiles {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .ad-tile {
+            border-radius: 24px;
+            padding: 10px 20px;
+        }
+
+        .light .ad-tile {
+            background: var(--panel-light);
+        }
+
+        .dark .ad-tile {
+            background: var(--panel-dark);
+        }
+
+        .ad-tile-value {
+            font-size: 1.05rem;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .ad-tile-label {
+            font-size: 0.68rem;
+            opacity: 0.6;
+            margin-top: 2px;
+        }
+
+        .ad-chart-canvas {
+            width: 100%;
+            max-height: 300px;
+            margin: 0 auto 14px;
+            display: block;
+        }
+
+        .ad-pills {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .ad-pill {
+            border: none;
+            border-radius: 999px;
+            padding: 7px 18px;
+            font-size: 0.78rem;
+            cursor: pointer;
+            color: inherit;
+            opacity: 0.6;
+            transition: all 0.2s;
+        }
+
+        .light .ad-pill {
+            background: var(--panel-light);
+        }
+
+        .dark .ad-pill {
+            background: var(--panel-dark);
+        }
+
+        .ad-pill.active {
+            opacity: 1;
+            color: white;
+        }
+
+        .light .ad-pill.active {
+            background: var(--primary-color);
+        }
+
+        .dark .ad-pill.active {
+            background: var(--primary-color-dark);
+        }
+
+        /* デモ: カスタマイズ */
+        .ad-custom {
+            --ad-accent: #9db4c8;
+        }
+
+        .ad-preview {
+            border-radius: 24px;
+            padding: 20px 18px;
+            margin-bottom: 16px;
+            background: #fdfdfd;
+            color: #323232;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .ad-custom.ad-dark .ad-preview {
+            background: #1d1e24;
+            color: #e8e8e8;
+        }
+
+        .adp-menu {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .adp-pill {
+            font-size: 0.65rem;
+            padding: 5px 14px;
+            border-radius: 999px;
+            background: rgba(128, 128, 128, 0.12);
+        }
+
+        .adp-pill.active {
+            background: var(--ad-accent);
+            color: #fff;
+        }
+
+        .adp-timer {
+            font-size: 1.5rem;
+            font-weight: 300;
+            font-variant-numeric: tabular-nums;
+            margin: 8px 0 10px;
+        }
+
+        .adp-btn {
+            display: inline-block;
+            font-size: 0.7rem;
+            color: #fff;
+            background: var(--ad-accent);
+            border-radius: 999px;
+            padding: 7px 20px;
+        }
+
+        .ad-dots {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+
+        .ad-dot {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+
+        .ad-dot.active {
+            transform: scale(1.2);
+            box-shadow: 0 0 0 2px rgba(128, 128, 128, 0.35);
+        }
+
+        /* デモ: 音楽 */
+        .ad-music-title {
+            font-size: 0.85rem;
+            opacity: 0.85;
+            margin-bottom: 4px;
+        }
+
+        @keyframes adEq {
+            0%, 100% { height: 30%; }
+            50% { height: 100%; }
+        }
+
+        .ad-progress {
+            height: 5px;
+            border-radius: 999px;
+            background: rgba(128, 128, 128, 0.2);
+            max-width: 260px;
+            margin: 0 auto 14px;
+            overflow: hidden;
+        }
+
+        .ad-progress-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 999px;
+            transition: width 0.2s linear;
+        }
+
+        .light .ad-progress-fill {
+            background: var(--primary-color);
+        }
+
+        .dark .ad-progress-fill {
+            background: var(--primary-color-dark);
+        }
+
+        .ad-music-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .ad-mbtn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .light .ad-mbtn {
+            background: var(--panel-light);
+        }
+
+        .dark .ad-mbtn {
+            background: var(--panel-dark);
+        }
+
+        .ad-mbtn img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* デモ: ToDo */
+        .ad-todo-list {
+            text-align: left;
+            margin-bottom: 12px;
+        }
+
+        .ad-todo-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            border-radius: 999px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: opacity 0.2s;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .light .ad-todo-item {
+            background: var(--panel-light);
+        }
+
+        .dark .ad-todo-item {
+            background: var(--panel-dark);
+        }
+
+        .ad-todo-item .ad-check {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid rgba(128, 128, 128, 0.5);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: white;
+            transition: all 0.2s;
+        }
+
+        .ad-todo-item .ad-priority {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            margin-left: auto;
+        }
+
+        .ad-todo-item.done {
+            opacity: 0.45;
+        }
+
+        .ad-todo-item.done .ad-todo-text {
+            text-decoration: line-through;
+        }
+
+        .light .ad-todo-item.done .ad-check {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .dark .ad-todo-item.done .ad-check {
+            background: var(--primary-color-dark);
+            border-color: var(--primary-color-dark);
+        }
+
+        .ad-todo-add {
+            display: flex;
+            gap: 8px;
+        }
+
+        .ad-todo-add input {
+            flex: 1;
+            min-width: 0;
+            border: none;
+            border-radius: 999px;
+            padding: 9px 16px;
+            font-size: 0.85rem;
+            outline: none;
+            color: inherit;
+        }
+
+        .light .ad-todo-add input {
+            background: var(--panel-light);
+        }
+
+        .dark .ad-todo-add input {
+            background: var(--panel-dark);
+        }
+
+        .ad-todo-add button {
+            padding: 8px 18px;
+            font-size: 0.8rem;
+        }
+
+        /* ── ホバー・フォーカスの磨き込み ── */
+        @media (hover: hover) {
+            .light .menu button:not(.active):hover {
+                background-color: var(--panel-light-2);
+            }
+
+            .dark .menu button:not(.active):hover {
+                background-color: var(--panel-dark-2);
+            }
+
+            .light button.secondary:hover {
+                background-color: var(--panel-light-2);
+            }
+
+            .dark button.secondary:hover {
+                background-color: var(--panel-dark-2);
+            }
+
+            button.primary:hover {
+                filter: brightness(1.04);
+            }
+
+            .theme-toggle:hover,
+            .settings-btn:hover {
+                transform: translateY(-2px);
+            }
+        }
+
+        /* ホバーできない端末では編集ボタンをうっすら常時表示 */
+        @media (hover: none) {
+            .session-info-edit-btn {
+                opacity: 0.3;
+            }
+        }
+
+        button:focus-visible,
+        .toggle-switch:focus-visible {
+            outline: 2px solid color-mix(in srgb, var(--primary-color) 65%, transparent);
+            outline-offset: 2px;
+        }
+
+        body.dark button:focus-visible,
+        body.dark .toggle-switch:focus-visible {
+            outline-color: color-mix(in srgb, var(--primary-color-dark) 75%, transparent);
         }
 
         /* ===== メニューカスタマイズ ===== */
@@ -5802,9 +6671,13 @@ body.dark .fc-formula-popup input {
     <!-- 言語選択画面 -->
     <div class="language-selector-overlay" id="languageSelectorOverlay">
         <div class="language-selector" id="languageSelector">
-            <span class="language-choice" onclick="setLanguage('ja')">日本語</span>
-            <span class="language-separator">|</span>
-            <span class="language-choice" onclick="setLanguage('en')">English</span>
+            <img class="tsumiki-logo welcome-logo" src="tsumiki_logo.svg" data-light-src="tsumiki_logo.svg"
+                data-dark-src="tsumiki_logo_akarui.svg" alt="ツミキapp">
+            <div class="welcome-lang-buttons">
+                <span class="welcome-lang-text" onclick="setLanguage('ja')">日本語</span>
+                <span class="welcome-lang-sep">|</span>
+                <span class="welcome-lang-text" onclick="setLanguage('en')">English</span>
+            </div>
         </div>
     </div>
 
@@ -5851,6 +6724,7 @@ body.dark .fc-formula-popup input {
                 <button class="secondary calendar-day-dialog-close" onclick="closeCalendarDayDialog()"
                     data-i18n="closeButton">閉じる</button>
             </div>
+            <div class="calendar-day-study-time" id="calendarDayStudyTime"></div>
             <div class="calendar-day-todos" id="calendarDayTodos">
                 <!-- ToDoリストがここに表示される -->
             </div>
@@ -5893,6 +6767,7 @@ body.dark .fc-formula-popup input {
                 <button class="primary" onclick="startTutorial()" data-i18n="tutorialYes">はい</button>
                 <button class="secondary" onclick="closeTutorial()" data-i18n="tutorialClose">いいえ</button>
             </div>
+            <button type="button" class="tutorial-welcome-about-link" onclick="showAboutFromWelcome()" data-i18n="aboutButton">このサイトについて</button>
         </div>
     </div>
     <div class="tutorial-box" id="tutorialBox" style="display: none;">
@@ -5930,8 +6805,116 @@ body.dark .fc-formula-popup input {
     <div class="editor-mini-menu-backdrop" id="editorMiniMenuBackdrop" onclick="closeEditorMiniMenu()"></div>
     <div class="editor-mini-menu" id="editorMiniMenu"></div>
 
+    <div class="quick-nav-menu-backdrop" id="quickNavMenuBackdrop" onclick="closeQuickNavMenu()" oncontextmenu="event.preventDefault(); closeQuickNavMenu();"></div>
+    <div class="quick-nav-menu" id="quickNavMenu"></div>
+
     <!-- YouTube fixed overlay player -->
     <div id="ytPlayerContainer"></div>
+
+    <!-- About / Q&A / ライセンス モーダル(常にレンダリングされるよう設定ページの外に配置) -->
+    <div class="about-overlay" id="aboutOverlay" aria-hidden="true">
+        <div class="about-dialog" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
+            <h2 id="aboutTitle" data-i18n="aboutTitle">このサイトについて</h2>
+            <div class="about-content about-pager-content" id="aboutContent">
+                <!-- renderAboutPage() が描画 -->
+            </div>
+            <div class="about-pager-dots" id="aboutPagerDots"></div>
+            <div class="about-actions about-pager-actions">
+                <button class="secondary" id="aboutPrevBtn" onclick="aboutPagerNav(-1)" data-i18n="tutorialPrev">戻る</button>
+                <button class="secondary" id="aboutNextBtn" onclick="aboutPagerNav(1)" data-i18n="tutorialNext">次へ</button>
+                <button class="primary" id="aboutOkBtn" data-i18n="closeButton">閉じる</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="about-overlay" id="qaOverlay" aria-hidden="true">
+        <div class="about-dialog" role="dialog" aria-modal="true" aria-labelledby="qaTitle">
+            <h2 id="qaTitle" data-i18n="qaTitle">よくある質問(Q&A)</h2>
+            <div id="qaContent" class="about-content" data-i18n-html="qaContent">
+                <!-- Content will be replaced by JS -->
+            </div>
+            <div class="about-actions">
+                <button class="primary" id="qaOkBtn" data-i18n="closeButton">閉じる</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="about-overlay" id="licenseOverlay" aria-hidden="true">
+        <div class="about-dialog" role="dialog" aria-modal="true" aria-labelledby="licenseTitle">
+            <h2 id="licenseTitle" data-i18n="licenseTitle">ライセンス</h2>
+<div id="licenseContent" class="about-content"
+    style="font-size: 0.85rem; max-height: 60vh; overflow-y: auto; text-align: left;">
+    <b>[Libraries]</b><br>
+    <br>
+    <b>Chart.js v3.9.1</b><br>
+    <a href="https://www.chartjs.org" target="_blank" style="color: inherit; text-decoration: underline;">https://www.chartjs.org</a><br>
+    (c) 2022 Chart.js Contributors<br>
+    Released under the MIT License<br>
+    <br>
+    <hr style="opacity: 0.2; margin: 15px 0;">
+    <br>
+
+    <b>[Google Fonts]</b><br>
+
+    <a href="https://fonts.google.com/specimen/Jost" target="_blank" style="color: inherit; text-decoration: underline;"><b>Jost</b></a><br>
+    by Indestructible Type (SIL OFL 1.1)<br>
+    <br>
+    <a href="https://fonts.google.com/specimen/Zen+Kaku+Gothic+Antique" target="_blank" style="color: inherit; text-decoration: underline;"><b>Zen Kaku Gothic Antique</b></a><br>
+    by Astrolab Inc. (SIL OFL 1.1)<br>
+    <br>
+    <a href="https://fonts.google.com/specimen/JetBrains+Mono" target="_blank" style="color: inherit; text-decoration: underline;"><b>JetBrains Mono</b></a><br>
+    by JetBrains s.r.o. (SIL OFL 1.1)<br>
+    <br>
+    <a href="https://fonts.google.com/specimen/Montserrat" target="_blank" style="color: inherit; text-decoration: underline;"><b>Montserrat</b></a><br>
+    by Julieta Ulanovsky (SIL OFL 1.1)<br>
+    <br>
+    <a href="https://fonts.google.com/specimen/Lora" target="_blank" style="color: inherit; text-decoration: underline;"><b>Lora</b></a><br>
+    by Cyreal (SIL OFL 1.1)<br>
+    <br>
+    <a href="https://fonts.google.com/specimen/Quicksand" target="_blank" style="color: inherit; text-decoration: underline;"><b>Quicksand</b></a><br>
+    by Andrew Paglinawan (SIL OFL 1.1)<br>
+    <br>
+    <a href="https://fonts.google.com/specimen/Klee+One" target="_blank" style="color: inherit; text-decoration: underline;"><b>Klee One</b></a><br>
+    by Fontworks Inc. (SIL OFL 1.1)<br>
+    <br>
+    <a href="https://fonts.google.com/specimen/BIZ+UDPGothic" target="_blank" style="color: inherit; text-decoration: underline;"><b>BIZ UDPGothic</b></a><br>
+    by Morisawa Inc. (SIL OFL 1.1)<br>
+    <br>
+    <a href="https://fonts.google.com/specimen/Zen+Maru+Gothic" target="_blank" style="color: inherit; text-decoration: underline;"><b>Zen Maru Gothic</b></a><br>
+    by Yoshimichi Ohira (SIL OFL 1.1)<br>
+    <br>
+    <a href="https://fonts.google.com/specimen/Noto+Sans+JP" target="_blank" style="color: inherit; text-decoration: underline;"><b>Noto Sans JP</b></a><br>
+    by Google (SIL OFL 1.1)<br>
+    <br>
+    <a href="https://fonts.google.com/specimen/Sawarabi+Gothic" target="_blank" style="color: inherit; text-decoration: underline;"><b>Sawarabi Gothic</b></a><br>
+    by mplus-fonts-dev (SIL OFL 1.1 / CC BY 4.0)<br>
+    <br>
+    <a href="https://fonts.google.com/specimen/Hina+Mincho" target="_blank" style="color: inherit; text-decoration: underline;"><b>Hina Mincho</b></a><br>
+    by Shujiro Sano (SIL OFL 1.1)<br>
+    <br>
+
+    <hr style="opacity: 0.2; margin: 15px 0;">
+    <br>
+
+    <b>[Local Fonts]</b><br>
+
+    <a href="https://flopdesign.com/blog/font/58/" target="_blank" style="color: inherit; text-decoration: underline;"><b>うつくし明朝体 (Utsukushi Font)</b></a><br>
+    by FLOP DESIGN (IPA Font License v1.0)<br>
+    <br>
+    <a href="https://littlelimit.net/misaki.htm" target="_blank" style="color: inherit; text-decoration: underline;"><b>美咲ゴシック (Misaki Gothic)</b></a><br>
+    by 門真 なむ / Little Limit (MIT License)<br>
+    <br>
+    <a href="http://jikasei.me/font/kh-dotfont/" target="_blank" style="color: inherit; text-decoration: underline;"><b>小伝馬町 (Kodenmachou)</b></a><br>
+    by 自家製フォント工房 (SIL OFL 1.1)<br>
+    <br>
+    <a href="https://modi.jpn.org/font_mushin.php" target="_blank" style="color: inherit; text-decoration: underline;"><b>無心 (Mushin)</b></a><br>
+    by Maniackers Design (IPA Font License v1.0)
+</div>
+            <div class="about-actions">
+                <button class="primary" id="licenseOkBtn" data-i18n="closeButton">閉じる</button>
+            </div>
+        </div>
+    </div>
 
     <div class="container">
         <!-- Mini Music Player Popup -->
@@ -5988,13 +6971,31 @@ body.dark .fc-formula-popup input {
             <div class="group-input">
                 <input type="text" id="groupInput" placeholder="グループ名(任意)" data-i18n="groupPlaceholder">
             </div>
-            <div class="session-info" id="sessionInfo" data-i18n="sessionStart">開始ボタンを押して学習を始めましょう</div>
-            <div id="focusModeToggleContainer" style="display: none; margin-bottom: 15px;" data-editor-target="focusMode">
-                <div class="toggle-item" style="margin-bottom: 0;">
-                    <span data-i18n="focusMode">フォーカスモード</span>
-                    <div class="toggle-switch" id="toggleFocusModeMain" onclick="toggleFocusModeMain()">
-                        <div class="toggle-slider"></div>
+            <div class="session-info-wrap" id="sessionInfoWrap" data-editor-target="sessionInfo">
+                <div class="session-info" id="sessionInfo" data-i18n="sessionStart">開始ボタンを押して学習を始めましょう</div>
+                <button class="session-info-edit-btn" id="sessionInfoEditBtn" onclick="openSessionInfoEditor()"
+                    aria-label="テキストを編集" data-i18n-aria="sessionInfoEditLabel">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                </button>
+                <div class="session-info-editor" id="sessionInfoEditor">
+                    <textarea id="sessionInfoEditorInput" rows="3"
+                        placeholder="自由なメッセージを入力(空欄で保存するとデフォルト表示に戻ります)" data-i18n="sessionInfoPlaceholder"></textarea>
+                    <div class="session-info-editor-btns">
+                        <button class="secondary" onclick="closeSessionInfoEditor()" data-i18n="cancelButton">キャンセル</button>
+                        <button class="primary" onclick="saveSessionInfoText()" data-i18n="saveButton">保存</button>
                     </div>
+                </div>
+            </div>
+            <div id="focusModeToggleContainer" style="display: none; margin-bottom: 15px;" data-editor-target="focusMode">
+                <div class="focus-mode-segment" id="toggleFocusModeMain" role="group" aria-label="フォーカスモード" data-i18n-aria="focusMode">
+                    <div class="focus-segment-highlight"></div>
+                    <button type="button" class="focus-segment-btn" data-mode="normal" onclick="setFocusModeMain(false)">
+                        <span data-i18n="focusSegmentNormal">通常</span>
+                    </button>
+                    <button type="button" class="focus-segment-btn" data-mode="focus" onclick="setFocusModeMain(true)">
+                        <span data-i18n="focusSegmentFocus">フォーカス</span>
+                        <span class="focus-segment-sub" id="focusSegmentDurations">25/5分</span>
+                    </button>
                 </div>
             </div>
             <div class="controls">
@@ -6275,6 +7276,7 @@ body.dark .fc-formula-popup input {
                 <span data-i18n="editorMode">エディターモード</span>
                 <button class="primary" id="enterEditorModeBtn" onclick="enterEditorMode()" style="padding: 8px 20px; font-size: 0.9rem; border-radius: 24px;" data-i18n="editorModeEnter">開始</button>
             </div>
+            <div class="setting-note" style="margin-top: -15px; margin-bottom: 25px;" data-i18n="editorModeContextHint">エディターモードを開始しなくても、各要素を右クリックするとクイック設定を開けます。</div>
             <div class="settings-section">
                 <h2 data-i18n="settingsDisplay">表示設定</h2>
                 <div class="toggle-item">
@@ -6286,6 +7288,12 @@ body.dark .fc-formula-popup input {
                 <div class="toggle-item">
                     <span data-i18n="todoList">ToDoリスト</span>
                     <div class="toggle-switch" id="toggleTodo" onclick="toggleFeature('todo')">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <div class="toggle-item">
+                    <span data-i18n="sessionInfoShowSetting">セッション情報(前回の学習)を表示</span>
+                    <div class="toggle-switch" id="toggleSessionInfo" onclick="toggleSessionInfoVisible()">
                         <div class="toggle-slider"></div>
                     </div>
                 </div>
@@ -6418,16 +7426,16 @@ body.dark .fc-formula-popup input {
             </div>
 
             <div class="settings-section" id="menuCustomizeSection">
-                <h2>メニューカスタマイズ</h2>
+                <h2 data-i18n="menuCustomizeTitle">メニューカスタマイズ</h2>
 
                 <!-- Menu display style -->
                 <div class="toggle-item">
-                    <span>メニューの表示方法</span>
+                    <span data-i18n="menuDisplayStyleLabel">メニューの表示方法</span>
                     <div class="custom-select" style="width:160px;">
                         <select id="menuDisplaySelect" onchange="onMenuDisplayChange()">
-                            <option value="text">テキスト</option>
-                            <option value="icon">アイコンのみ</option>
-                            <option value="icon_text">アイコン＋テキスト</option>
+                            <option value="text" data-i18n="menuDisplayText">テキスト</option>
+                            <option value="icon" data-i18n="menuDisplayIcon">アイコンのみ</option>
+                            <option value="icon_text" data-i18n="menuDisplayIconText">アイコン＋テキスト</option>
                         </select>
                         <div class="select-arrow">▾</div>
                     </div>
@@ -6435,7 +7443,7 @@ body.dark .fc-formula-popup input {
 
                 <!-- Menu fixed top -->
                 <div class="toggle-item" id="menuFixedItem">
-                    <span>メニューをトップに固定</span>
+                    <span data-i18n="menuFixedTopLabel">メニューをトップに固定</span>
                     <div class="toggle-switch" id="toggleMenuFixed" onclick="onMenuFixedToggle()">
                         <div class="toggle-slider"></div>
                     </div>
@@ -6443,7 +7451,7 @@ body.dark .fc-formula-popup input {
 
                 <!-- Menu fixed bottom -->
                 <div class="toggle-item" id="menuBottomItem">
-                    <span>メニューを下に固定</span>
+                    <span data-i18n="menuFixedBottomLabel">メニューを下に固定</span>
                     <div class="toggle-switch" id="toggleMenuBottom" onclick="onMenuBottomToggle()">
                         <div class="toggle-slider"></div>
                     </div>
@@ -6451,8 +7459,8 @@ body.dark .fc-formula-popup input {
 
                 <!-- Menu item order and visibility -->
                 <div style="margin-top:15px;">
-                    <label style="font-size:0.9rem;opacity:0.8;display:block;margin-bottom:4px;">メニュー項目・順序</label>
-                    <div class="setting-note" style="margin-bottom:8px;margin-top:0;">ドラッグで並び替え、トグルで表示/非表示</div>
+                    <label style="font-size:0.9rem;opacity:0.8;display:block;margin-bottom:4px;" data-i18n="menuOrderLabel">メニュー項目・順序</label>
+                    <div class="setting-note" style="margin-bottom:8px;margin-top:0;" data-i18n="menuOrderNote">ドラッグで並び替え、トグルで表示/非表示</div>
                     <div class="menu-order-list" id="menuOrderList"></div>
                 </div>
             </div>
@@ -6776,107 +7784,6 @@ body.dark .fc-formula-popup input {
                     <span class="about-text" data-i18n="licenseButton">ライセンス</span>
                 </button>
             </div>
-
-            <div class="about-overlay" id="aboutOverlay" aria-hidden="true">
-                <div class="about-dialog" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
-                    <h2 id="aboutTitle" data-i18n="aboutTitle">このサイトについて</h2>
-                    <div class="about-content" id="aboutContent" data-i18n-html="aboutContent">
-                        <!-- Content will be replaced by JS -->
-                    </div>
-                    <div class="about-actions">
-                        <button class="primary" id="aboutOkBtn" data-i18n="closeButton">閉じる</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="about-overlay" id="qaOverlay" aria-hidden="true">
-                <div class="about-dialog" role="dialog" aria-modal="true" aria-labelledby="qaTitle">
-                    <h2 id="qaTitle" data-i18n="qaTitle">よくある質問(Q&A)</h2>
-                    <div id="qaContent" class="about-content" data-i18n-html="qaContent">
-                        <!-- Content will be replaced by JS -->
-                    </div>
-                    <div class="about-actions">
-                        <button class="primary" id="qaOkBtn" data-i18n="closeButton">閉じる</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="about-overlay" id="licenseOverlay" aria-hidden="true">
-                <div class="about-dialog" role="dialog" aria-modal="true" aria-labelledby="licenseTitle">
-                    <h2 id="licenseTitle" data-i18n="licenseTitle">ライセンス</h2>
-<div id="licenseContent" class="about-content"
-    style="font-size: 0.85rem; max-height: 60vh; overflow-y: auto; text-align: left;">
-    <b>[Libraries]</b><br>
-    <br>
-    <b>Chart.js v3.9.1</b><br>
-    <a href="https://www.chartjs.org" target="_blank" style="color: inherit; text-decoration: underline;">https://www.chartjs.org</a><br>
-    (c) 2022 Chart.js Contributors<br>
-    Released under the MIT License<br>
-    <br>
-    <hr style="opacity: 0.2; margin: 15px 0;">
-    <br>
-
-    <b>[Google Fonts]</b><br>
-    
-    <a href="https://fonts.google.com/specimen/Jost" target="_blank" style="color: inherit; text-decoration: underline;"><b>Jost</b></a><br>
-    by Indestructible Type (SIL OFL 1.1)<br>
-    <br>
-    <a href="https://fonts.google.com/specimen/Zen+Kaku+Gothic+Antique" target="_blank" style="color: inherit; text-decoration: underline;"><b>Zen Kaku Gothic Antique</b></a><br>
-    by Astrolab Inc. (SIL OFL 1.1)<br>
-    <br>
-    <a href="https://fonts.google.com/specimen/JetBrains+Mono" target="_blank" style="color: inherit; text-decoration: underline;"><b>JetBrains Mono</b></a><br>
-    by JetBrains s.r.o. (SIL OFL 1.1)<br>
-    <br>
-    <a href="https://fonts.google.com/specimen/Montserrat" target="_blank" style="color: inherit; text-decoration: underline;"><b>Montserrat</b></a><br>
-    by Julieta Ulanovsky (SIL OFL 1.1)<br>
-    <br>
-    <a href="https://fonts.google.com/specimen/Lora" target="_blank" style="color: inherit; text-decoration: underline;"><b>Lora</b></a><br>
-    by Cyreal (SIL OFL 1.1)<br>
-    <br>
-    <a href="https://fonts.google.com/specimen/Quicksand" target="_blank" style="color: inherit; text-decoration: underline;"><b>Quicksand</b></a><br>
-    by Andrew Paglinawan (SIL OFL 1.1)<br>
-    <br>
-    <a href="https://fonts.google.com/specimen/Klee+One" target="_blank" style="color: inherit; text-decoration: underline;"><b>Klee One</b></a><br>
-    by Fontworks Inc. (SIL OFL 1.1)<br>
-    <br>
-    <a href="https://fonts.google.com/specimen/BIZ+UDPGothic" target="_blank" style="color: inherit; text-decoration: underline;"><b>BIZ UDPGothic</b></a><br>
-    by Morisawa Inc. (SIL OFL 1.1)<br>
-    <br>
-    <a href="https://fonts.google.com/specimen/Zen+Maru+Gothic" target="_blank" style="color: inherit; text-decoration: underline;"><b>Zen Maru Gothic</b></a><br>
-    by Yoshimichi Ohira (SIL OFL 1.1)<br>
-    <br>
-    <a href="https://fonts.google.com/specimen/Noto+Sans+JP" target="_blank" style="color: inherit; text-decoration: underline;"><b>Noto Sans JP</b></a><br>
-    by Google (SIL OFL 1.1)<br>
-    <br>
-    <a href="https://fonts.google.com/specimen/Sawarabi+Gothic" target="_blank" style="color: inherit; text-decoration: underline;"><b>Sawarabi Gothic</b></a><br>
-    by mplus-fonts-dev (SIL OFL 1.1 / CC BY 4.0)<br>
-    <br>
-    <a href="https://fonts.google.com/specimen/Hina+Mincho" target="_blank" style="color: inherit; text-decoration: underline;"><b>Hina Mincho</b></a><br>
-    by Shujiro Sano (SIL OFL 1.1)<br>
-    <br>
-    
-    <hr style="opacity: 0.2; margin: 15px 0;">
-    <br>
-    
-    <b>[Local Fonts]</b><br>
-    
-    <a href="https://flopdesign.com/blog/font/58/" target="_blank" style="color: inherit; text-decoration: underline;"><b>うつくし明朝体 (Utsukushi Font)</b></a><br>
-    by FLOP DESIGN (IPA Font License v1.0)<br>
-    <br>
-    <a href="https://littlelimit.net/misaki.htm" target="_blank" style="color: inherit; text-decoration: underline;"><b>美咲ゴシック (Misaki Gothic)</b></a><br>
-    by 門真 なむ / Little Limit (MIT License)<br>
-    <br>
-    <a href="http://jikasei.me/font/kh-dotfont/" target="_blank" style="color: inherit; text-decoration: underline;"><b>小伝馬町 (Kodenmachou)</b></a><br>
-    by 自家製フォント工房 (SIL OFL 1.1)<br>
-    <br>
-    <a href="https://modi.jpn.org/font_mushin.php" target="_blank" style="color: inherit; text-decoration: underline;"><b>無心 (Mushin)</b></a><br>
-    by Maniackers Design (IPA Font License v1.0)
-</div>
-                    <div class="about-actions">
-                        <button class="primary" id="licenseOkBtn" data-i18n="closeButton">閉じる</button>
-                    </div>
-                </div>
-            </div>
             <div class="footerrr">
 
                 <div class="copyright" data-i18n="copyright">© ツミキapp / Super Hiko14 / 高級ジェネ™ All rights reserved.</div>
@@ -6905,6 +7812,12 @@ body.dark .fc-formula-popup input {
             </div>
             <div id="fcScreenGroups" style="display:none;">
                 <h2 id="fcGroupsTitleEl"></h2>
+                <div class="toggle-item" id="fcRandomOrderRow" style="display:none;">
+                    <span data-i18n="fcRandomOrderLabel">飛ばすたびにシャッフル</span>
+                    <div class="toggle-switch" id="fcRandomOrderToggle" onclick="toggleFcRandomOrder()">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
                 <div id="fcGroupList"></div>
                 <div class="fc-add-group-row" id="fcAddGroupRow" style="display:none;">
                     <input type="text" id="fcNewGroupInput" />
@@ -7082,6 +7995,17 @@ const translations = {
                         menuMusic: '音楽',
                         menuTodo: 'ToDo',
 
+                        // メニューカスタマイズ
+                        menuCustomizeTitle: 'メニューカスタマイズ',
+                        menuDisplayStyleLabel: 'メニューの表示方法',
+                        menuDisplayText: 'テキスト',
+                        menuDisplayIcon: 'アイコンのみ',
+                        menuDisplayIconText: 'アイコン＋テキスト',
+                        menuFixedTopLabel: 'メニューをトップに固定',
+                        menuFixedBottomLabel: 'メニューを下に固定',
+                        menuOrderLabel: 'メニュー項目・順序',
+                        menuOrderNote: 'ドラッグで並び替え、トグルで表示/非表示',
+
                         // タイマーページ
                         groupPlaceholder: 'グループ名(任意)',
                         sessionStart: '開始ボタンを押して学習を始めましょう',
@@ -7210,6 +8134,9 @@ const translations = {
                         guideAlt: 'ガイド',
                         themeToggleAlt: 'テーマ切替',
                         settingsAlt: '設定',
+                        quickNavStartStudy: '勉強を開始する',
+                        quickNavEndStudy: '勉強を終了する',
+                        quickNavOpen: '開く',
                         repeat: '繰り返し',
                         repeatNone: 'なし',
                         repeatDaily: '毎日',
@@ -7421,8 +8348,29 @@ const translations = {
                                 data-dark-src="tsumiki_logo_akarui.svg" alt="Tsumiki app">
                         </div>
                         <p>シンプルで使いやすい勉強時間管理ツール。</p>
-                        このサイトは<a href="https://kokyujene.super-hiko14.com/members/super-hiko14/">Super Hiko14</a>が開発しました。<div class="tyuui-mini-text">※ 一部 AI が使用されています。</div>
+                        このサイトは<a href="https://kokyujene.super-hiko14.com/members/super-hiko14/">Super Hiko14</a>が開発しました。<div class="tyuui-mini-text">※ AIが使用されています。</div>
                         </div>`,
+
+                        // About ページャー
+                        aboutPgWhatTitle: 'どんなツール?',
+                        aboutPgWhatDesc: 'シンプルで使いやすい、勉強時間管理ツールです。タイマーで記録して、グラフで振り返る。必要な機能だけを、自分好みに組み合わせて使えます。',
+                        aboutPgHowTitle: 'どう使う?',
+                        aboutPgHowDesc: '使い方はかんたん。「勉強開始」を押して勉強し、終わったら「終了」。それだけで自動的に記録されます。',
+                        aboutPgStatsTitle: '統計で振り返る',
+                        aboutPgStatsDesc: '総勉強時間・連続日数・日別のグラフなどで、積み上げをひと目で確認。期間やグラフの種類も切り替えられます。',
+                        aboutPgCustomTitle: '自分好みにカスタマイズ',
+                        aboutPgCustomDesc: 'テーマ7色 × ライト/ダーク。フォントやメニュー構成、各機能の表示/非表示まで細かく調整できます。',
+                        aboutPgMusicTitle: '音楽で集中',
+                        aboutPgMusicDesc: '手持ちの音楽ファイルを追加して、勉強しながら再生。ミニプレイヤーでどのページからでも操作できます。',
+                        aboutPgTodoTitle: 'ToDoで管理',
+                        aboutPgTodoDesc: 'やることをリスト化して、優先度で色分け。チェックして達成感も積み上げましょう。',
+                        aboutDemoHint: '↓ 実際に動かせます',
+                        aboutDemoRecorded: '記録しました',
+                        aboutDemoDarkToggle: 'ライト / ダーク切替',
+                        aboutCreditHtml: 'このサイトは<a href="https://kokyujene.super-hiko14.com/members/super-hiko14/">Super Hiko14</a>が開発しました。<br>※ 一部 AI が使用されています。',
+                        aboutTodoSample1: '数学の課題を終わらせる',
+                        aboutTodoSample2: '英単語 50個',
+                        aboutTodoSample3: 'ノートの見直し',
                         qaContent: `<div style="text-align: left;">
                             <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. ツミキappの記録等の保存方法は?</h3>
                             <p style="margin-left: 15px;">A. すべてのデータはブラウザのローカルストレージに保存されます。サーバーには一切送信されません。</p>
@@ -7432,8 +8380,8 @@ const translations = {
                             <p style="margin-left: 15px;">A. mp3, wav, flac, m4a, aac, ogg, webm などの一般的な音楽ファイルに対応しています。</p>
                             <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. タイマーを一時停止したままサイトを閉じてしまった場合は?</h3>
                             <p style="margin-left: 15px;">A. 大丈夫です。サイトを閉じてもタイマーは作動し続けます。</p>
-                            <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. 音楽プレイヤーに YouTube 動画などを追加する予定はある?</h3>
-                            <p style="margin-left: 15px;">A. する予定はないです。各サービスの利用規約に違反する可能性があるためです。</p>
+                            <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. プレイヤーにYouTube動画を追加したい</h3>
+                            <p style="margin-left: 15px;">A. デフォルトだと設定でOFFになってるのでONにすると動画/音楽追加のメニューにYoutubeの項目が追加されます。</p>
                             <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. 今後も機能を追加する予定は?</h3>
                             <p style="margin-left: 15px;">A. 決まってはいません。ただし、最低限の機能のみ使いたい方もいると思うので、追加する場合はその機能を設定の ON/OFF などで表示を切り替えられるようにする予定です。</p>
                             <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. 収益化や広告導入のつもりはある?</h3>
@@ -7502,6 +8450,7 @@ const translations = {
                         fcNext: '次へ',
                         fcClose: '閉じる',
                         fcCardCount: '枚',
+                        fcRandomOrderLabel: '飛ばすたびにシャッフル',
 
                         // リストページ - 追加
                         start: '開始',
@@ -7529,6 +8478,12 @@ const translations = {
 
                         // Focus Mode
                         focusMode: 'フォーカスモード',
+                        focusSegmentNormal: '通常',
+                        focusSegmentFocus: 'フォーカス',
+                        sessionInfoEditLabel: 'テキストを編集',
+                        sessionInfoShowSetting: 'セッション情報(前回の学習)を表示',
+                        sessionInfoPlaceholder: '自由なメッセージを入力(空欄で保存するとデフォルト表示に戻ります)',
+                        editorModeContextHint: 'エディターモードを開始しなくても、各要素を右クリックするとクイック設定を開けます。',
                         focusModeSettings: 'フォーカスモード設定',
                         showFocusModeToggle: 'フォーカスモード切替を表示',
                         focusDuration: '集中時間',
@@ -7580,6 +8535,17 @@ const translations = {
                         menuList: 'List',
                         menuMusic: 'Music',
                         menuTodo: 'ToDo',
+
+                        // Menu Customization
+                        menuCustomizeTitle: 'Menu Customization',
+                        menuDisplayStyleLabel: 'Menu Display Style',
+                        menuDisplayText: 'Text',
+                        menuDisplayIcon: 'Icon Only',
+                        menuDisplayIconText: 'Icon + Text',
+                        menuFixedTopLabel: 'Pin Menu to Top',
+                        menuFixedBottomLabel: 'Pin Menu to Bottom',
+                        menuOrderLabel: 'Menu Items & Order',
+                        menuOrderNote: 'Drag to reorder, toggle to show/hide',
 
                         // Timer Page
                         groupPlaceholder: 'Group name (optional)',
@@ -7903,6 +8869,7 @@ const translations = {
                         fcNext: 'Next',
                         fcClose: 'Close',
                         fcCardCount: 'cards',
+                        fcRandomOrderLabel: 'Shuffle each time you advance',
 
                         // List Page - Additional
                         start: 'Start',
@@ -7936,6 +8903,12 @@ const translations = {
 
                         // Focus Mode
                         focusMode: 'Focus Mode',
+                        focusSegmentNormal: 'Normal',
+                        focusSegmentFocus: 'Focus',
+                        sessionInfoEditLabel: 'Edit text',
+                        sessionInfoShowSetting: 'Show session info (previous session)',
+                        sessionInfoPlaceholder: 'Write your own message (save empty to restore the default)',
+                        editorModeContextHint: 'You can also right-click any element to open its quick settings without starting Editor Mode.',
                         focusModeSettings: 'Focus Mode Settings',
                         showFocusModeToggle: 'Show Focus Mode Toggle',
                         focusDuration: 'Focus Duration',
@@ -8008,6 +8981,27 @@ const translations = {
                         <p>Simple and easy-to-use study time management tool.</p>
                         Developed by <a href="https://kokyujene.super-hiko14.com/members/super-hiko14/">Super Hiko14</a>.<div class="tyuui-mini-text">* AI is used in some parts.</div>
                         </div>`,
+
+                        // About pager
+                        aboutPgWhatTitle: 'What is this tool?',
+                        aboutPgWhatDesc: 'A simple, easy-to-use study time tracker. Record with the timer, review with graphs, and combine only the features you need — your way.',
+                        aboutPgHowTitle: 'How do I use it?',
+                        aboutPgHowDesc: 'It\'s simple: press "Start Studying", study, then press "End". Your session is recorded automatically.',
+                        aboutPgStatsTitle: 'Review with statistics',
+                        aboutPgStatsDesc: 'See your total study time, streak, and daily graphs at a glance. Switch periods and graph types freely.',
+                        aboutPgCustomTitle: 'Make it yours',
+                        aboutPgCustomDesc: '7 theme colors × light/dark. Fine-tune fonts, menu layout, and the visibility of every feature.',
+                        aboutPgMusicTitle: 'Focus with music',
+                        aboutPgMusicDesc: 'Add your own music files and play them while studying. Control playback from any page with the mini player.',
+                        aboutPgTodoTitle: 'Manage with ToDo',
+                        aboutPgTodoDesc: 'List your tasks and color-code them by priority. Check them off and stack up that sense of achievement.',
+                        aboutDemoHint: '↓ Try it — it really works',
+                        aboutDemoRecorded: 'Recorded',
+                        aboutDemoDarkToggle: 'Light / Dark',
+                        aboutCreditHtml: 'Developed by <a href="https://kokyujene.super-hiko14.com/members/super-hiko14/">Super Hiko14</a>.<br>* AI is used in some parts.',
+                        aboutTodoSample1: 'Finish the math homework',
+                        aboutTodoSample2: '50 vocabulary words',
+                        aboutTodoSample3: 'Review notes',
                         qaContent: `<div style="text-align: left;">
                             <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. Where is data saved?</h3>
                             <p style="margin-left: 15px;">A. All data is saved in your browser's local storage. Nothing is sent to any server.</p>
@@ -8017,8 +9011,8 @@ const translations = {
                             <p style="margin-left: 15px;">A. Supports mp3, wav, flac, m4a, aac, ogg, webm, and more.</p>
                             <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. What if I close the site while the timer is paused?</h3>
                             <p style="margin-left: 15px;">A. No worries. The timer continues running even if the site is closed.</p>
-                            <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. Any plans to add YouTube videos to the music player?</h3>
-                            <p style="margin-left: 15px;">A. No plans — it may violate each service's terms of use.</p>
+                            <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. I want to add YouTube videos to the player</h3>
+                            <p style="margin-left: 15px;">A. By default, this feature is turned off in the settings, so if you turn it on, a YouTube option will be added to the menu for adding videos and music.</p>
                             <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. Any plans to add more features?</h3>
                             <p style="margin-left: 15px;">A. Undecided. If added, they will be togglable in settings.</p>
                             <h3 style="font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px;">Q. Monetization/Ads?</h3>
@@ -8055,6 +9049,9 @@ const translations = {
                         guideAlt: 'Guide',
                         themeToggleAlt: 'Toggle theme',
                         settingsAlt: 'Settings',
+                        quickNavStartStudy: 'Start studying',
+                        quickNavEndStudy: 'End studying',
+                        quickNavOpen: 'Open',
                         toggleLightMode: 'Switch to light mode',
                         toggleDarkMode: 'Switch to dark mode',
 
@@ -8168,6 +9165,16 @@ const translations = {
                         document.title = getText('title');
                     }
 
+                    // セッション情報とフォーカスセグメントの表示を言語に合わせて再構築
+                    if (typeof renderSessionIdleInfo === 'function') renderSessionIdleInfo();
+                    if (typeof updateFocusSegmentUI === 'function') updateFocusSegmentUI();
+
+                    // About ページャーが表示中なら現在ページを再描画
+                    const aboutOverlayEl = document.getElementById('aboutOverlay');
+                    if (aboutOverlayEl && aboutOverlayEl.classList.contains('show') && typeof renderAboutPage === 'function') {
+                        renderAboutPage(aboutPageIndex);
+                    }
+
                     // HTML lang属性を更新
                     document.documentElement.lang = currentLanguage;
 
@@ -8246,6 +9253,8 @@ const translations = {
                     overlay.classList.add('show');
                     overlay.setAttribute('aria-hidden', 'false');
                     document.body.classList.add('no-scroll');
+                    aboutPageIndex = 0;
+                    renderAboutPage(0);
                     const ok = document.getElementById('aboutOkBtn');
                     try { ok && ok.focus(); } catch (e) { }
                 }
@@ -8256,6 +9265,371 @@ const translations = {
                     overlay.classList.remove('show');
                     overlay.setAttribute('aria-hidden', 'true');
                     document.body.classList.remove('no-scroll');
+                    stopAboutDemos();
+                    // チュートリアル歓迎画面から開いていた場合は再表示する
+                    document.getElementById('tutorialWelcome')?.classList.remove('welcome-hidden-for-about');
+                    document.getElementById('languageSelectorOverlay')?.classList.remove('welcome-hidden-for-about');
+                }
+
+                // チュートリアル歓迎画面(使い方を説明しますか?)から about を開く
+                // 背景の言語選択オーバーレイ(z-index 9999)がaboutより手前にあるためクリックを奪ってしまう。
+                // 両方を一時的に visibility:hidden にして about を最前面で操作可能にする。
+                function showAboutFromWelcome() {
+                    document.getElementById('tutorialWelcome')?.classList.add('welcome-hidden-for-about');
+                    document.getElementById('languageSelectorOverlay')?.classList.add('welcome-hidden-for-about');
+                    showAboutModal();
+                }
+
+                // ── About ページャー(ミニデモ付き) ──
+                let aboutPageIndex = 0;
+                let adTimerInterval = null;
+                let adTimerStart = null;
+                let adTimerPausedAccum = 0;
+                let adTimerIsPaused = false;
+                let adMusicInterval = null;
+                let adMusicPlaying = false;
+                let adMusicPct = 0;
+                let adMusicIdx = 0;
+                let adStatsDays = 7;
+                let adThemeName = 'blue';
+                let adDarkPreview = false;
+
+                const AD_TRACKS = ['lo-fi_study_mix.mp3', 'rain_ambience.wav', 'piano_focus.m4a'];
+                // 統計デモ用のサンプル勉強時間(単位: 時間)
+                const AD_STATS_DATA = {
+                    7:  [1.9, 3.1, 2.3, 4.0, 2.8, 4.8, 3.5],
+                    14: [1.3, 2.0, 1.6, 2.8, 2.4, 3.5, 1.9, 3.1, 2.3, 4.0, 2.8, 4.8, 3.5, 4.4]
+                };
+                let adChart = null;
+                const AD_THEME_COLORS = {
+                    blue: '#9db4c8', green: '#a8c9a8', purple: '#b8a8c9', orange: '#d9b4a0',
+                    pink: '#d9a8b4', teal: '#a0c9c9', white: '#b2b2b2'
+                };
+
+                function stopAboutDemos() {
+                    if (adTimerInterval) { clearInterval(adTimerInterval); adTimerInterval = null; }
+                    if (adMusicInterval) { clearInterval(adMusicInterval); adMusicInterval = null; }
+                    if (adChart) { adChart.destroy(); adChart = null; }
+                    adTimerStart = null;
+                    adTimerPausedAccum = 0;
+                    adTimerIsPaused = false;
+                    adMusicPlaying = false;
+                    adMusicPct = 0;
+                }
+
+                const ABOUT_PAGE_BUILDERS = [
+                    // 1. どんなツール?
+                    function() {
+                        return '<div class="about-page">' +
+                            '<div><img src="1024,1024_icon.png" style="width: 3rem; height: 3rem; margin-bottom: -20px;" alt=""></div>' +
+                            '<div style="margin-top: 6px;"><img class="tsumiki-logo tsumiki-logo-about" src="' + (document.body.classList.contains('dark') ? 'tsumiki_logo_akarui.svg' : 'tsumiki_logo.svg') + '" alt="Tsumiki app"></div>' +
+                            '<h3>' + getText('aboutPgWhatTitle') + '</h3>' +
+                            '<div class="about-page-desc">' + getText('aboutPgWhatDesc') + '</div>' +
+                            '<div style="font-size: 0.78rem; opacity: 0.65;">' + getText('aboutCreditHtml') + '</div>' +
+                            '</div>';
+                    },
+                    // 2. どう使う?(タイマーデモ)
+                    function() {
+                        return '<div class="about-page">' +
+                            '<h3>' + getText('aboutPgHowTitle') + '</h3>' +
+                            '<div class="about-page-desc">' + getText('aboutPgHowDesc') + '</div>' +
+                            '<div class="about-demo">' +
+                                '<div class="ad-hint">' + getText('aboutDemoHint') + '</div>' +
+                                '<div class="ad-timer" id="adTimer">00:00:00</div>' +
+                                '<div class="ad-controls">' +
+                                    '<button class="primary" id="adStartBtn" onclick="aboutDemoStart()">' + getText('startButton') + '</button>' +
+                                    '<button class="secondary" id="adPauseBtn" onclick="aboutDemoPause()" style="display:none;">' + getText('pauseButton') + '</button>' +
+                                    '<button class="secondary" id="adEndBtn" onclick="aboutDemoEnd()" style="display:none;">' + getText('endButton') + '</button>' +
+                                '</div>' +
+                                '<div class="ad-result" id="adResult"></div>' +
+                            '</div>' +
+                            '</div>';
+                    },
+                    // 3. 統計
+                    function() {
+                        return '<div class="about-page">' +
+                            '<h3>' + getText('aboutPgStatsTitle') + '</h3>' +
+                            '<div class="about-page-desc">' + getText('aboutPgStatsDesc') + '</div>' +
+                            '<div class="about-demo">' +
+                                '<div class="ad-hint">' + getText('aboutDemoHint') + '</div>' +
+                                '<div class="ad-tiles">' +
+                                    '<div class="ad-tile"><div class="ad-tile-value">123:45:06</div><div class="ad-tile-label">' + getText('totalStudyTime') + '</div></div>' +
+                                    '<div class="ad-tile"><div class="ad-tile-value">14' + getText('days') + '</div><div class="ad-tile-label">' + getText('consecutiveDays') + '</div></div>' +
+                                '</div>' +
+                                '<canvas id="adChartCanvas" class="ad-chart-canvas"></canvas>' +
+                                '<div class="ad-pills">' +
+                                    '<button class="ad-pill" id="adPill7" onclick="aboutDemoStats(7)">' + getText('period7days') + '</button>' +
+                                    '<button class="ad-pill" id="adPill14" onclick="aboutDemoStats(14)">' + getText('period14days') + '</button>' +
+                                '</div>' +
+                            '</div>' +
+                            '</div>';
+                    },
+                    // 4. カスタマイズ
+                    function() {
+                        return '<div class="about-page">' +
+                            '<h3>' + getText('aboutPgCustomTitle') + '</h3>' +
+                            '<div class="about-page-desc">' + getText('aboutPgCustomDesc') + '</div>' +
+                            '<div class="about-demo ad-custom" id="adCustom">' +
+                                '<div class="ad-hint">' + getText('aboutDemoHint') + '</div>' +
+                                '<div class="ad-preview" id="adPreview">' +
+                                    '<div class="adp-menu"><span class="adp-pill active">' + getText('menuTimer') + '</span><span class="adp-pill">' + getText('menuStats') + '</span><span class="adp-pill">' + getText('menuList') + '</span></div>' +
+                                    '<div class="adp-timer">01:23:45</div>' +
+                                    '<span class="adp-btn">' + getText('startButton') + '</span>' +
+                                '</div>' +
+                                '<div class="ad-dots" id="adThemeDots">' +
+                                    Object.keys(AD_THEME_COLORS).map(function(name) {
+                                        return '<button class="ad-dot" data-ad-theme="' + name + '" style="background:' + AD_THEME_COLORS[name] + ';" onclick="aboutDemoTheme(\'' + name + '\')" aria-label="' + name + '"></button>';
+                                    }).join('') +
+                                '</div>' +
+                                '<button class="ad-pill" id="adDarkToggle" onclick="aboutDemoToggleDark()">' + getText('aboutDemoDarkToggle') + '</button>' +
+                            '</div>' +
+                            '</div>';
+                    },
+                    // 5. 音楽
+                    function() {
+                        return '<div class="about-page">' +
+                            '<h3>' + getText('aboutPgMusicTitle') + '</h3>' +
+                            '<div class="about-page-desc">' + getText('aboutPgMusicDesc') + '</div>' +
+                            '<div class="about-demo">' +
+                                '<div class="ad-hint">' + getText('aboutDemoHint') + '</div>' +
+                                '<div class="ad-music-title" id="adMusicTitle">' + AD_TRACKS[0] + '</div>' +
+                                '<div class="ad-progress"><div class="ad-progress-fill" id="adMusicFill"></div></div>' +
+                                '<div class="ad-music-controls">' +
+                                    '<button class="ad-mbtn" onclick="aboutDemoMusicSkip(-1)" aria-label="prev"><img src="prev.webp" alt=""></button>' +
+                                    '<button class="ad-mbtn" onclick="aboutDemoMusicToggle()" aria-label="play"><img id="adPlayIcon" src="play.webp" alt=""></button>' +
+                                    '<button class="ad-mbtn" onclick="aboutDemoMusicSkip(1)" aria-label="next"><img src="next.webp" alt=""></button>' +
+                                '</div>' +
+                            '</div>' +
+                            '</div>';
+                    },
+                    // 6. ToDo
+                    function() {
+                        const items = [
+                            { text: getText('aboutTodoSample1'), color: '#d9a8b4' },
+                            { text: getText('aboutTodoSample2'), color: '#9db4c8' },
+                            { text: getText('aboutTodoSample3'), color: '#a8c9a8' }
+                        ];
+                        return '<div class="about-page">' +
+                            '<h3>' + getText('aboutPgTodoTitle') + '</h3>' +
+                            '<div class="about-page-desc">' + getText('aboutPgTodoDesc') + '</div>' +
+                            '<div class="about-demo">' +
+                                '<div class="ad-hint">' + getText('aboutDemoHint') + '</div>' +
+                                '<div class="ad-todo-list" id="adTodoList">' +
+                                    items.map(function(it) {
+                                        return '<div class="ad-todo-item" onclick="this.classList.toggle(\'done\')"><span class="ad-check">✓</span><span class="ad-todo-text">' + it.text + '</span><span class="ad-priority" style="background:' + it.color + ';"></span></div>';
+                                    }).join('') +
+                                '</div>' +
+                                '<div class="ad-todo-add">' +
+                                    '<input type="text" id="adTodoInput" placeholder="' + getText('calendarAddTodoPlaceholder') + '" onkeydown="if(event.key===\'Enter\')aboutDemoAddTodo()">' +
+                                    '<button class="primary" onclick="aboutDemoAddTodo()">' + getText('addButton') + '</button>' +
+                                '</div>' +
+                            '</div>' +
+                            '</div>';
+                    }
+                ];
+
+                function renderAboutPage(index) {
+                    const content = document.getElementById('aboutContent');
+                    if (!content) return;
+                    stopAboutDemos();
+                    aboutPageIndex = Math.max(0, Math.min(index, ABOUT_PAGE_BUILDERS.length - 1));
+                    content.innerHTML = ABOUT_PAGE_BUILDERS[aboutPageIndex]();
+                    content.scrollTop = 0;
+
+                    // 統計ページは初期グラフを描画
+                    if (document.getElementById('adChartCanvas')) aboutDemoStats(adStatsDays);
+                    // カスタマイズページは選択状態を復元
+                    if (document.getElementById('adCustom')) {
+                        aboutDemoTheme(adThemeName);
+                        if (adDarkPreview) document.getElementById('adCustom').classList.add('ad-dark');
+                    }
+
+                    // ドット更新
+                    const dots = document.getElementById('aboutPagerDots');
+                    if (dots) {
+                        let html = '';
+                        for (let i = 0; i < ABOUT_PAGE_BUILDERS.length; i++) {
+                            html += '<button class="apd-dot' + (i === aboutPageIndex ? ' active' : '') + '" onclick="renderAboutPage(' + i + ')" aria-label="' + (i + 1) + '"></button>';
+                        }
+                        dots.innerHTML = html;
+                    }
+
+                    // ナビボタン状態
+                    const prev = document.getElementById('aboutPrevBtn');
+                    const next = document.getElementById('aboutNextBtn');
+                    if (prev) prev.disabled = aboutPageIndex === 0;
+                    if (next) next.disabled = aboutPageIndex === ABOUT_PAGE_BUILDERS.length - 1;
+                }
+
+                function aboutPagerNav(delta) {
+                    renderAboutPage(aboutPageIndex + delta);
+                }
+
+                // --- タイマーデモ ---
+                function aboutDemoStart() {
+                    adTimerStart = Date.now();
+                    adTimerPausedAccum = 0;
+                    adTimerIsPaused = false;
+                    document.getElementById('adStartBtn').style.display = 'none';
+                    document.getElementById('adPauseBtn').style.display = '';
+                    document.getElementById('adEndBtn').style.display = '';
+                    document.getElementById('adPauseBtn').textContent = getText('pauseButton');
+                    document.getElementById('adResult').textContent = '';
+                    if (adTimerInterval) clearInterval(adTimerInterval);
+                    adTimerInterval = setInterval(aboutDemoTick, 200);
+                }
+
+                function aboutDemoTick() {
+                    const el = document.getElementById('adTimer');
+                    if (!el || adTimerStart === null) {
+                        if (adTimerInterval) { clearInterval(adTimerInterval); adTimerInterval = null; }
+                        return;
+                    }
+                    if (!adTimerIsPaused) {
+                        el.textContent = formatTime(Date.now() - adTimerStart + adTimerPausedAccum);
+                    }
+                }
+
+                function aboutDemoPause() {
+                    if (adTimerStart === null) return;
+                    const btn = document.getElementById('adPauseBtn');
+                    if (!adTimerIsPaused) {
+                        adTimerPausedAccum += Date.now() - adTimerStart;
+                        adTimerIsPaused = true;
+                        if (btn) btn.textContent = getText('resumeButton');
+                    } else {
+                        adTimerStart = Date.now();
+                        adTimerIsPaused = false;
+                        if (btn) btn.textContent = getText('pauseButton');
+                    }
+                }
+
+                function aboutDemoEnd() {
+                    if (adTimerInterval) { clearInterval(adTimerInterval); adTimerInterval = null; }
+                    const elapsed = adTimerStart === null ? 0 : (adTimerIsPaused ? adTimerPausedAccum : Date.now() - adTimerStart + adTimerPausedAccum);
+                    adTimerStart = null;
+                    adTimerPausedAccum = 0;
+                    adTimerIsPaused = false;
+                    const result = document.getElementById('adResult');
+                    if (result) result.textContent = getText('aboutDemoRecorded') + ': ' + formatTime(elapsed);
+                    const timerEl = document.getElementById('adTimer');
+                    if (timerEl) timerEl.textContent = '00:00:00';
+                    document.getElementById('adStartBtn').style.display = '';
+                    document.getElementById('adPauseBtn').style.display = 'none';
+                    document.getElementById('adEndBtn').style.display = 'none';
+                }
+
+                // --- 統計デモ(実際に使用しているChart.jsグラフをそのまま利用) ---
+                function aboutDemoStats(days) {
+                    adStatsDays = days;
+                    const canvas = document.getElementById('adChartCanvas');
+                    if (!canvas) return;
+
+                    const data = AD_STATS_DATA[days];
+                    const now = new Date();
+                    const labels = data.map(function(_, i) {
+                        const d = new Date(now);
+                        d.setDate(now.getDate() - (data.length - 1 - i));
+                        return `${d.getMonth() + 1}/${d.getDate()}`;
+                    });
+
+                    const isDark = document.body.classList.contains('dark');
+                    const textColor = isDark ? '#e8e8e8' : '#323232';
+                    const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+                    const primaryColor = getPrimaryColor();
+
+                    if (adChart) { adChart.destroy(); adChart = null; }
+                    adChart = new Chart(canvas.getContext('2d'), {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: getText('totalStudyTime'),
+                                data: data,
+                                backgroundColor: primaryColor,
+                                borderColor: primaryColor,
+                                borderWidth: 2
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: true,
+                            animation: { duration: 400 },
+                            plugins: { legend: { labels: { color: textColor } } },
+                            scales: {
+                                y: { beginAtZero: true, ticks: { color: textColor }, grid: { color: gridColor } },
+                                x: { ticks: { color: textColor }, grid: { color: gridColor } }
+                            }
+                        }
+                    });
+
+                    const p7 = document.getElementById('adPill7');
+                    const p14 = document.getElementById('adPill14');
+                    if (p7) p7.classList.toggle('active', days === 7);
+                    if (p14) p14.classList.toggle('active', days === 14);
+                }
+
+                // --- カスタマイズデモ ---
+                function aboutDemoTheme(name) {
+                    adThemeName = name;
+                    const box = document.getElementById('adCustom');
+                    if (!box) return;
+                    box.style.setProperty('--ad-accent', AD_THEME_COLORS[name] || AD_THEME_COLORS.blue);
+                    box.querySelectorAll('.ad-dot').forEach(function(dot) {
+                        dot.classList.toggle('active', dot.dataset.adTheme === name);
+                    });
+                }
+
+                function aboutDemoToggleDark() {
+                    adDarkPreview = !adDarkPreview;
+                    const box = document.getElementById('adCustom');
+                    if (box) box.classList.toggle('ad-dark', adDarkPreview);
+                }
+
+                // --- 音楽デモ ---
+                function aboutDemoMusicToggle() {
+                    adMusicPlaying = !adMusicPlaying;
+                    const eq = document.getElementById('adEq');
+                    const icon = document.getElementById('adPlayIcon');
+                    if (eq) eq.classList.toggle('playing', adMusicPlaying);
+                    if (icon) icon.src = adMusicPlaying ? 'pause.webp' : 'play.webp';
+                    if (adMusicPlaying) {
+                        if (adMusicInterval) clearInterval(adMusicInterval);
+                        adMusicInterval = setInterval(function() {
+                            const fill = document.getElementById('adMusicFill');
+                            if (!fill) { clearInterval(adMusicInterval); adMusicInterval = null; return; }
+                            adMusicPct = (adMusicPct + 0.6) % 100;
+                            fill.style.width = adMusicPct + '%';
+                        }, 100);
+                    } else if (adMusicInterval) {
+                        clearInterval(adMusicInterval);
+                        adMusicInterval = null;
+                    }
+                }
+
+                function aboutDemoMusicSkip(dir) {
+                    adMusicIdx = (adMusicIdx + dir + AD_TRACKS.length) % AD_TRACKS.length;
+                    adMusicPct = 0;
+                    const title = document.getElementById('adMusicTitle');
+                    const fill = document.getElementById('adMusicFill');
+                    if (title) title.textContent = AD_TRACKS[adMusicIdx];
+                    if (fill) fill.style.width = '0%';
+                }
+
+                // --- ToDoデモ ---
+                function aboutDemoAddTodo() {
+                    const input = document.getElementById('adTodoInput');
+                    const list = document.getElementById('adTodoList');
+                    if (!input || !list) return;
+                    const text = input.value.trim();
+                    if (!text) return;
+                    const item = document.createElement('div');
+                    item.className = 'ad-todo-item';
+                    item.onclick = function() { this.classList.toggle('done'); };
+                    item.innerHTML = '<span class="ad-check">✓</span><span class="ad-todo-text"></span><span class="ad-priority" style="background:#9db4c8;"></span>';
+                    item.querySelector('.ad-todo-text').textContent = text;
+                    list.appendChild(item);
+                    input.value = '';
                 }
 
                 // Q&A モーダル表示/非表示
@@ -8825,11 +10199,87 @@ const translations = {
                     }
                 }
 
+                // ── セッション情報(前回の学習)のカスタムテキスト・表示設定 ──
+                function isSessionInfoVisible() {
+                    return getData('session_info_visible') !== 'false';
+                }
+
+                function applySessionInfoVisibility() {
+                    const wrap = document.getElementById('sessionInfoWrap');
+                    if (wrap) wrap.style.display = isSessionInfoVisible() ? '' : 'none';
+                }
+
+                function toggleSessionInfoVisible() {
+                    saveData('session_info_visible', isSessionInfoVisible() ? 'false' : 'true');
+                    applySessionInfoVisibility();
+                    syncSessionInfoToggle();
+                }
+
+                function syncSessionInfoToggle() {
+                    const t = document.getElementById('toggleSessionInfo');
+                    if (t) t.classList.toggle('active', isSessionInfoVisible());
+                }
+
+                // タイマー停止中のセッション情報表示(カスタムテキスト > 前回の学習 > デフォルト文言)
+                function renderSessionIdleInfo() {
+                    if (startTime) return; // タイマー動作中は上書きしない
+                    const info = document.getElementById('sessionInfo');
+                    if (!info) return;
+                    const custom = getData('session_info_custom_text');
+                    if (custom) {
+                        info.classList.add('custom-text');
+                        info.textContent = custom;
+                        return;
+                    }
+                    info.classList.remove('custom-text');
+                    let history = getData('studyHistory');
+                    history = history ? JSON.parse(history) : [];
+                    if (history.length > 0) {
+                        const last = history[0];
+                        const start = new Date(last.start);
+                        const end = new Date(last.end);
+                        info.innerHTML =
+                            `${getText('previousSession')}<br>${getText('startTime')}: ${formatDateTime(start)}<br>${getText('endTime')}: ${formatDateTime(end)}<br>${getText('studyTime')}: ${formatTime(last.duration)}`;
+                    } else {
+                        info.textContent = getText('sessionStart');
+                    }
+                }
+
+                function openSessionInfoEditor() {
+                    if (startTime) return; // タイマー動作中は編集不可
+                    const wrap = document.getElementById('sessionInfoWrap');
+                    const input = document.getElementById('sessionInfoEditorInput');
+                    if (!wrap || !input) return;
+                    input.value = getData('session_info_custom_text') || '';
+                    wrap.classList.add('editing');
+                    input.focus();
+                }
+
+                function closeSessionInfoEditor() {
+                    const wrap = document.getElementById('sessionInfoWrap');
+                    if (wrap) wrap.classList.remove('editing');
+                }
+
+                function saveSessionInfoText() {
+                    const input = document.getElementById('sessionInfoEditorInput');
+                    if (!input) return;
+                    const text = input.value.trim();
+                    if (text) {
+                        saveData('session_info_custom_text', text);
+                    } else {
+                        localStorage.removeItem('session_info_custom_text');
+                        setCookie('session_info_custom_text', '', -1);
+                    }
+                    closeSessionInfoEditor();
+                    renderSessionIdleInfo();
+                }
+
                 function saveFocusSettings() {
                     const focusDuration = document.getElementById('focusDurationSelect').value;
                     const breakDuration = document.getElementById('breakDurationSelect').value;
                     saveData('focus_duration', focusDuration);
                     saveData('break_duration', breakDuration);
+                    updateFocusSegmentUI();
                 }
 
                 function toggleFocusModeMain(isPageLoad = false) {
@@ -8872,6 +10322,32 @@ const translations = {
                         } else {
                             updateTimer();
                         }
+                    }
+
+                    updateFocusSegmentUI();
+                }
+
+                // セグメント切替から明示的にON/OFFを指定(すでに同じ状態なら何もしない)
+                function setFocusModeMain(enable) {
+                    const toggle = document.getElementById('toggleFocusModeMain');
+                    if (!toggle) return;
+                    if (toggle.classList.contains('active') === enable) return;
+                    toggleFocusModeMain();
+                }
+
+                // セグメントの選択状態と「25/5分」表示を現在の設定に同期
+                function updateFocusSegmentUI() {
+                    const toggle = document.getElementById('toggleFocusModeMain');
+                    if (!toggle) return;
+                    const isActive = toggle.classList.contains('active');
+                    toggle.querySelectorAll('.focus-segment-btn').forEach(btn => {
+                        btn.setAttribute('aria-pressed', String((btn.dataset.mode === 'focus') === isActive));
+                    });
+                    const sub = document.getElementById('focusSegmentDurations');
+                    if (sub) {
+                        const fd = parseInt(getData('focus_duration') || '25');
+                        const bd = parseInt(getData('break_duration') || '5');
+                        sub.textContent = `${fd}/${bd}${getText('musicResumeWindowMinutes')}`;
                     }
                 }
 
@@ -9017,6 +10493,11 @@ const translations = {
                     return `${formatDateTimeLong(startDate)} - ${formatDateTimeLong(endDate)}`;
                 }
 
+                // 同じ日なら時刻だけ、日をまたいでいる場合だけ日付も表示する
+                function formatSessionEdgeTime(date, otherDate) {
+                    return formatDate(date) === formatDate(otherDate) ? formatDateTime(date) : formatDateTimeLong(date);
+                }
+
                 // 経過時間からフォーカスモードの状態を計算(ステートレスで循環依存なし)
                 function computeFocusCycle(wallElapsed) {
                     wallElapsed = Math.max(0, wallElapsed);
@@ -9128,6 +10609,9 @@ const translations = {
                     document.getElementById('startBtn').classList.add('hidden');
                     document.getElementById('pauseBtn').classList.remove('hidden');
                     document.getElementById('endBtn').classList.remove('hidden');
+                    document.body.classList.add('session-running');
+                    closeSessionInfoEditor();
+                    document.getElementById('sessionInfo').classList.remove('custom-text');
                     document.getElementById('sessionInfo').textContent = `${getText('startTime')}: ${formatDateTime(new Date())}`;
                     timerInterval = setInterval(updateTimer, 100);
                     updateSettingsButtonState();
@@ -9214,8 +10698,8 @@ const translations = {
                             updateGroupFilter();
                             loadHistory();
                             loadStats();
-                            const startDisplay = formatDateTimeLong(start);
-                            const endDisplay = formatDateTimeLong(endTime);
+                            const startDisplay = formatSessionEdgeTime(start, endTime);
+                            const endDisplay = formatSessionEdgeTime(endTime, start);
                             document.getElementById('sessionInfo').innerHTML = `${getText('startTime')}: ${startDisplay}<br>${getText('endTime')}: ${endDisplay}<br>${getText('studyTime')}: ${formatTime(actualStudyTime)}${groupName ? '<br>' + getText('group') + ': ' + groupName : ''}`;
                         }
                     }
@@ -9234,6 +10718,7 @@ const translations = {
                     document.getElementById('pauseBtn').classList.add('hidden');
                     document.getElementById('endBtn').classList.add('hidden');
                     document.getElementById('pauseBtn').textContent = getText('pauseButton');
+                    document.body.classList.remove('session-running');
                     groupInput.value = '';
                     startTime = null;
                     pausedTime = 0;
@@ -10235,11 +11720,12 @@ const translations = {
                     }
 
                     // iOS の場合、バックグラウンド復帰後などで play() が拒否されることがあるため、リトライを行う
+                    // リトライ中にユーザーが一時停止するとUIが古い結果で上書きされるため、常に audio.paused の実値を反映する
                     attemptPlay(audio).then(() => {
-                        updatePlayPauseUI(true);
+                        updatePlayPauseUI(!audio.paused);
                     }).catch((err) => {
                         console.warn('Playback failed after retries:', err);
-                        updatePlayPauseUI(false);
+                        updatePlayPauseUI(!audio.paused);
                     });
 
                     saveData('music_current_playlist_id', currentPlaylistId);
@@ -10366,7 +11852,8 @@ const translations = {
                             playMusic(currentMusicIndex);
                         } else {
                             attemptPlay(audio).then(() => {
-                                updatePlayPauseUI(true);
+                                // リトライ中にユーザーが一時停止した可能性があるため、実際の paused 状態を反映する
+                                updatePlayPauseUI(!audio.paused);
                             }).catch(() => {
                                 console.warn('Playback blocked on togglePlay');
                                 // UIは再生できなかった場合はそのままにしておく
@@ -10768,11 +12255,11 @@ const translations = {
                         const v2Details = '';
 
                         return `
-            <div class="todo-item todo-priority-${todo.priority} ${todo.completed ? 'completed' : ''}" data-id="${todo.id}">
+            <div class="todo-item todo-priority-${todo.priority} ${todo.completed ? 'completed' : ''}" data-id="${todo.id}" onclick="handleTodoItemClick(event, ${index})">
                 <img src="${getDragHandleSrc(false)}" class="todo-drag-handle" alt="${getText('dragHandle')}">
                 <input type="checkbox" class="todo-checkbox" ${todo.completed ? 'checked' : ''} onchange="toggleTodo(${index})">
                 <div style="flex: 1; min-width: 0;">
-                    <span class="todo-text">${todo.text}</span>
+                    <span class="todo-text">${todo.text}<span class="todo-priority-dot"></span></span>
                     ${periodDisplay}
                 </div>
                 ${repeatBadge}
@@ -10971,12 +12458,18 @@ const translations = {
                     loadTodos();
                 }
 
+                function handleTodoItemClick(e, index) {
+                    if (e.target.closest('.todo-drag-handle, .todo-checkbox, .delete-btn')) return;
+                    toggleTodo(index);
+                }
+
                 function toggleTodo(index) {
                     let todos = getData('todos');
                     todos = todos ? JSON.parse(todos) : [];
                     if (!todos[index]) return;
                     const newState = !todos[index].completed;
                     todos[index].completed = newState;
+                    const todoId = todos[index].id;
 
                     // 繰り返しタスクの場合、完了日を記録
                     if (todos[index].repeat !== 'none' && newState) {
@@ -10985,6 +12478,14 @@ const translations = {
 
                     saveData('todos', JSON.stringify(todos));
                     loadTodos();
+
+                    // チェック操作をした瞬間だけチェックマークをフェードさせる(再描画のたびに他の項目まで再生されないようにする)
+                    const item = document.querySelector(`.todo-item[data-id="${todoId}"]`);
+                    if (item) {
+                        const animClass = newState ? 'todo-just-toggled-on' : 'todo-just-toggled-off';
+                        item.classList.add(animClass);
+                        item.addEventListener('animationend', () => item.classList.remove(animClass), { once: true });
+                    }
                 }
 
                 async function deleteTodo(index) {
@@ -11040,6 +12541,20 @@ const translations = {
                     renderCalendar(calendarYear, calendarMonth);
                 }
 
+                // 日付(YYYY-MM-DD、ローカル)ごとの勉強時間合計(ms)を集計
+                function getStudyMsByDate() {
+                    let history = getData('studyHistory');
+                    history = history ? JSON.parse(history) : [];
+                    const result = {};
+                    history.forEach(item => {
+                        const date = new Date(item.start);
+                        if (isNaN(date.getTime())) return;
+                        const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+                        result[dateKey] = (result[dateKey] || 0) + (item.duration || 0);
+                    });
+                    return result;
+                }
+
                 function renderCalendar(year, month) {
                     const monthYearDiv = document.getElementById('calendarMonthYear');
                     const gridDiv = document.getElementById('calendarGrid');
@@ -11056,6 +12571,9 @@ const translations = {
                     // ToDoデータ取得
                     let todos = getData('todos');
                     todos = todos ? JSON.parse(todos) : [];
+
+                    // 日別の勉強時間合計を取得(セルの濃淡表示に使用)
+                    const studyMsByDate = getStudyMsByDate();
 
                     let html = '';
 
@@ -11099,14 +12617,20 @@ const translations = {
                         });
 
                         const hasTodos = dayTodos.length > 0;
-                        const indicators = hasTodos ? `<div class="calendar-todo-badge">${dayTodos.length}</div>` : '';
+                        const indicators = hasTodos ? `<span class="calendar-todo-indicator"></span>` : '';
 
                         const dayClasses = ['calendar-day'];
                         if (isToday) dayClasses.push('today');
-                        if (hasTodos) dayClasses.push('has-todos');
+
+                        // 勉強時間が長いほどセルの色を濃くする(0〜85%)
+                        const studyMs = studyMsByDate[dateStr] || 0;
+                        const studyHours = studyMs / (1000 * 60 * 60);
+                        const intensity = studyMs > 0 ? Math.min(20 + studyHours * 15, 85) : 0;
+                        const intensityStyle = intensity > 0 ? ` style="--cal-intensity: ${intensity}%;"` : '';
+                        const titleAttr = studyMs > 0 ? ` title="${getText('studyTime')}: ${formatTime(studyMs)}"` : '';
 
                         html += `
-                            <div class="${dayClasses.join(' ')}" onclick="openCalendarDayDialog(new Date(${year}, ${month}, ${day}))">
+                            <div class="${dayClasses.join(' ')}"${intensityStyle}${titleAttr} onclick="openCalendarDayDialog(new Date(${year}, ${month}, ${day}))">
                                 <div class="calendar-day-number">${day}</div>
                                 <div class="calendar-todo-indicators">${indicators}</div>
                             </div>
@@ -11328,6 +12852,20 @@ const translations = {
 
                     // 日付フォーマット(言語対応)
                     titleDiv.textContent = `${date.getFullYear()}${getText('year')}${date.getMonth() + 1}${getText('month')}${date.getDate()}${getText('day')}`;
+
+                    // その日の勉強時間を表示
+                    const studyTimeDiv = document.getElementById('calendarDayStudyTime');
+                    if (studyTimeDiv) {
+                        const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+                        const studyMs = getStudyMsByDate()[dateStr] || 0;
+                        if (studyMs > 0) {
+                            studyTimeDiv.innerHTML = `<span class="calendar-day-study-time-icon">${MENU_ICONS.timer}</span>${getText('studyTime')}: ${formatTime(studyMs)}`;
+                            studyTimeDiv.classList.add('show');
+                        } else {
+                            studyTimeDiv.textContent = '';
+                            studyTimeDiv.classList.remove('show');
+                        }
+                    }
 
                     // その日のToDoを表示
                     renderCalendarDayTodos(date);
@@ -11870,7 +13408,9 @@ const translations = {
                     const moveRow = document.getElementById('moveGroupRow');
                     const deleteBtn = document.getElementById('deleteBtn');
                     const cancelBtn = document.getElementById('cancelSelectionBtn');
-                    const hasSelection = selectedItems.size > 0;
+                    // selectedItems は検索/絞り込みを変えてもクリアされないため、
+                    // 現在表示中の項目に実際にチェックが付いているかどうかで判定する
+                    const hasSelection = document.querySelectorAll('#historyList .history-item.selected').length > 0;
                     if (moveRow) {
                         if (hasSelection) moveRow.classList.add('active');
                         else moveRow.classList.remove('active');
@@ -12385,6 +13925,8 @@ const translations = {
                     'focus_mode_enabled',
                     'focus_duration',
                     'break_duration',
+                    'session_info_visible',
+                    'session_info_custom_text',
                     'graph_enabled',
                     'graph_type',
                     'graph_period',
@@ -12416,6 +13958,7 @@ const translations = {
                     'lock_settings_during_timer',
                     'feature_focus_mode_display',
                     'focus_mode_enabled',
+                    'session_info_visible',
                     'graph_enabled',
                     'todo_v2_enabled',
                     'todo_v2_prompt_shown',
@@ -12737,6 +14280,9 @@ const translations = {
                                     hideGraphs();
                                 }
                                 toggleFocusModeMain(true);
+                                applySessionInfoVisibility();
+                                renderSessionIdleInfo();
+                                syncSessionInfoToggle();
                                 updateSettingsButtonState();
                             }
                         } catch (error) {
@@ -13470,9 +15016,8 @@ const translations = {
                     else if (displayMode === 'icon_text') document.body.classList.add('menu-display-icon_text');
                     else                             document.body.classList.add('menu-display-text');
 
-                    if (typeof editorModeActive !== 'undefined' && editorModeActive) {
-                        setTimeout(attachEditorTargets, 50);
-                    }
+                    // クリック/右クリックのクイック設定バインドを再適用(ボタンは作り直されるため)
+                    setTimeout(attachEditorTargets, 50);
 
                     requestAnimationFrame(syncBottomMenuPadding);
                 }
@@ -13906,15 +15451,13 @@ const translations = {
                     updateMusicRelatedSettingsVisibility();
                     initMenuCustomization();
 
-                    let history = getData('studyHistory');
-                    history = history ? JSON.parse(history) : [];
-                    if (history.length > 0) {
-                        const last = history[0];
-                        const start = new Date(last.start);
-                        const end = new Date(last.end);
-                        document.getElementById('sessionInfo').innerHTML =
-                            `${getText('previousSession')}<br>${getText('startTime')}: ${formatDateTime(start)}<br>${getText('endTime')}: ${formatDateTime(end)}<br>${getText('studyTime')}: ${formatTime(last.duration)}`;
-                    }
+                    // セッション情報(カスタムテキスト・表示設定を反映)
+                    renderSessionIdleInfo();
+                    applySessionInfoVisibility();
+                    syncSessionInfoToggle();
+
+                    // 右クリック(エディターモード外でも)クイック設定を有効化
+                    attachEditorTargets();
 
                     // 以前のセッションがあれば復元(リロードやタブ閉じ後も継続)
                     (function restoreOngoingSession() {
@@ -13962,6 +15505,9 @@ const translations = {
                         document.getElementById('startBtn').classList.add('hidden');
                         document.getElementById('pauseBtn').classList.remove('hidden');
                         document.getElementById('endBtn').classList.remove('hidden');
+                        document.body.classList.add('session-running');
+                        closeSessionInfoEditor();
+                        document.getElementById('sessionInfo').classList.remove('custom-text');
                         document.getElementById('sessionInfo').textContent = `${getText('startTime')}: ${formatDateTime(startDate)}`;
                         // 変数復元
                         startTime = startTime_ms;
@@ -14302,6 +15848,9 @@ const translations = {
                 document.getElementById('priorityColorOverlay')?.addEventListener('click', (e) => {
                     if (e.target === e.currentTarget) closeTodoPriorityColorModal();
                 });
+                document.getElementById('calendarDayDialog')?.addEventListener('click', (e) => {
+                    if (e.target === e.currentTarget) closeCalendarDayDialog();
+                });
                 let studyChart = null;
                 let statsChart = null;
 
@@ -14482,6 +16031,16 @@ const translations = {
                     document.querySelectorAll('[data-editor-target]').forEach(el => {
                         if (el._editorBound) return;
                         el._editorBound = true;
+                        // 右クリック(タッチでは長押し)でエディターモード外でもクイック設定を開く
+                        el.addEventListener('contextmenu', function(e) {
+                            if (e.target.closest('input, textarea, select')) return;
+                            var closestTarget = e.target.closest('[data-editor-target]');
+                            if (closestTarget && closestTarget !== this) return;
+                            if (!editorMiniMenuDefs[this.dataset.editorTarget]) return;
+                            e.preventDefault();
+                            e.stopPropagation();
+                            openEditorMiniMenu(this, this.dataset.editorTarget, e);
+                        });
                         el.addEventListener('click', function(e) {
                             if (!editorModeActive) return;
                             var t = e.target;
@@ -14505,6 +16064,12 @@ const translations = {
                     document.querySelectorAll('.menu button[data-feature]').forEach(btn => {
                         if (btn._editorBound) return;
                         btn._editorBound = true;
+                        btn.addEventListener('contextmenu', function(e) {
+                            if (!editorMiniMenuDefs[this.dataset.feature]) return;
+                            e.preventDefault();
+                            e.stopPropagation();
+                            openEditorMiniMenu(this, this.dataset.feature, e);
+                        });
                         btn.addEventListener('click', function(e) {
                             if (!editorModeActive) return;
                             var self = this;
@@ -14517,6 +16082,11 @@ const translations = {
                         var page = btn.dataset.page;
                         if (!editorMiniMenuDefs[page]) return;
                         btn._editorBound = true;
+                        btn.addEventListener('contextmenu', function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            openEditorMiniMenu(this, page, e);
+                        });
                         btn.addEventListener('click', function(e) {
                             if (!editorModeActive) return;
                             var self = this;
@@ -14593,10 +16163,19 @@ const translations = {
                                 { type: 'toggle', label: getText('editorModeFocusToggle'), id: 'toggleFocusDisplay', key: 'feature_focus_mode_display', onToggle: function() { toggleFocusDisplaySetting(); } },
                                 { type: 'select', label: getText('editorModeFocusDuration'), options: [
                                     {v:'20',t:'20分'},{v:'25',t:'25分'},{v:'30',t:'30分'}
-                                ], key: 'focus_duration', onChange: function(val) { saveData('focus_duration', val); var el=document.getElementById('focusDurationSelect'); if(el) el.value=val; } },
+                                ], key: 'focus_duration', onChange: function(val) { saveData('focus_duration', val); var el=document.getElementById('focusDurationSelect'); if(el) el.value=val; updateFocusSegmentUI(); } },
                                 { type: 'select', label: getText('editorModeBreakDuration'), options: [
                                     {v:'1',t:'1分'},{v:'5',t:'5分'},{v:'10',t:'10分'}
-                                ], key: 'break_duration', onChange: function(val) { saveData('break_duration', val); var el=document.getElementById('breakDurationSelect'); if(el) el.value=val; } }
+                                ], key: 'break_duration', onChange: function(val) { saveData('break_duration', val); var el=document.getElementById('breakDurationSelect'); if(el) el.value=val; updateFocusSegmentUI(); } }
+                            ]
+                        };
+                    },
+                    sessionInfo: function() {
+                        return {
+                            title: getText('editorModeSessionInfo'),
+                            rows: [
+                                { type: 'toggle', label: getText('editorModeDisplay'), key: 'session_info_visible', onToggle: function() { toggleSessionInfoVisible(); } },
+                                { type: 'button', label: getText('sessionInfoEditLabel'), onClick: function() { closeEditorMiniMenu(); openSessionInfoEditor(); } }
                             ]
                         };
                     },
@@ -14662,7 +16241,7 @@ const translations = {
                     }
                 };
 
-                function openEditorMiniMenu(anchorEl, target) {
+                function openEditorMiniMenu(anchorEl, target, ev) {
                     const def = editorMiniMenuDefs[target];
                     if (!def) return;
                     const config = def();
@@ -14702,7 +16281,13 @@ const translations = {
                     menu.classList.add('visible');
 
                     requestAnimationFrame(function() {
-                        var rect = anchorEl.getBoundingClientRect();
+                        // 右クリック起点ならカーソル位置、それ以外は要素基準で配置
+                        var rect;
+                        if (ev && typeof ev.clientX === 'number' && (ev.clientX || ev.clientY)) {
+                            rect = { top: ev.clientY, bottom: ev.clientY + 4, left: ev.clientX, width: 0 };
+                        } else {
+                            rect = anchorEl.getBoundingClientRect();
+                        }
                         var mw = menu.offsetWidth || 240;
                         var mh = menu.offsetHeight || 200;
                         var vw = window.innerWidth;
@@ -14770,9 +16355,112 @@ const translations = {
                     if (backdrop) backdrop.classList.remove('visible');
                 }
 
+                // バックドロップ上の右クリックでもメニューを閉じる
+                (function() {
+                    const backdrop = document.getElementById('editorMiniMenuBackdrop');
+                    if (backdrop) {
+                        backdrop.addEventListener('contextmenu', function(e) {
+                            e.preventDefault();
+                            closeEditorMiniMenu();
+                        });
+                    }
+                })();
+
+                // ── 何もない場所を右クリックすると出るクイックナビメニュー ──
+                function quickNavStartOrEndStudy() {
+                    showPage('timer');
+                    const startBtn = document.getElementById('startBtn');
+                    const endBtn = document.getElementById('endBtn');
+                    if (startBtn && !startBtn.classList.contains('hidden')) {
+                        startStudy();
+                    } else if (endBtn && !endBtn.classList.contains('hidden')) {
+                        endStudy();
+                    }
+                }
+
+                function isStudySessionRunning() {
+                    const endBtn = document.getElementById('endBtn');
+                    return !!(endBtn && !endBtn.classList.contains('hidden'));
+                }
+
+                function buildQuickNavMenuItems() {
+                    return [
+                        { type: 'action', label: isStudySessionRunning() ? getText('quickNavEndStudy') : getText('quickNavStartStudy'), onClick: quickNavStartOrEndStudy },
+                        { type: 'divider', label: getText('quickNavOpen') },
+                        { type: 'action', label: getText('menuStats'), onClick: function() { showPage('stats'); } },
+                        { type: 'action', label: getText('menuList'), onClick: function() { showPage('list'); } },
+                        { type: 'action', label: getText('menuMusic'), onClick: function() { showPage('music'); } },
+                        { type: 'action', label: getText('menuTodo'), onClick: function() { showPage('todo'); } },
+                        { type: 'action', label: getText('settingsAlt'), onClick: function() { showPage('settings'); } }
+                    ];
+                }
+
+                const QNM_CHEVRON_SVG = '<span class="qnm-chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>';
+
+                let quickNavMenuItems = [];
+
+                function openQuickNavMenu(x, y) {
+                    const menu = document.getElementById('quickNavMenu');
+                    const backdrop = document.getElementById('quickNavMenuBackdrop');
+                    if (!menu || !backdrop) return;
+
+                    closeEditorMiniMenu();
+                    closeEditorAddDropdown();
+
+                    quickNavMenuItems = buildQuickNavMenuItems();
+                    let html = '';
+                    quickNavMenuItems.forEach(function(item, i) {
+                        if (item.type === 'divider') {
+                            html += '<div class="qnm-divider">' + escapeHtml(item.label) + '</div>';
+                        } else {
+                            html += '<div class="qnm-item" data-qnm-index="' + i + '">' + escapeHtml(item.label) + QNM_CHEVRON_SVG + '</div>';
+                        }
+                    });
+                    menu.innerHTML = html;
+
+                    menu.querySelectorAll('.qnm-item').forEach(function(el) {
+                        el.addEventListener('click', function() {
+                            const idx = parseInt(el.getAttribute('data-qnm-index'), 10);
+                            const item = quickNavMenuItems[idx];
+                            closeQuickNavMenu();
+                            if (item && item.onClick) item.onClick();
+                        });
+                    });
+
+                    menu.style.left = x + 'px';
+                    menu.style.top = y + 'px';
+                    backdrop.classList.add('visible');
+                    menu.classList.add('visible');
+
+                    // 画面外にはみ出す場合は位置を調整
+                    requestAnimationFrame(function() {
+                        const rect = menu.getBoundingClientRect();
+                        let left = x, top = y;
+                        if (left + rect.width > window.innerWidth - 10) left = window.innerWidth - rect.width - 10;
+                        if (top + rect.height > window.innerHeight - 10) top = window.innerHeight - rect.height - 10;
+                        menu.style.left = Math.max(10, left) + 'px';
+                        menu.style.top = Math.max(10, top) + 'px';
+                    });
+                }
+
+                function closeQuickNavMenu() {
+                    const menu = document.getElementById('quickNavMenu');
+                    const backdrop = document.getElementById('quickNavMenuBackdrop');
+                    if (menu) menu.classList.remove('visible');
+                    if (backdrop) backdrop.classList.remove('visible');
+                }
+
+                document.addEventListener('contextmenu', function(e) {
+                    if (shouldBlockShortcuts()) return;
+                    const blocked = 'button, a, input, textarea, select, .menu, [data-editor-target], .todo-item, .history-item, .playlist-item, .mini-player-popup, .about-overlay, .qa-overlay, .flashcard-overlay, .fc-viewer-overlay, .custom-confirm-overlay, .language-selector-overlay, .calendar-day-dialog-overlay, .priority-color-overlay, .date-picker-overlay, .date-picker-dropdown, .editor-mini-menu, .editor-add-dropdown, .quick-nav-menu';
+                    if (e.target.closest(blocked)) return;
+                    e.preventDefault();
+                    openQuickNavMenu(e.clientX, e.clientY);
+                });
+
                 function isSettingActive(key) {
                     var val = getData(key);
-                    var defaultOnKeys = ['feature_title_time','feature_history_timeline','feature_loading_anim','feature_focus_mode_display','feature_stop_music_on_timer_end','feature_music_resume_on_tap_after_reload','mini_player_enabled'];
+                    var defaultOnKeys = ['feature_title_time','feature_history_timeline','feature_loading_anim','feature_focus_mode_display','feature_stop_music_on_timer_end','feature_music_resume_on_tap_after_reload','mini_player_enabled','session_info_visible'];
                     if (val === null || val === undefined) return defaultOnKeys.indexOf(key) !== -1;
                     return val === 'true';
                 }
@@ -14789,6 +16477,7 @@ const translations = {
                         { label: getText('todoList'), key: 'feature_todo', toggleFn: function() { toggleFeature('todo'); } },
                         { label: getText('studyGraph'), key: 'graph_enabled', toggleFn: function() { toggleGraph(); } },
                         { label: getText('editorModeFocusToggle'), key: 'feature_focus_mode_display', toggleFn: function() { toggleFocusDisplaySetting(); } },
+                        { label: getText('editorModeSessionInfo'), key: 'session_info_visible', toggleFn: function() { toggleSessionInfoVisible(); } },
                         { label: getText('editorModeTitleTime'), key: 'feature_title_time', toggleFn: function() { toggleTitleTime(); } },
                         { label: getText('editorModeTimeline'), key: 'feature_history_timeline', toggleFn: function() { toggleHistoryTimeline(); } },
                         { label: getText('loadingAnimSetting'), key: 'feature_loading_anim', toggleFn: function() { toggleLoadingAnim(); } },
@@ -15068,7 +16757,24 @@ const translations = {
                     if (addBtn) addBtn.textContent = getText('fcAdd');
                     var input = document.getElementById('fcNewGroupInput');
                     if (input) input.placeholder = getText('fcGroupNamePlaceholder');
+
+                    var randomRow = document.getElementById('fcRandomOrderRow');
+                    if (randomRow) {
+                        randomRow.style.display = mode === 'view' ? 'flex' : 'none';
+                        document.getElementById('fcRandomOrderToggle').classList.toggle('active', getFcRandomOrder());
+                    }
+
                     renderFlashcardGroupList();
+                }
+
+                function getFcRandomOrder() {
+                    return getData('flashcard_random_order') === 'true';
+                }
+
+                function toggleFcRandomOrder() {
+                    var newValue = !getFcRandomOrder();
+                    saveData('flashcard_random_order', newValue ? 'true' : 'false');
+                    document.getElementById('fcRandomOrderToggle').classList.toggle('active', newValue);
                 }
 
                 function renderFlashcardGroupList() {
@@ -15625,14 +17331,27 @@ const translations = {
                     }, 200);
                 }
 
+                function fcRegenerateMathCard(index) {
+                    var card = fcViewerCards[index];
+                    if (card && card.type === 'math') {
+                        var p = generateMathProblem(card.originalCard);
+                        card.front = p.expression;
+                        card.back = p.answer;
+                    }
+                }
+
                 function fcAdvanceCard() {
-                    if (fcViewerIndex >= fcViewerCards.length - 1) {
+                    if (getFcRandomOrder() && fcViewerCards.length > 1) {
+                        // 音楽のシャッフルと同じ考え方: 送るたびにその場でランダムな次のカードを選ぶ(順序は保存しない)
+                        var nextIndex = fcViewerIndex;
+                        while (nextIndex === fcViewerIndex) {
+                            nextIndex = Math.floor(Math.random() * fcViewerCards.length);
+                        }
+                        fcViewerIndex = nextIndex;
+                        fcRegenerateMathCard(fcViewerIndex);
+                    } else if (fcViewerIndex >= fcViewerCards.length - 1) {
                         for (var i = 0; i < fcViewerCards.length; i++) {
-                            if (fcViewerCards[i].type === 'math') {
-                                var p = generateMathProblem(fcViewerCards[i].originalCard);
-                                fcViewerCards[i].front = p.expression;
-                                fcViewerCards[i].back = p.answer;
-                            }
+                            fcRegenerateMathCard(i);
                         }
                         fcViewerIndex = 0;
                     } else {

@@ -292,6 +292,39 @@
             z-index: 1000;
         }
 
+        /* 現在時刻の時計(左上のピル) */
+        .current-clock {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            display: flex;
+            align-items: baseline;
+            gap: 3px;
+            padding: 10px 18px;
+            border-radius: 999px;
+            font-variant-numeric: tabular-nums;
+            font-size: 0.95rem;
+            letter-spacing: 0.06em;
+            user-select: none;
+            pointer-events: none;
+        }
+
+        .light .current-clock {
+            background-color: var(--panel-light);
+            color: var(--primary-color);
+        }
+
+        .dark .current-clock {
+            background-color: var(--panel-dark);
+            color: var(--primary-color-dark);
+        }
+
+        .current-clock .clock-sec {
+            font-size: 0.72em;
+            opacity: 0.55;
+        }
+
         .theme-toggle,
         .settings-btn {
             width: 50px;
@@ -2228,6 +2261,13 @@
             .top-buttons {
                 top: 15px;
                 right: 15px;
+            }
+
+            .current-clock {
+                top: 15px;
+                left: 15px;
+                padding: 8px 14px;
+                font-size: 0.85rem;
             }
 
             .theme-toggle,
@@ -5262,6 +5302,169 @@ body.editor-mode .editor-exit-bar { display: flex; }
     opacity: 1; pointer-events: auto;
 }
 
+/* ── フォーカスモード時間ステッパー ── */
+.focus-stepper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    padding: 5px 6px;
+    border-radius: 999px;
+    box-sizing: border-box;
+}
+.light .focus-stepper {
+    background-color: var(--panel-light);
+}
+.dark .focus-stepper {
+    background-color: var(--panel-dark);
+}
+.focus-stepper .stepper-btn {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    border-radius: 999px;
+    border: 2px solid transparent;
+    padding: 0;
+    font-size: 1.15rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: inherit;
+    background: transparent;
+    box-shadow: none;
+    transition: border-color 0.2s ease, opacity 0.2s ease;
+    user-select: none;
+    touch-action: manipulation;
+}
+.light .focus-stepper .stepper-btn:hover {
+    border-color: var(--primary-color);
+}
+.dark .focus-stepper .stepper-btn:hover {
+    border-color: var(--primary-color-dark);
+}
+.focus-stepper .stepper-btn:disabled {
+    opacity: 0.3;
+    cursor: default;
+    border-color: transparent;
+}
+.focus-stepper .stepper-value {
+    font-size: 0.98rem;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+    flex: 1;
+    user-select: none;
+}
+.editor-mini-menu .emm-row .focus-stepper {
+    width: 130px;
+    padding: 3px 4px;
+    gap: 6px;
+}
+.editor-mini-menu .emm-row .focus-stepper .stepper-btn {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    font-size: 0.95rem;
+}
+.editor-mini-menu .emm-row .focus-stepper .stepper-value {
+    font-size: 0.85rem;
+}
+
+/* ── 積み木ページ ── */
+.tsumiki-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    padding: 28px 20px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.tsumiki-overlay.show {
+    display: flex;
+}
+.light .tsumiki-overlay {
+    background-color: var(--bg-light);
+    color: #323232;
+}
+.dark .tsumiki-overlay {
+    background-color: var(--bg-dark);
+    color: #e8e8e8;
+}
+.tsumiki-header {
+    width: 100%;
+    max-width: 640px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin-bottom: 6px;
+}
+.tsumiki-header h2 {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+}
+.light .tsumiki-header h2 { color: var(--primary-color); }
+.dark .tsumiki-header h2 { color: var(--primary-color-dark); }
+.tsumiki-close {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 42px;
+    height: 42px;
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background: transparent;
+    color: inherit;
+    box-shadow: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    transition: border-color 0.2s ease;
+}
+.light .tsumiki-close:hover { border-color: var(--primary-color); }
+.dark .tsumiki-close:hover { border-color: var(--primary-color-dark); }
+.tsumiki-count {
+    font-size: 2.2rem;
+    font-weight: 400;
+    text-align: center;
+    margin-top: 8px;
+    font-variant-numeric: tabular-nums;
+}
+.light .tsumiki-count { color: var(--primary-color); }
+.dark .tsumiki-count { color: var(--primary-color-dark); }
+.tsumiki-note {
+    font-size: 0.85rem;
+    opacity: 0.65;
+    text-align: center;
+    margin-top: 4px;
+}
+#tsumikiCanvas {
+    display: block;
+    margin: 18px auto 10px;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    max-width: 100%;
+}
+.tsumiki-footer {
+    margin-top: 6px;
+    padding-bottom: 14px;
+}
+.tsumiki-footer button {
+    padding: 10px 26px;
+    border-radius: 999px;
+    font-size: 0.9rem;
+}
+
 .flashcard-modal {
     background: var(--panel-light);
     border-radius: 24px;
@@ -6506,10 +6709,10 @@ body.dark .fc-formula-popup input {
             }
         }
 
-        /* ホバーできない端末では編集ボタンをうっすら常時表示 */
+        /* ホバーできない端末(iOS等)では鉛筆ボタンを出さず、テキストのタップで編集を開く */
         @media (hover: none) {
             .session-info-edit-btn {
-                opacity: 0.3;
+                display: none;
             }
         }
 
@@ -6786,6 +6989,10 @@ body.dark .fc-formula-popup input {
     </div>
     <div class="tutorial-arrow" id="tutorialArrow"></div>
 
+    <!-- 現在時刻の時計(設定で表示/非表示可) -->
+    <div class="current-clock" id="currentClock" style="display: none;">
+        <span id="currentClockTime">--:--</span><span class="clock-sec" id="currentClockSec">--</span>
+    </div>
     <div class="top-buttons">
         <button class="theme-toggle" onclick="toggleTheme()" aria-label="テーマ切り替え" data-i18n-aria="themeToggleAlt">
             <img id="themeIcon" src="moon.webp" alt="テーマ切り替え" data-i18n-alt="themeToggleAlt">
@@ -7304,6 +7511,12 @@ body.dark .fc-formula-popup input {
                     </div>
                 </div>
                 <div class="toggle-item">
+                    <span data-i18n="showClock">現在時刻の表示</span>
+                    <div class="toggle-switch" id="toggleClock" onclick="toggleClockSetting()">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <div class="toggle-item">
                     <span data-i18n="historyTimelineToggle">履歴カードのタイムラインバー表示</span>
                     <div class="toggle-switch" id="toggleHistoryTimeline" onclick="toggleHistoryTimeline()">
                         <div class="toggle-slider"></div>
@@ -7598,25 +7811,21 @@ body.dark .fc-formula-popup input {
                     <div style="margin-bottom: 15px;">
                         <label style="font-size: 0.9rem; opacity: 0.8; display: block; margin-bottom: 8px;"
                             data-i18n="focusDuration">集中時間</label>
-                        <div class="custom-select" style="width: 100%;">
-                            <select id="focusDurationSelect" onchange="saveFocusSettings()">
-                                <option value="20">20分</option>
-                                <option value="25" selected>25分</option>
-                                <option value="30">30分</option>
-                            </select>
-                            <div class="select-arrow">▾</div>
+                        <!-- 20〜40分・1分刻みのステッパー(長押しで連続変更) -->
+                        <div class="focus-stepper" id="focusDurationStepper" data-key="focus_duration">
+                            <button type="button" class="stepper-btn" data-step="-1" aria-label="集中時間を1分減らす">−</button>
+                            <span class="stepper-value">25分</span>
+                            <button type="button" class="stepper-btn" data-step="1" aria-label="集中時間を1分増やす">＋</button>
                         </div>
                     </div>
                     <div>
                         <label style="font-size: 0.9rem; opacity: 0.8; display: block; margin-bottom: 8px;"
                             data-i18n="breakDuration">休憩時間</label>
-                        <div class="custom-select" style="width: 100%;">
-                            <select id="breakDurationSelect" onchange="saveFocusSettings()">
-                                <option value="1">1分</option>
-                                <option value="5" selected>5分</option>
-                                <option value="10">10分</option>
-                            </select>
-                            <div class="select-arrow">▾</div>
+                        <!-- 1〜10分・1分刻みのステッパー(長押しで連続変更) -->
+                        <div class="focus-stepper" id="breakDurationStepper" data-key="break_duration">
+                            <button type="button" class="stepper-btn" data-step="-1" aria-label="休憩時間を1分減らす">−</button>
+                            <span class="stepper-value">5分</span>
+                            <button type="button" class="stepper-btn" data-step="1" aria-label="休憩時間を1分増やす">＋</button>
                         </div>
                     </div>
                 </div>
@@ -8424,6 +8633,15 @@ const translations = {
 
                         // 暗記カード
                         flashcards: '暗記カード',
+                        showClock: '現在時刻の表示',
+                        statTsumiki: '積み木',
+                        tsumikiPageTitle: '積み木',
+                        tsumikiCountSuffix: '個',
+                        tsumikiUnitNote: '30分の勉強で積み木が1つ積まれます',
+                        tsumikiNextPrefix: '次の積み木まで あと',
+                        tsumikiNextSuffix: '分',
+                        tsumikiRebuild: 'もういちど積む',
+                        tsumikiEmpty: 'まだ積み木がありません。30分勉強すると最初の1つが積まれます。',
                         fcCreate: '作成',
                         fcView: '閲覧',
                         fcMenuTitle: '暗記カード',
@@ -8843,6 +9061,15 @@ const translations = {
 
                         // Flashcards
                         flashcards: 'Flashcards',
+                        showClock: 'Show current time',
+                        statTsumiki: 'Blocks',
+                        tsumikiPageTitle: 'Blocks',
+                        tsumikiCountSuffix: ' blocks',
+                        tsumikiUnitNote: 'You earn one block for every 30 minutes of study.',
+                        tsumikiNextPrefix: 'Next block in ',
+                        tsumikiNextSuffix: ' min',
+                        tsumikiRebuild: 'Stack again',
+                        tsumikiEmpty: 'No blocks yet. Study for 30 minutes to earn your first one.',
                         fcCreate: 'Create',
                         fcView: 'View',
                         fcMenuTitle: 'Flashcards',
@@ -9168,6 +9395,7 @@ const translations = {
                     // セッション情報とフォーカスセグメントの表示を言語に合わせて再構築
                     if (typeof renderSessionIdleInfo === 'function') renderSessionIdleInfo();
                     if (typeof updateFocusSegmentUI === 'function') updateFocusSegmentUI();
+                    if (typeof updateFocusStepperUI === 'function') updateFocusStepperUI(); // 「分/min」単位を言語に追従
 
                     // About ページャーが表示中なら現在ページを再描画
                     const aboutOverlayEl = document.getElementById('aboutOverlay');
@@ -10040,6 +10268,50 @@ const translations = {
                     rebuildMenu();
                 }
 
+                // ── 現在時刻の時計 ──
+                let clockInterval = null;
+
+                function isClockEnabled() {
+                    return getData('feature_clock') !== 'false'; // デフォルトON
+                }
+
+                function updateClockDisplay() {
+                    const now = new Date();
+                    const hhmm = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+                    const timeEl = document.getElementById('currentClockTime');
+                    const secEl = document.getElementById('currentClockSec');
+                    if (timeEl) timeEl.textContent = hhmm;
+                    if (secEl) secEl.textContent = String(now.getSeconds()).padStart(2, '0');
+                    const fsEl = document.getElementById('fullscreenClock');
+                    if (fsEl) fsEl.textContent = hhmm;
+                }
+
+                function applyClockVisibility() {
+                    const enabled = isClockEnabled();
+                    const clock = document.getElementById('currentClock');
+                    const fsClock = document.getElementById('fullscreenClock');
+                    if (clock) clock.style.display = enabled ? 'flex' : 'none';
+                    if (fsClock) fsClock.style.display = enabled ? 'block' : 'none';
+                    if (enabled) {
+                        updateClockDisplay();
+                        if (!clockInterval) clockInterval = setInterval(updateClockDisplay, 1000);
+                    } else if (clockInterval) {
+                        clearInterval(clockInterval);
+                        clockInterval = null;
+                    }
+                }
+
+                function syncClockToggle() {
+                    const t = document.getElementById('toggleClock');
+                    if (t) t.classList.toggle('active', isClockEnabled());
+                }
+
+                function toggleClockSetting() {
+                    saveData('feature_clock', isClockEnabled() ? 'false' : 'true');
+                    syncClockToggle();
+                    applyClockVisibility();
+                }
+
                 function toggleTitleTime() {
                     const toggle = document.getElementById('toggleTitleTime');
                     const isActive = toggle.classList.contains('active');
@@ -10115,11 +10387,15 @@ const translations = {
                 let focusEnabled = false;
                 let devModeEnabled = false; // 開発者モード(Shift+J/F で時間を加算/減算)
                 let focusState = 'focus'; // 'focus' または 'break' — サウンド再生のための状態遷移検知に使用
+                let focusAnchorMs = 0; // セッション内でフォーカスモードを有効にした時点の経過時間(サイクルはここから開始)
+                let focusBreakAccumMs = 0; // セッション途中でフォーカスをOFFにした際に確定した休憩時間の累計
+                const FOCUS_DURATION_RANGE = { min: 20, max: 40, def: 25 }; // 集中時間(分)
+                const BREAK_DURATION_RANGE = { min: 1, max: 10, def: 5 }; // 休憩時間(分)
 
                 function shouldBlockShortcuts() {
                     if (document.body.classList.contains('no-scroll')) return true;
 
-                    const overlays = document.querySelector('.custom-confirm-overlay.show, .about-overlay.show, .qa-overlay.show, .tutorial-overlay.show, .tutorial-welcome.show, .tutorial-box.show, .language-selector-overlay.show, .calendar-day-dialog-overlay.show, .priority-color-overlay.show');
+                    const overlays = document.querySelector('.custom-confirm-overlay.show, .about-overlay.show, .qa-overlay.show, .tutorial-overlay.show, .tutorial-welcome.show, .tutorial-box.show, .language-selector-overlay.show, .calendar-day-dialog-overlay.show, .priority-color-overlay.show, .tsumiki-overlay.show');
                     if (overlays) return true;
 
                     const active = document.activeElement;
@@ -10274,12 +10550,71 @@ const translations = {
                     renderSessionIdleInfo();
                 }
 
-                function saveFocusSettings() {
-                    const focusDuration = document.getElementById('focusDurationSelect').value;
-                    const breakDuration = document.getElementById('breakDurationSelect').value;
-                    saveData('focus_duration', focusDuration);
-                    saveData('break_duration', breakDuration);
+                function getFocusSettingRange(key) {
+                    return key === 'break_duration' ? BREAK_DURATION_RANGE : FOCUS_DURATION_RANGE;
+                }
+
+                // 保存値を範囲内にクランプした分数を返す(未保存・不正値はデフォルト)
+                function getFocusSettingValue(key) {
+                    const range = getFocusSettingRange(key);
+                    const v = parseInt(getData(key), 10);
+                    return Number.isFinite(v) ? Math.min(range.max, Math.max(range.min, v)) : range.def;
+                }
+
+                // ステッパーの±ボタンから1分単位で変更
+                function stepFocusSetting(key, delta) {
+                    const range = getFocusSettingRange(key);
+                    const next = Math.min(range.max, Math.max(range.min, getFocusSettingValue(key) + delta));
+                    saveData(key, String(next));
+                    updateFocusStepperUI();
                     updateFocusSegmentUI();
+                }
+
+                // 設定画面のステッパー表示(値・単位・端での無効化)を保存値に同期
+                function updateFocusStepperUI() {
+                    const unit = getText('musicResumeWindowMinutes');
+                    document.querySelectorAll('.focus-stepper[data-key]').forEach(wrap => {
+                        const key = wrap.dataset.key;
+                        const range = getFocusSettingRange(key);
+                        const val = getFocusSettingValue(key);
+                        const valueEl = wrap.querySelector('.stepper-value');
+                        if (valueEl) valueEl.textContent = val + unit;
+                        wrap.querySelectorAll('.stepper-btn').forEach(btn => {
+                            const delta = parseInt(btn.dataset.step, 10);
+                            btn.disabled = (delta < 0 && val <= range.min) || (delta > 0 && val >= range.max);
+                        });
+                    });
+                }
+
+                // 設定画面ステッパーのクリック+長押し連続変更を設定(初期化時に一度だけ呼ぶ)
+                function attachFocusStepperHandlers() {
+                    document.querySelectorAll('.focus-stepper[data-key] .stepper-btn').forEach(btn => {
+                        const key = btn.closest('.focus-stepper').dataset.key;
+                        const delta = parseInt(btn.dataset.step, 10);
+                        let holdTimer = null;
+                        let holdInterval = null;
+                        let didRepeat = false;
+                        const stopHold = () => {
+                            clearTimeout(holdTimer);
+                            clearInterval(holdInterval);
+                            holdTimer = holdInterval = null;
+                        };
+                        btn.addEventListener('pointerdown', () => {
+                            didRepeat = false;
+                            holdTimer = setTimeout(() => {
+                                holdInterval = setInterval(() => {
+                                    didRepeat = true;
+                                    stepFocusSetting(key, delta);
+                                }, 90);
+                            }, 450);
+                        });
+                        ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => btn.addEventListener(ev, stopHold));
+                        btn.addEventListener('click', () => {
+                            // 長押し連続変更の直後に発火するclickは無視(二重加算防止)
+                            if (didRepeat) { didRepeat = false; return; }
+                            stepFocusSetting(key, delta);
+                        });
+                    });
                 }
 
                 function toggleFocusModeMain(isPageLoad = false) {
@@ -10294,6 +10629,8 @@ const translations = {
                         newState = savedState === 'true';
                     }
 
+                    const wasEnabled = focusEnabled;
+
                     if (newState) {
                         toggle.classList.add('active');
                         focusEnabled = true;
@@ -10301,6 +10638,15 @@ const translations = {
                         saveData('focus_mode_enabled', 'true');
                         subTimer.style.display = 'block';
                         timer.style.fontSize = '3.5rem';
+
+                        // セッション途中でONにした場合、サイクルはこの時点から開始
+                        // (過去の経過時間に遡って休憩を差し引かない)
+                        if (startTime && !wasEnabled) {
+                            focusAnchorMs = getCurrentWallElapsed();
+                            saveData('studyFocusAnchor', String(focusAnchorMs));
+                        } else if (!startTime) {
+                            focusAnchorMs = 0;
+                        }
 
                         if (!startTime) {
                             const fd = getFocusDurationMs();
@@ -10316,6 +10662,15 @@ const translations = {
                         subTimer.style.display = 'none';
                         timer.style.fontSize = '4rem';
                         hideFocusProgressBar();
+
+                        // セッション途中でOFFにした場合、ここまでの休憩時間を確定して積み上げる
+                        if (startTime && wasEnabled) {
+                            const fcEnd = computeFocusCycle(getCurrentWallElapsed() - focusAnchorMs);
+                            focusBreakAccumMs += fcEnd.totalBreakTime;
+                            focusAnchorMs = 0;
+                            saveData('studyBreakAccum', String(focusBreakAccumMs));
+                            saveData('studyFocusAnchor', '0');
+                        }
 
                         if (!startTime) {
                             timer.textContent = '00:00:00';
@@ -10352,11 +10707,19 @@ const translations = {
                 }
 
                 function getFocusDurationMs() {
-                    return parseInt(getData('focus_duration') || '25') * 60 * 1000;
+                    const v = parseInt(getData('focus_duration'), 10);
+                    return (Number.isFinite(v) && v > 0 ? v : FOCUS_DURATION_RANGE.def) * 60 * 1000;
                 }
 
                 function getBreakDurationMs() {
-                    return parseInt(getData('break_duration') || '5') * 60 * 1000;
+                    const v = parseInt(getData('break_duration'), 10);
+                    return (Number.isFinite(v) && v > 0 ? v : BREAK_DURATION_RANGE.def) * 60 * 1000;
+                }
+
+                // セッションの経過時間(一時停止分を除く)。一時停止中は凍結された値を返す
+                function getCurrentWallElapsed() {
+                    if (!startTime) return 0;
+                    return Math.max(0, isPaused ? pausedTime : (Date.now() - startTime + pausedTime));
                 }
 
                 async function playFocusSound() {
@@ -10556,10 +10919,11 @@ const translations = {
                 function updateTimer() {
                     if (!startTime) return;
 
-                    const wallElapsed = Math.max(0, Date.now() - startTime + pausedTime);
+                    // 一時停止中に呼ばれても凍結した経過時間で描画する(フォーカス切替時など)
+                    const wallElapsed = getCurrentWallElapsed();
 
                     if (focusEnabled) {
-                        const fc = computeFocusCycle(wallElapsed);
+                        const fc = computeFocusCycle(wallElapsed - focusAnchorMs);
 
                         // 状態遷移を検知してサウンドを再生
                         if (fc.currentState !== focusState) {
@@ -10569,7 +10933,9 @@ const translations = {
 
                         const targetStr = formatTimeShort(fc.targetDuration);
                         const currentStr = formatTimeShort(fc.cycleElapsed);
-                        const totalStr = formatTime(fc.netStudyTime);
+                        // 実学習時間 = 全経過 − 過去に確定した休憩 − 現在のフォーカス期間中の休憩
+                        const netStudyTime = Math.max(0, wallElapsed - focusBreakAccumMs - fc.totalBreakTime);
+                        const totalStr = formatTime(netStudyTime);
 
                         document.getElementById('timer').textContent = `${targetStr} / ${currentStr}`;
                         document.getElementById('totalTimerDisplay').textContent = totalStr;
@@ -10600,11 +10966,15 @@ const translations = {
 
                     // フォーカスモード初期化
                     focusState = 'focus';
+                    focusAnchorMs = 0;
+                    focusBreakAccumMs = 0;
 
                     const startTimeStr = new Date().toISOString();
                     saveData('studyStartTime', startTimeStr);
                     saveData('studyPaused', 'false');
                     saveData('studyPausedAccum', '0');
+                    saveData('studyFocusAnchor', '0');
+                    saveData('studyBreakAccum', '0');
                     persistStudyPauseHistory();
                     document.getElementById('startBtn').classList.add('hidden');
                     document.getElementById('pauseBtn').classList.remove('hidden');
@@ -10675,12 +11045,12 @@ const translations = {
                             console.warn('Invalid stored start time:', startCookie);
                         } else {
                             // 実際の計測値(一時停止除外)はタイマー表示と同じ計算式で算出
-                            const rawWallTime = isPaused ? pausedTime : (Date.now() - startTime + pausedTime);
-                            // フォーカスモード有効時は休憩時間を除外
-                            let actualStudyTime = rawWallTime;
+                            const rawWallTime = getCurrentWallElapsed();
+                            // フォーカスモードで過ごした区間の休憩時間を除外
+                            let actualStudyTime = Math.max(0, rawWallTime - focusBreakAccumMs);
                             if (focusEnabled) {
-                                const fc = computeFocusCycle(rawWallTime);
-                                actualStudyTime = fc.netStudyTime;
+                                const fc = computeFocusCycle(rawWallTime - focusAnchorMs);
+                                actualStudyTime = Math.max(0, actualStudyTime - fc.totalBreakTime);
                             }
                             let history = getData('studyHistory');
                             history = history ? JSON.parse(history) : [];
@@ -10709,11 +11079,15 @@ const translations = {
                     localStorage.removeItem('studyPausedAccum');
                     localStorage.removeItem('studyPauseHistory');
                     localStorage.removeItem('studyPauseStart');
+                    localStorage.removeItem('studyFocusAnchor');
+                    localStorage.removeItem('studyBreakAccum');
                     setCookie('studyStartTime', '', -1);
                     setCookie('studyPaused', '', -1);
                     setCookie('studyPausedAccum', '', -1);
                     setCookie('studyPauseHistory', '', -1);
                     setCookie('studyPauseStart', '', -1);
+                    setCookie('studyFocusAnchor', '', -1);
+                    setCookie('studyBreakAccum', '', -1);
                     document.getElementById('startBtn').classList.remove('hidden');
                     document.getElementById('pauseBtn').classList.add('hidden');
                     document.getElementById('endBtn').classList.add('hidden');
@@ -10725,6 +11099,8 @@ const translations = {
                     isPaused = false;
                     pauseHistory = [];
                     currentPauseStartIso = null;
+                    focusAnchorMs = 0;
+                    focusBreakAccumMs = 0;
                     updateSettingsButtonState();
                 }
 
@@ -13875,7 +14251,7 @@ const translations = {
                     const streak = calculateStreak();
                     const totalSessions = history.length;
                     const statsContainer = document.getElementById('statsContainer');
-                    statsContainer.innerHTML = `<div class="stat-card"><div class="stat-label">${getText('totalTime')}</div><div class="stat-value">${formatTime(totalTime)}</div></div><div class="stat-card"><div class="stat-label">${getText('consecutiveDays')}</div><div class="stat-value">${streak}${getText('days')}</div></div><div class="stat-card"><div class="stat-label">${getText('totalSessions')}</div><div class="stat-value">${totalSessions}</div></div><div class="stat-card flashcard-stat-btn" onclick="openFlashcardMenu()"><div class="stat-label">${getText('flashcards')}</div><div class="stat-value" style="font-size:1.4rem;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="3"/><line x1="7" y1="10" x2="17" y2="10"/><line x1="7" y1="14" x2="13" y2="14"/></svg></div></div>`;
+                    statsContainer.innerHTML = `<div class="stat-card"><div class="stat-label">${getText('totalTime')}</div><div class="stat-value">${formatTime(totalTime)}</div></div><div class="stat-card"><div class="stat-label">${getText('consecutiveDays')}</div><div class="stat-value">${streak}${getText('days')}</div></div><div class="stat-card"><div class="stat-label">${getText('totalSessions')}</div><div class="stat-value">${totalSessions}</div></div><div class="stat-card flashcard-stat-btn" onclick="openFlashcardMenu()"><div class="stat-label">${getText('flashcards')}</div><div class="stat-value" style="font-size:1.4rem;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="3"/><line x1="7" y1="10" x2="17" y2="10"/><line x1="7" y1="14" x2="13" y2="14"/></svg></div></div><div class="stat-card flashcard-stat-btn" onclick="openTsumikiPage()"><div class="stat-label">${getText('statTsumiki')}</div><div class="stat-value" style="font-size:1.4rem;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5 20.5 7v10L12 21.5 3.5 17V7L12 2.5z"/><path d="M3.5 7 12 11.5 20.5 7"/><path d="M12 11.5V21.5"/></svg></div></div>`;
                     const groups = {};
                     history.forEach(item => {
                         const group = item.group || getText('uncategorized');
@@ -13915,6 +14291,7 @@ const translations = {
                     'feature_music',
                     'feature_todo',
                     'feature_title_time',
+                    'feature_clock',
                     'feature_history_timeline',
                     'feature_loading_anim',
                     'feature_stop_music_on_timer_end',
@@ -13951,6 +14328,7 @@ const translations = {
                     'feature_music',
                     'feature_todo',
                     'feature_title_time',
+                    'feature_clock',
                     'feature_history_timeline',
                     'feature_loading_anim',
                     'feature_stop_music_on_timer_end',
@@ -14006,6 +14384,13 @@ const translations = {
                     const intValue = Math.floor(num);
                     if (intValue <= 0) return fallback;
                     return String(intValue);
+                }
+
+                // 範囲内の整数文字列に正規化(範囲外はクランプ、数値でなければfallback)
+                function normalizeRangedIntString(value, range, fallback) {
+                    const num = Number(value);
+                    if (!Number.isFinite(num)) return fallback;
+                    return String(Math.min(range.max, Math.max(range.min, Math.floor(num))));
                 }
 
                 function collectExportSettings() {
@@ -14165,12 +14550,12 @@ const translations = {
 
                                 const importedFocusDuration = settings.focus_duration ?? legacy.focus_duration;
                                 if (typeof importedFocusDuration !== 'undefined') {
-                                    saveData('focus_duration', normalizePositiveIntString(importedFocusDuration, '25'));
+                                    saveData('focus_duration', normalizeRangedIntString(importedFocusDuration, FOCUS_DURATION_RANGE, '25'));
                                 }
 
                                 const importedBreakDuration = settings.break_duration ?? legacy.break_duration;
                                 if (typeof importedBreakDuration !== 'undefined') {
-                                    saveData('break_duration', normalizePositiveIntString(importedBreakDuration, '5'));
+                                    saveData('break_duration', normalizeRangedIntString(importedBreakDuration, BREAK_DURATION_RANGE, '5'));
                                 }
 
                                 const importedGraphType = String(settings.graph_type ?? legacy.graph_type ?? '').trim();
@@ -14229,6 +14614,8 @@ const translations = {
                                 else removeMenuButton('todo');
 
                                 setToggleActive('toggleTitleTime', getData('feature_title_time') !== 'false');
+                                setToggleActive('toggleClock', getData('feature_clock') !== 'false');
+                                applyClockVisibility();
                                 setToggleActive('toggleHistoryTimeline', getData('feature_history_timeline') !== 'false');
                                 setToggleActive('toggleLoadingAnim', getData('feature_loading_anim') !== 'false');
                                 setToggleActive('toggleStopMusicOnTimerEnd', getData('feature_stop_music_on_timer_end') !== 'false');
@@ -14256,10 +14643,7 @@ const translations = {
                                 const graphLocationEl = document.getElementById('graphLocation');
                                 if (graphLocationEl && getData('graph_location')) graphLocationEl.value = getData('graph_location');
 
-                                const focusDurationEl = document.getElementById('focusDurationSelect');
-                                if (focusDurationEl && getData('focus_duration')) focusDurationEl.value = getData('focus_duration');
-                                const breakDurationEl = document.getElementById('breakDurationSelect');
-                                if (breakDurationEl && getData('break_duration')) breakDurationEl.value = getData('break_duration');
+                                updateFocusStepperUI();
 
                                 applyFonts();
                                 applyTodoPriorityColors();
@@ -15395,24 +15779,12 @@ const translations = {
                         document.getElementById('focusModeToggleContainer').style.display = 'none';
                     }
 
-                    const savedFocusDuration = getData('focus_duration');
-                    if (savedFocusDuration) {
-                        document.getElementById('focusDurationSelect').value = savedFocusDuration;
-                    }
+                    // 集中/休憩時間ステッパーを初期化し保存値を反映
+                    updateFocusStepperUI();
+                    attachFocusStepperHandlers();
 
-                    const savedBreakDuration = getData('break_duration');
-                    if (savedBreakDuration) {
-                        document.getElementById('breakDurationSelect').value = savedBreakDuration;
-                    }
-
-                    // フォーカスモードの状態を復元
-                    const savedFocusState = getData('focus_mode_enabled');
-                    if (savedFocusState === 'true') {
-                        // サイクルを進めずにフォーカスモードのUIを初期化
-                        toggleFocusModeMain(true);
-                    } else {
-                        toggleFocusModeMain(true);
-                    }
+                    // フォーカスモードの状態を復元(保存値はtoggleFocusModeMain内で参照)
+                    toggleFocusModeMain(true);
 
                     // 開発者モードの状態を読み込む
                     const savedDevMode = getData('dev_mode_enabled');
@@ -15456,6 +15828,12 @@ const translations = {
                     applySessionInfoVisibility();
                     syncSessionInfoToggle();
 
+                    // ホバーできない端末では鉛筆ボタンの代わりにテキストのタップで編集を開く
+                    if (window.matchMedia && window.matchMedia('(hover: none)').matches) {
+                        const sessionInfoEl = document.getElementById('sessionInfo');
+                        if (sessionInfoEl) sessionInfoEl.addEventListener('click', () => openSessionInfoEditor());
+                    }
+
                     // 右クリック(エディターモード外でも)クイック設定を有効化
                     attachEditorTargets();
 
@@ -15480,6 +15858,8 @@ const translations = {
                             setCookie('studyPausedAccum', '', -1);
                             setCookie('studyPauseHistory', '', -1);
                             setCookie('studyPauseStart', '', -1);
+                            setCookie('studyFocusAnchor', '', -1);
+                            setCookie('studyBreakAccum', '', -1);
                             return;
                         }
 
@@ -15498,6 +15878,8 @@ const translations = {
                             setCookie('studyPausedAccum', '', -1);
                             setCookie('studyPauseHistory', '', -1);
                             setCookie('studyPauseStart', '', -1);
+                            setCookie('studyFocusAnchor', '', -1);
+                            setCookie('studyBreakAccum', '', -1);
                             return;
                         }
 
@@ -15513,14 +15895,24 @@ const translations = {
                         startTime = startTime_ms;
                         pausedTime = pausedAccum;
                         isPaused = pausedFlag;
+
+                        // フォーカスモードのセッション内状態を復元
+                        focusAnchorMs = Math.max(0, parseInt(getData('studyFocusAnchor') || '0', 10) || 0);
+                        focusBreakAccumMs = Math.max(0, parseInt(getData('studyBreakAccum') || '0', 10) || 0);
+                        if (focusAnchorMs > getCurrentWallElapsed()) focusAnchorMs = 0; // 異常値は無視
+                        if (focusEnabled) {
+                            // 現在のフェーズに音を鳴らさず同期(リロード直後の誤通知を防ぐ)
+                            focusState = computeFocusCycle(getCurrentWallElapsed() - focusAnchorMs).currentState;
+                        }
+
                         if (isPaused) {
                             if (!currentPauseStartIso) {
                                 currentPauseStartIso = new Date().toISOString();
                                 saveData('studyPauseStart', currentPauseStartIso);
                             }
                             document.getElementById('pauseBtn').textContent = getText('resumeButton');
-                            // 表示は一時停止時の時間
-                            document.getElementById('timer').textContent = formatTime(pausedTime);
+                            // 一時停止時点の状態で描画(フォーカスモードの表示形式にも対応)
+                            updateTimer();
                         } else {
                             currentPauseStartIso = null;
                             localStorage.removeItem('studyPauseStart');
@@ -15548,6 +15940,9 @@ const translations = {
                     if (getData('feature_title_time') !== 'false') { // デフォルトON
                         document.getElementById('toggleTitleTime').classList.add('active');
                     }
+                    // 現在時刻の時計(デフォルトON)
+                    syncClockToggle();
+                    applyClockVisibility();
                     if (getData('feature_history_timeline') !== 'false') { // デフォルトON
                         const toggle = document.getElementById('toggleHistoryTimeline');
                         if (toggle) toggle.classList.add('active');
@@ -16161,12 +16556,8 @@ const translations = {
                             title: getText('focusModeSettings'),
                             rows: [
                                 { type: 'toggle', label: getText('editorModeFocusToggle'), id: 'toggleFocusDisplay', key: 'feature_focus_mode_display', onToggle: function() { toggleFocusDisplaySetting(); } },
-                                { type: 'select', label: getText('editorModeFocusDuration'), options: [
-                                    {v:'20',t:'20分'},{v:'25',t:'25分'},{v:'30',t:'30分'}
-                                ], key: 'focus_duration', onChange: function(val) { saveData('focus_duration', val); var el=document.getElementById('focusDurationSelect'); if(el) el.value=val; updateFocusSegmentUI(); } },
-                                { type: 'select', label: getText('editorModeBreakDuration'), options: [
-                                    {v:'1',t:'1分'},{v:'5',t:'5分'},{v:'10',t:'10分'}
-                                ], key: 'break_duration', onChange: function(val) { saveData('break_duration', val); var el=document.getElementById('breakDurationSelect'); if(el) el.value=val; updateFocusSegmentUI(); } }
+                                { type: 'stepper', label: getText('editorModeFocusDuration'), key: 'focus_duration' },
+                                { type: 'stepper', label: getText('editorModeBreakDuration'), key: 'break_duration' }
                             ]
                         };
                     },
@@ -16184,6 +16575,7 @@ const translations = {
                             title: getText('menuTimer'),
                             rows: [
                                 { type: 'toggle', label: getText('editorModeTitleTime'), id: 'toggleTitleTime', key: 'feature_title_time', onToggle: function() { toggleTitleTime(); } },
+                                { type: 'toggle', label: getText('showClock'), id: 'toggleClock', key: 'feature_clock', onToggle: function() { toggleClockSetting(); } },
                                 { type: 'toggle', label: getText('editorModeTimeline'), id: 'toggleHistoryTimeline', key: 'feature_history_timeline', onToggle: function() { toggleHistoryTimeline(); } },
                                 { type: 'toggle', label: getText('editorModeLoadingAnim'), id: 'toggleLoadingAnim', key: 'feature_loading_anim', onToggle: function() { toggleLoadingAnim(); } },
                                 { type: 'toggle', label: getText('editorModeLockSettings'), id: 'toggleLockSettings', key: 'lock_settings_during_timer', onToggle: function() { toggleLockSettingsDuringTimer(); } }
@@ -16266,6 +16658,15 @@ const translations = {
                                 html += '<option value="' + opt.v + '"' + (opt.v === currentVal ? ' selected' : '') + '>' + opt.t + '</option>';
                             });
                             html += '</select><div class="select-arrow">▾</div></div>';
+                        } else if (row.type === 'stepper') {
+                            const unit = getText('musicResumeWindowMinutes');
+                            const range = getFocusSettingRange(row.key);
+                            const val = getFocusSettingValue(row.key);
+                            html += '<div class="focus-stepper" data-emm-stepper="' + i + '">';
+                            html += '<button type="button" class="stepper-btn" data-step="-1"' + (val <= range.min ? ' disabled' : '') + ' onclick="editorMiniMenuStep(' + i + ', -1)">−</button>';
+                            html += '<span class="stepper-value">' + val + unit + '</span>';
+                            html += '<button type="button" class="stepper-btn" data-step="1"' + (val >= range.max ? ' disabled' : '') + ' onclick="editorMiniMenuStep(' + i + ', 1)">＋</button>';
+                            html += '</div>';
                         } else if (row.type === 'button') {
                             html += '<button class="secondary" style="padding:6px 12px;font-size:0.82rem;border-radius:24px;display:inline-flex;align-items:center;" onclick="editorMiniMenuButton(' + i + ')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>';
                         }
@@ -16338,6 +16739,25 @@ const translations = {
                     const row = menu._config.rows[index];
                     if (!row) return;
                     if (row.onChange) row.onChange(value);
+                }
+
+                function editorMiniMenuStep(index, delta) {
+                    const menu = document.getElementById('editorMiniMenu');
+                    if (!menu._config) return;
+                    const row = menu._config.rows[index];
+                    if (!row) return;
+                    stepFocusSetting(row.key, delta);
+                    // ミニメニュー内の表示も更新
+                    const wrap = menu.querySelector('[data-emm-stepper="' + index + '"]');
+                    if (!wrap) return;
+                    const range = getFocusSettingRange(row.key);
+                    const val = getFocusSettingValue(row.key);
+                    const valueEl = wrap.querySelector('.stepper-value');
+                    if (valueEl) valueEl.textContent = val + getText('musicResumeWindowMinutes');
+                    wrap.querySelectorAll('.stepper-btn').forEach(btn => {
+                        const d = parseInt(btn.dataset.step, 10);
+                        btn.disabled = (d < 0 && val <= range.min) || (d > 0 && val >= range.max);
+                    });
                 }
 
                 function editorMiniMenuButton(index) {
@@ -16460,7 +16880,7 @@ const translations = {
 
                 function isSettingActive(key) {
                     var val = getData(key);
-                    var defaultOnKeys = ['feature_title_time','feature_history_timeline','feature_loading_anim','feature_focus_mode_display','feature_stop_music_on_timer_end','feature_music_resume_on_tap_after_reload','mini_player_enabled','session_info_visible'];
+                    var defaultOnKeys = ['feature_title_time','feature_clock','feature_history_timeline','feature_loading_anim','feature_focus_mode_display','feature_stop_music_on_timer_end','feature_music_resume_on_tap_after_reload','mini_player_enabled','session_info_visible'];
                     if (val === null || val === undefined) return defaultOnKeys.indexOf(key) !== -1;
                     return val === 'true';
                 }
@@ -16479,6 +16899,7 @@ const translations = {
                         { label: getText('editorModeFocusToggle'), key: 'feature_focus_mode_display', toggleFn: function() { toggleFocusDisplaySetting(); } },
                         { label: getText('editorModeSessionInfo'), key: 'session_info_visible', toggleFn: function() { toggleSessionInfoVisible(); } },
                         { label: getText('editorModeTitleTime'), key: 'feature_title_time', toggleFn: function() { toggleTitleTime(); } },
+                        { label: getText('showClock'), key: 'feature_clock', toggleFn: function() { toggleClockSetting(); } },
                         { label: getText('editorModeTimeline'), key: 'feature_history_timeline', toggleFn: function() { toggleHistoryTimeline(); } },
                         { label: getText('loadingAnimSetting'), key: 'feature_loading_anim', toggleFn: function() { toggleLoadingAnim(); } },
                         { label: getText('lockSettingsDuringTimer'), key: 'lock_settings_during_timer', toggleFn: function() { toggleLockSettingsDuringTimer(); } },
@@ -16721,6 +17142,205 @@ const translations = {
                     }
                     return null;
                 }
+
+                // ── 積み木ページ: 総勉強時間30分ごとに1個の積み木を2.5Dドット絵で積み上げる ──
+                const TSUMIKI_UNIT_MS = 30 * 60 * 1000;
+                const TSUMIKI_MAX_RENDER = 2500; // 描画性能のための上限(表示カウントは実数のまま)
+                let tsumikiAnimFrame = null;
+
+                function openTsumikiPage() {
+                    document.getElementById('tsumikiOverlay').classList.add('show');
+                    document.body.style.overflow = 'hidden';
+                    renderTsumikiPage(true);
+                }
+
+                function closeTsumikiPage() {
+                    document.getElementById('tsumikiOverlay').classList.remove('show');
+                    document.body.style.overflow = '';
+                    if (tsumikiAnimFrame) {
+                        cancelAnimationFrame(tsumikiAnimFrame);
+                        tsumikiAnimFrame = null;
+                    }
+                }
+
+                // 決定的な疑似乱数(同じ勉強量なら毎回同じ山になる)
+                function tsumikiRand(seed) {
+                    return function() {
+                        seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+                        let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+                        t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+                        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+                    };
+                }
+
+                // 積み木の配置を計算: 中央寄りのマスに1個ずつ落として自然な山を作る
+                function computeTsumikiLayout(count) {
+                    const W = Math.max(4, Math.min(14, Math.ceil(Math.cbrt(count * 2.2))));
+                    const rand = tsumikiRand(20260707);
+                    const heights = Array.from({ length: W }, () => new Array(W).fill(0));
+                    const blocks = [];
+                    for (let i = 0; i < count; i++) {
+                        // 2乱数の平均で中央寄りに、3候補のうち一番低いマスへ置く
+                        let best = null;
+                        for (let k = 0; k < 3; k++) {
+                            const x = Math.min(W - 1, Math.floor((rand() + rand()) / 2 * W));
+                            const z = Math.min(W - 1, Math.floor((rand() + rand()) / 2 * W));
+                            if (!best || heights[x][z] < heights[best.x][best.z]) best = { x, z };
+                        }
+                        blocks.push({ x: best.x, z: best.z, y: heights[best.x][best.z]++, tint: rand(), order: i });
+                    }
+                    let maxH = 1;
+                    for (const row of heights) for (const h of row) if (h > maxH) maxH = h;
+                    // 奥→手前、下→上の順に描くと正しく重なる
+                    blocks.sort((a, b) => (a.x + a.z) - (b.x + b.z) || a.y - b.y);
+                    return { W, blocks, maxH };
+                }
+
+                function tsumikiThemeHsl() {
+                    const isDark = document.body.classList.contains('dark');
+                    const raw = getComputedStyle(document.body)
+                        .getPropertyValue(isDark ? '--primary-color-dark' : '--primary-color').trim() || '#8aa2c8';
+                    const c = document.createElement('canvas');
+                    c.width = c.height = 1;
+                    const cx = c.getContext('2d');
+                    cx.fillStyle = raw;
+                    cx.fillRect(0, 0, 1, 1);
+                    const d = cx.getImageData(0, 0, 1, 1).data;
+                    const r = d[0] / 255, g = d[1] / 255, b = d[2] / 255;
+                    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+                    let h = 0, s = 0;
+                    const l = (max + min) / 2;
+                    if (max !== min) {
+                        const diff = max - min;
+                        s = l > 0.5 ? diff / (2 - max - min) : diff / (max + min);
+                        if (max === r) h = ((g - b) / diff + (g < b ? 6 : 0)) / 6;
+                        else if (max === g) h = ((b - r) / diff + 2) / 6;
+                        else h = ((r - g) / diff + 4) / 6;
+                    }
+                    return { h: h * 360, s: s * 100, l: l * 100 };
+                }
+
+                function renderTsumikiPage(animate = false) {
+                    const canvas = document.getElementById('tsumikiCanvas');
+                    const info = document.getElementById('tsumikiInfo');
+                    if (!canvas || !info) return;
+                    if (tsumikiAnimFrame) {
+                        cancelAnimationFrame(tsumikiAnimFrame);
+                        tsumikiAnimFrame = null;
+                    }
+
+                    let history = getData('studyHistory');
+                    history = history ? JSON.parse(history) : [];
+                    const totalTime = history.reduce((sum, item) => sum + (item.duration || 0), 0);
+                    const count = Math.floor(totalTime / TSUMIKI_UNIT_MS);
+                    const remainMin = Math.max(1, Math.ceil((TSUMIKI_UNIT_MS - totalTime % TSUMIKI_UNIT_MS) / 60000));
+
+                    if (count === 0) {
+                        info.innerHTML = `<div class="tsumiki-note" style="margin-top:14px;">${getText('tsumikiEmpty')}</div>`;
+                    } else {
+                        info.innerHTML = `<div class="tsumiki-count">${count}${getText('tsumikiCountSuffix')}</div>`
+                            + `<div class="tsumiki-note">${getText('tsumikiUnitNote')}</div>`
+                            + `<div class="tsumiki-note">${getText('tsumikiNextPrefix')}${remainMin}${getText('tsumikiNextSuffix')}</div>`;
+                    }
+
+                    const renderCount = Math.min(count, TSUMIKI_MAX_RENDER);
+                    const { W, blocks, maxH } = computeTsumikiLayout(renderCount);
+
+                    // 内部は低解像度で描き、CSSの整数倍拡大(image-rendering:pixelated)でドット感を出す
+                    const u = 6; // タイル半幅(偶数)
+                    const h = 6; // 1段の高さ
+                    const pad = 10;
+                    const iw = 2 * W * u + pad * 2;
+                    const ih = (W - 1) * u + maxH * h + h + u + pad * 2;
+                    canvas.width = iw;
+                    canvas.height = ih;
+                    const maxWcss = Math.min(window.innerWidth - 44, 560);
+                    const maxHcss = Math.max(220, window.innerHeight - 330);
+                    const k = Math.max(1, Math.min(4, Math.floor(Math.min(maxWcss / iw, maxHcss / ih))));
+                    canvas.style.width = (iw * k) + 'px';
+
+                    const ctx = canvas.getContext('2d');
+                    ctx.imageSmoothingEnabled = false;
+                    const base = tsumikiThemeHsl();
+                    const ox = Math.round(iw / 2);
+                    const oy = pad + maxH * h + u / 2;
+                    const cellX = (x, z) => ox + (x - z) * u;
+                    const cellY = (x, z, y) => oy + (x + z) * (u / 2) - y * h;
+
+                    function drawGround() {
+                        ctx.clearRect(0, 0, iw, ih);
+                        const gl = document.body.classList.contains('dark') ? base.l * 0.45 : Math.min(94, base.l + 26);
+                        ctx.fillStyle = `hsla(${base.h}, ${base.s * 0.5}%, ${gl}%, 0.35)`;
+                        ctx.beginPath();
+                        // グリッド全体を覆う土台のひし形
+                        ctx.moveTo(cellX(0, 0), cellY(0, 0, 0) - u / 2);
+                        ctx.lineTo(cellX(W - 1, 0) + u, cellY(W - 1, 0, 0));
+                        ctx.lineTo(cellX(W - 1, W - 1), cellY(W - 1, W - 1, 0) + u / 2);
+                        ctx.lineTo(cellX(0, W - 1) - u, cellY(0, W - 1, 0));
+                        ctx.closePath();
+                        ctx.fill();
+                    }
+
+                    function drawCube(cx, cy, tint) {
+                        const hue = base.h + (tint - 0.5) * 16;
+                        const sat = Math.min(85, Math.max(20, base.s * 0.9 + (tint - 0.5) * 8));
+                        const lig = Math.min(78, Math.max(26, base.l + (tint - 0.5) * 10));
+                        // 上面(明)・左面(中)・右面(暗)の3面で2.5Dに見せる
+                        ctx.fillStyle = `hsl(${hue}, ${sat}%, ${Math.min(92, lig + 13)}%)`;
+                        ctx.beginPath();
+                        ctx.moveTo(cx, cy - u / 2); ctx.lineTo(cx + u, cy); ctx.lineTo(cx, cy + u / 2); ctx.lineTo(cx - u, cy);
+                        ctx.closePath(); ctx.fill();
+                        ctx.fillStyle = `hsl(${hue}, ${sat}%, ${lig}%)`;
+                        ctx.beginPath();
+                        ctx.moveTo(cx - u, cy); ctx.lineTo(cx, cy + u / 2); ctx.lineTo(cx, cy + u / 2 + h); ctx.lineTo(cx - u, cy + h);
+                        ctx.closePath(); ctx.fill();
+                        ctx.fillStyle = `hsl(${hue}, ${sat}%, ${Math.max(14, lig - 15)}%)`;
+                        ctx.beginPath();
+                        ctx.moveTo(cx + u, cy); ctx.lineTo(cx, cy + u / 2); ctx.lineTo(cx, cy + u / 2 + h); ctx.lineTo(cx + u, cy + h);
+                        ctx.closePath(); ctx.fill();
+                        // 上面のドットハイライト
+                        ctx.fillStyle = `hsl(${hue}, ${sat}%, ${Math.min(96, lig + 24)}%)`;
+                        ctx.fillRect(cx - 2, cy - 1, 2, 1);
+                    }
+
+                    if (renderCount === 0) {
+                        drawGround();
+                        return;
+                    }
+
+                    const dropDur = 260; // 1個の落下時間
+                    const totalDur = animate ? Math.min(1800, 350 + renderCount * 10) : 0;
+                    const start = performance.now();
+
+                    function frame(now) {
+                        const elapsed = now - start;
+                        drawGround();
+                        let pending = false;
+                        for (const b of blocks) {
+                            const appearAt = totalDur === 0 ? 0 : (b.order / renderCount) * (totalDur - dropDur);
+                            const p = totalDur === 0 ? 1 : Math.min(1, Math.max(0, (elapsed - appearAt) / dropDur));
+                            if (p <= 0) { pending = true; continue; }
+                            if (p < 1) pending = true;
+                            const ease = 1 - (1 - p) * (1 - p);
+                            const dropOffset = Math.round((1 - ease) * 4 * h);
+                            drawCube(cellX(b.x, b.z), cellY(b.x, b.z, b.y) - dropOffset, b.tint);
+                        }
+                        tsumikiAnimFrame = pending ? requestAnimationFrame(frame) : null;
+                    }
+
+                    if (animate) {
+                        tsumikiAnimFrame = requestAnimationFrame(frame);
+                    } else {
+                        frame(start);
+                    }
+                }
+
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        const overlay = document.getElementById('tsumikiOverlay');
+                        if (overlay && overlay.classList.contains('show')) closeTsumikiPage();
+                    }
+                });
 
                 function openFlashcardMenu() {
                     loadFlashcardData();
@@ -18121,15 +18741,34 @@ const translations = {
             </script>
 
         <div id="fullscreenTimerOverlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:99999; flex-direction:column; align-items:center; justify-content:center; cursor:pointer;" onclick="exitFullscreenTimer()">
+            <div id="fullscreenClock" style="position:absolute; top:32px; left:32px; font-size:1.05rem; letter-spacing:0.08em; opacity:0.5; font-variant-numeric:tabular-nums; user-select:none;">--:--</div>
             <div id="fullscreenTimerDisplay" style="font-size:min(18vw, 12rem); font-weight:300; font-variant-numeric:tabular-nums; user-select:none;">00:00:00</div>
             <div id="fullscreenTimerSub" style="font-size:min(6vw, 3.5rem); font-weight:300; opacity:0.6; margin-top:10px; display:none; user-select:none;">00:00:00</div>
-            <button onclick="event.stopPropagation(); exitFullscreenTimer();" style="position:absolute; top:24px; right:24px; background:none; border:none; cursor:pointer; padding:8px;">
+            <!-- color:inherit と appearance:none がないと iOS Safari でボタンが青色になる -->
+            <button onclick="event.stopPropagation(); exitFullscreenTimer();" style="position:absolute; top:24px; right:24px; background:none; border:none; cursor:pointer; padding:8px; color:inherit; -webkit-appearance:none; appearance:none;">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
                 </svg>
             </button>
             <div class="focus-progress-bar" id="fullscreenFocusProgressBar">
                 <div class="focus-progress-fill" id="fullscreenFocusProgressFill"></div>
+            </div>
+        </div>
+
+        <!-- 積み木ページ: 総勉強時間を2.5Dドット積み木として表示 -->
+        <div id="tsumikiOverlay" class="tsumiki-overlay">
+            <div class="tsumiki-header">
+                <h2 data-i18n="tsumikiPageTitle">積み木</h2>
+                <button type="button" class="tsumiki-close" onclick="closeTsumikiPage()" aria-label="閉じる">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div id="tsumikiInfo"></div>
+            <canvas id="tsumikiCanvas" width="10" height="10"></canvas>
+            <div class="tsumiki-footer">
+                <button type="button" class="secondary" onclick="renderTsumikiPage(true)" data-i18n="tsumikiRebuild">もういちど積む</button>
             </div>
         </div>
 

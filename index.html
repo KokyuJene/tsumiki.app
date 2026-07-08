@@ -5433,6 +5433,7 @@ body.editor-mode .editor-exit-bar { display: flex; }
 }
 .light .tsumiki-close:hover { border-color: var(--primary-color); }
 .dark .tsumiki-close:hover { border-color: var(--primary-color-dark); }
+.tsumiki-close:active { transform: translateY(-50%) scale(0.98); }
 .tsumiki-count {
     font-size: 2.2rem;
     font-weight: 400;
@@ -7302,8 +7303,6 @@ body.dark .fc-formula-popup input {
                     <div class="file-select-group">
                         <label class="file-select-label" id="musicFileLabel" tabindex="0" role="button"
                             aria-haspopup="true">
-                            <img id="musicDropdownArrow" class="file-select-arrow" src="arrow_down.webp" alt="メニュー"
-                                data-i18n-alt="menu">
                             <span class="file-select-text" data-i18n="addMusicButton">音楽を追加</span>
                         </label>
                         <input type="file" id="musicFileInput" accept=".mp3,.wav,.flac,.m4a,.aac,.ogg,.webm,audio/*"

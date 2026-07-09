@@ -17142,6 +17142,35 @@ const translations = {
                     return null;
                 }
 
+                // 背面スクロール防止: body に overflow:hidden を置くだけだと iOS Safari では
+                // 裏のスクロール領域(統計ページ等)がタッチで動いてしまうため position:fixed で固定する
+                let scrollLockCount = 0;
+                let scrollLockY = 0;
+                function lockBodyScroll() {
+                    if (scrollLockCount === 0) {
+                        scrollLockY = window.scrollY || window.pageYOffset || 0;
+                        document.body.style.position = 'fixed';
+                        document.body.style.top = (-scrollLockY) + 'px';
+                        document.body.style.left = '0';
+                        document.body.style.right = '0';
+                        document.body.style.width = '100%';
+                        document.body.style.overflow = 'hidden';
+                    }
+                    scrollLockCount++;
+                }
+                function unlockBodyScroll() {
+                    scrollLockCount = Math.max(0, scrollLockCount - 1);
+                    if (scrollLockCount === 0) {
+                        document.body.style.position = '';
+                        document.body.style.top = '';
+                        document.body.style.left = '';
+                        document.body.style.right = '';
+                        document.body.style.width = '';
+                        document.body.style.overflow = '';
+                        window.scrollTo(0, scrollLockY);
+                    }
+                }
+
                 // ── 積み木ページ: 総勉強時間30分ごとに1個の積み木を2.5Dドット絵で積み上げる ──
                 const TSUMIKI_UNIT_MS = 30 * 60 * 1000;
                 const TSUMIKI_MAX_RENDER = 2500; // 描画性能のための上限(表示カウントは実数のまま)
@@ -17149,13 +17178,13 @@ const translations = {
 
                 function openTsumikiPage() {
                     document.getElementById('tsumikiOverlay').classList.add('show');
-                    document.body.style.overflow = 'hidden';
+                    lockBodyScroll();
                     renderTsumikiPage(true);
                 }
 
                 function closeTsumikiPage() {
                     document.getElementById('tsumikiOverlay').classList.remove('show');
-                    document.body.style.overflow = '';
+                    unlockBodyScroll();
                     if (tsumikiAnimFrame) {
                         cancelAnimationFrame(tsumikiAnimFrame);
                         tsumikiAnimFrame = null;
@@ -17351,12 +17380,12 @@ const translations = {
                     btns[1].textContent = getText('fcView');
                     var overlay = document.getElementById('flashcardOverlay');
                     overlay.classList.add('show');
-                    document.body.style.overflow = 'hidden';
+                    lockBodyScroll();
                 }
 
                 function closeFlashcardModal() {
                     document.getElementById('flashcardOverlay').classList.remove('show');
-                    document.body.style.overflow = '';
+                    unlockBodyScroll();
                 }
 
                 function fcShowScreen(screenId) {
@@ -17866,7 +17895,7 @@ const translations = {
 
                     var overlay = document.getElementById('fcViewerOverlay');
                     overlay.classList.add('show');
-                    document.body.style.overflow = 'hidden';
+                    lockBodyScroll();
 
                     var startX = 0, startY = 0;
 
@@ -17983,7 +18012,7 @@ const translations = {
                 function closeFlashcardViewer() {
                     var overlay = document.getElementById('fcViewerOverlay');
                     overlay.classList.remove('show');
-                    document.body.style.overflow = '';
+                    unlockBodyScroll();
                     overlay.ontouchstart = null;
                     overlay.ontouchend = null;
                     overlay.onmousedown = null;

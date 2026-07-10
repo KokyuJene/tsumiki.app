@@ -6747,11 +6747,19 @@ body.dark .fc-formula-popup input {
         body.menu-display-icon .menu button { padding: 10px 14px; }
 
         /* 上部固定メニュー(スクロール時に上部へ固定) */
+        /* top はテーマ切替/設定ボタンと現在時刻の時計(共に position:fixed で画面上部に浮いている)の
+           下端より下にずらして、スクロール固定時にそれらと重ならないようにするための余白 */
         body.menu-fixed-on .menu {
-            position: sticky; top: 0;
+            position: sticky; top: 78px;
             z-index: 900; padding: 12px 0 8px;
         }
         /* スティッキーメニューは背景なし(ボタンが透過) */
+        /* モバイルはテーマ切替/設定ボタン・時計が一回り小さいため余白も少し詰める */
+        @media (max-width: 768px) {
+            body.menu-fixed-on .menu {
+                top: 64px;
+            }
+        }
 
         /* ボトムメニュー */
         body.menu-mode-bottom .menu {
@@ -10638,10 +10646,12 @@ const translations = {
                         subTimer.style.display = 'block';
                         timer.style.fontSize = '3.5rem';
 
-                        // セッション途中でONにした場合、サイクルはこの時点から開始
-                        // (過去の経過時間に遡って休憩を差し引かない)
+                        // セッション途中でONにした場合、それまでの経過時間は休憩なしの集中時間として
+                        // 現在のフォーカス区間にそのまま繰り込む(過去に遡って休憩は発生させない)
                         if (startTime && !wasEnabled) {
-                            focusAnchorMs = getCurrentWallElapsed();
+                            const elapsedNow = getCurrentWallElapsed();
+                            const focusDur = getFocusDurationMs();
+                            focusAnchorMs = elapsedNow - (elapsedNow % focusDur);
                             saveData('studyFocusAnchor', String(focusAnchorMs));
                         } else if (!startTime) {
                             focusAnchorMs = 0;

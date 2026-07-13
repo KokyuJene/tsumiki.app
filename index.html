@@ -23,7 +23,6 @@
     <link rel="icon" type="image/png" sizes="48x48" href="favicon-v2-48x.png?v=2">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-v2.png?v=2">
     <meta name="description" content="タイマーで記録、グラフで可視化、音楽で集中、ToDoで管理。勉強のすべてがこの1ページに。テーマ7色のカスタマイズも。">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <link
         href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@300;400&family=Hina+Mincho&family=JetBrains+Mono:wght@300;400&family=Jost:wght@300;400&family=Klee+One:wght@300;400&family=Lora:wght@400&family=Montserrat:wght@300;400&family=Noto+Sans+JP:wght@300;400&family=Quicksand:wght@300;400&family=Sawarabi+Gothic&family=Zen+Kaku+Gothic+Antique:wght@300;400;500;700&family=Zen+Maru+Gothic:wght@300;400&display=swap"
         rel="stylesheet">
@@ -3664,6 +3663,16 @@
             text-align: left;
         }
 
+        .chart-scroll-wrap {
+            overflow-x: auto;
+            overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .chart-scroll-wrap canvas {
+            display: block;
+        }
+
         .todo-item {
             display: grid;
             grid-template-columns: auto 1fr auto;
@@ -5957,7 +5966,7 @@ body.dark .fc-formula-popup input {
             color: inherit;
         }
         .mini-player-close:hover { opacity: 1; }
-        .mini-player-popup.yt-active .mini-player-close { display: none; }
+        .mini-player-popup.yt-active:not(.video-active) .mini-player-close { display: none; }
         .playlist-item.yt-item-hidden { display: none !important; }
         .mini-player-title {
             width: 100%;
@@ -6005,6 +6014,21 @@ body.dark .fc-formula-popup input {
             overflow: hidden;
             pointer-events: auto;
         }
+        /* ===== ローカル動画プレイヤー(音声再生も同一要素で行う) ===== */
+        #videoPlayerContainer {
+            position: fixed;
+            z-index: 100;
+            display: none;
+            background: #000;
+            overflow: hidden;
+            pointer-events: auto;
+        }
+        #videoPlayerContainer video {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: contain;
+        }
         #ytPlayerContainer iframe {
             width: 100% !important;
             height: 100% !important;
@@ -6036,6 +6060,61 @@ body.dark .fc-formula-popup input {
             padding-top: 56.25%;
             z-index: 100005;
         }
+        /* データ項目選択ダイアログ */
+        .data-select-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin: 4px 0 12px;
+            text-align: left;
+        }
+        .data-select-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            border-radius: 999px;
+            background: rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            font-size: 0.92rem;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .dark .data-select-row {
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .data-select-row input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+            accent-color: var(--primary-color);
+            cursor: pointer;
+        }
+        .dark .data-select-row input[type="checkbox"] {
+            accent-color: var(--primary-color-dark);
+        }
+        .data-select-note {
+            font-size: 0.78rem;
+            opacity: 0.65;
+            line-height: 1.5;
+            margin-bottom: 16px;
+            text-align: left;
+        }
+
+        /* 動画追加方法ダイアログ */
+        .video-add-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 6px 0 16px;
+        }
+        .video-add-buttons button {
+            width: 100%;
+            padding: 12px 20px;
+            border-radius: 999px;
+            font-size: 0.95rem;
+        }
+
         /* プレイリストのYouTubeバッジ */
         .yt-svg-badge {
             display: inline-block;
@@ -6046,6 +6125,15 @@ body.dark .fc-formula-popup input {
         }
         .yt-svg-badge .yt-path { fill: #ff0000; }
         .yt-svg-badge .yt-tri { fill: #fff; }
+
+        /* プレイリストの動画バッジ */
+        .video-svg-badge {
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 5px;
+            flex-shrink: 0;
+            line-height: 0;
+        }
 
         .music-display-panel.yt-mode .music-progress-section { display: none; }
         .music-display-panel.yt-mode .volume-control-group { display: none; }
@@ -6295,12 +6383,36 @@ body.dark .fc-formula-popup input {
 
         /* ── About ページャー ── */
         .about-pager-content {
-            min-height: 300px;
+            /* ページ間で高さが変わってボタンが上下に動くのを防ぐ */
+            min-height: min(420px, 56vh);
+            display: flex;
+            flex-direction: column;
         }
 
         .about-page {
             animation: fadeIn 0.25s ease-out;
             text-align: center;
+            /* コンテンツ量が少ないページでも上下中央に配置 */
+            margin: auto;
+            width: 100%;
+        }
+
+        .about-hero-logo {
+            margin-bottom: 6px;
+        }
+
+        .about-hero-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin: 4px 0 20px;
+        }
+
+        .about-hero-credit {
+            font-size: 0.78rem;
+            opacity: 0.65;
+            line-height: 1.7;
         }
 
         .about-page h3 {
@@ -6836,6 +6948,18 @@ body.dark .fc-formula-popup input {
         .bottom-menu-logo-inner img { height: 14px; width: auto; opacity: 0.35; pointer-events: none; -webkit-touch-callout: none; }
         .menu-mode-hint { font-size: 0.68rem; opacity: 0.42; margin-left: 5px; }
 
+        /* 画面横幅に余裕がある場合、メニューを .container (600px) の外へはみ出させて1行を維持する。
+           margin-left:50% + translateX(-50%) は containing block の幅に依存せず常にビューポート中央に揃うため、
+           position:sticky(トップ固定)とも安全に併用できる。ボトム固定は既に画面幅いっぱいなので対象外。 */
+        @media (min-width: 700px) {
+            body.menu-wide-overflow:not(.menu-mode-bottom) .menu {
+                width: max-content;
+                max-width: min(calc(100vw - 24px), 1100px);
+                margin-left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+
 
         /* メニュー順序設定UI */
         .menu-order-list { display:flex; flex-direction:column; gap:4px; margin-top:8px; position:relative; }
@@ -6936,6 +7060,32 @@ body.dark .fc-formula-popup input {
             <div id="playlistManagerList" class="playlist-manager-list"></div>
             <div class="custom-confirm-buttons">
                 <button class="custom-confirm-ok" onclick="closePlaylistManager()" data-i18n="closeButton">閉じる</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="custom-confirm-overlay" id="dataSelectOverlay">
+        <div class="custom-confirm-dialog">
+            <div class="custom-confirm-title" id="dataSelectTitle" data-i18n="exportSelectTitle">エクスポートする項目</div>
+            <div class="data-select-list" id="dataSelectList"></div>
+            <div class="data-select-note" id="dataSelectNote"></div>
+            <div class="custom-confirm-buttons">
+                <button class="custom-confirm-cancel" id="dataSelectCancelBtn" data-i18n="cancelButton">キャンセル</button>
+                <button class="custom-confirm-ok" id="dataSelectOkBtn" data-i18n="okButton">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="custom-confirm-overlay" id="videoAddOverlay">
+        <div class="custom-confirm-dialog">
+            <div class="custom-confirm-title" id="videoAddTitle" data-i18n="videoAddTitle">動画ファイルの追加</div>
+            <div class="custom-confirm-message" id="videoAddMessage" data-i18n="videoAddMessage">動画をどのように追加しますか?</div>
+            <div class="video-add-buttons">
+                <button class="primary" id="videoAddAsVideoBtn" data-i18n="videoAddAsVideo">動画として追加</button>
+                <button class="secondary" id="videoAddAsAudioBtn" data-i18n="videoAddAsAudio">音声のみで追加</button>
+            </div>
+            <div class="custom-confirm-buttons">
+                <button class="custom-confirm-cancel" id="videoAddCancelBtn" data-i18n="cancelButton">キャンセル</button>
             </div>
         </div>
     </div>
@@ -7087,6 +7237,12 @@ body.dark .fc-formula-popup input {
     <!-- YouTube fixed overlay player -->
     <div id="ytPlayerContainer"></div>
 
+    <!-- 音楽/動画共用プレイヤー(ページ切替で消えないよう body 直下に配置)
+         音声のみの場合はコンテナごと非表示のまま再生される -->
+    <div id="videoPlayerContainer">
+        <video id="audioPlayer" playsinline webkit-playsinline></video>
+    </div>
+
     <!-- About / Q&A / ライセンス モーダル(常にレンダリングされるよう設定ページの外に配置) -->
     <div class="about-overlay" id="aboutOverlay" aria-hidden="true">
         <div class="about-dialog" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
@@ -7120,16 +7276,6 @@ body.dark .fc-formula-popup input {
             <h2 id="licenseTitle" data-i18n="licenseTitle">ライセンス</h2>
 <div id="licenseContent" class="about-content"
     style="font-size: 0.85rem; max-height: 60vh; overflow-y: auto; text-align: left;">
-    <b>[Libraries]</b><br>
-    <br>
-    <b>Chart.js v3.9.1</b><br>
-    <a href="https://www.chartjs.org" target="_blank" style="color: inherit; text-decoration: underline;">https://www.chartjs.org</a><br>
-    (c) 2022 Chart.js Contributors<br>
-    Released under the MIT License<br>
-    <br>
-    <hr style="opacity: 0.2; margin: 15px 0;">
-    <br>
-
     <b>[Google Fonts]</b><br>
 
     <a href="https://fonts.google.com/specimen/Jost" target="_blank" style="color: inherit; text-decoration: underline;"><b>Jost</b></a><br>
@@ -7377,7 +7523,7 @@ body.dark .fc-formula-popup input {
                             aria-haspopup="true">
                             <span class="file-select-text" data-i18n="addMusicButton">音楽を追加</span>
                         </label>
-                        <input type="file" id="musicFileInput" accept=".mp3,.wav,.flac,.m4a,.aac,.ogg,.webm,audio/*"
+                        <input type="file" id="musicFileInput" accept=".mp3,.wav,.flac,.m4a,.aac,.ogg,.webm,.mp4,.mov,.m4v,audio/*,video/*"
                             onchange="addMusicFile(event)" multiple style="display:none;">
 
                         <div class="file-dropdown-menu" id="musicDropdownMenu" role="menu" aria-hidden="true">
@@ -7391,7 +7537,6 @@ body.dark .fc-formula-popup input {
                     </div>
                 </div>
 
-                <audio id="audioPlayer" style="display:none;" playsinline webkit-playsinline></audio>
 
                 <div class="music-display-panel" data-editor-target="musicPlayer">
                     <div class="music-info-header">
@@ -7740,6 +7885,15 @@ body.dark .fc-formula-popup input {
                         <div class="toggle-slider"></div>
                     </div>
                 </div>
+
+                <!-- Menu wide overflow -->
+                <div class="toggle-item">
+                    <span data-i18n="menuWideOverflowLabel">画面幅に余裕がある場合は2段にしない</span>
+                    <div class="toggle-switch" id="toggleMenuWideOverflow" onclick="onMenuWideOverflowToggle()">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <div class="setting-note" data-i18n="menuWideOverflowNote">ONにすると画面幅に余裕がある場合、メニューが枠からはみ出して1行で表示されます</div>
 
                 <!-- Menu item order and visibility -->
                 <div style="margin-top:15px;">
@@ -8283,6 +8437,8 @@ const translations = {
                         menuDisplayIconText: 'アイコン＋テキスト',
                         menuFixedTopLabel: 'メニューをトップに固定',
                         menuFixedBottomLabel: 'メニューを下に固定',
+                        menuWideOverflowLabel: '画面幅に余裕がある場合は2段にしない',
+                        menuWideOverflowNote: 'ONにすると画面幅に余裕がある場合、メニューが枠からはみ出して1行で表示されます',
                         menuOrderLabel: 'メニュー項目・順序',
                         menuOrderNote: 'ドラッグで並び替え、トグルで表示/非表示',
 
@@ -8619,6 +8775,19 @@ const translations = {
                         importDataTitle: 'データをインポート',
                         importConfirm: 'このデータを読み込みますか?\n履歴: {historyCount}件\nToDo: {todoCount}件',
                         importFailed: 'インポートに失敗しました',
+                        exportSelectTitle: 'エクスポートする項目',
+                        importSelectTitle: 'インポートする項目',
+                        dataCatSettings: '設定',
+                        dataCatHistory: '勉強記録',
+                        dataCatTodos: 'ToDo',
+                        dataCatMusic: '音楽(YouTube動画のみ)',
+                        exportMusicNote: '音楽はYouTube動画のみエクスポートされます。端末に保存した音声・動画ファイルは含まれません。',
+                        importReloadNote: '音楽は既存のものを残したまま、YouTube動画のみ追加されます。インポート後にページを再読み込みします。',
+                        importDoneReload: 'インポートが完了しました。ページを再読み込みします。',
+                        videoAddTitle: '動画ファイルの追加',
+                        videoAddMessage: '動画をどのように追加しますか?',
+                        videoAddAsVideo: '動画として追加',
+                        videoAddAsAudio: '音声のみで追加',
 
                         // このサイトについて & QA
                         aboutContent: `<div style="text-align: center; margin-bottom: 20px;">
@@ -8833,6 +9002,8 @@ const translations = {
                         menuDisplayIconText: 'Icon + Text',
                         menuFixedTopLabel: 'Pin Menu to Top',
                         menuFixedBottomLabel: 'Pin Menu to Bottom',
+                        menuWideOverflowLabel: "Don't wrap to 2 rows when there's room",
+                        menuWideOverflowNote: 'When ON, the menu will overflow outside its panel to stay on one line if the screen is wide enough',
                         menuOrderLabel: 'Menu Items & Order',
                         menuOrderNote: 'Drag to reorder, toggle to show/hide',
 
@@ -9089,6 +9260,19 @@ const translations = {
                         importDataTitle: 'Import Data',
                         importConfirm: 'Import this data?\nHistory: {historyCount}\nToDo: {todoCount}',
                         importFailed: 'Import failed',
+                        exportSelectTitle: 'Items to Export',
+                        importSelectTitle: 'Items to Import',
+                        dataCatSettings: 'Settings',
+                        dataCatHistory: 'Study Records',
+                        dataCatTodos: 'To-Do',
+                        dataCatMusic: 'Music (YouTube only)',
+                        exportMusicNote: 'Only YouTube videos are exported for music. Audio/video files stored on this device are not included.',
+                        importReloadNote: 'Existing music is kept; only YouTube videos are added. The page will reload after importing.',
+                        importDoneReload: 'Import complete. The page will now reload.',
+                        videoAddTitle: 'Add Video Files',
+                        videoAddMessage: 'How would you like to add the video(s)?',
+                        videoAddAsVideo: 'Add as Video',
+                        videoAddAsAudio: 'Audio Only',
 
                         notSet: 'Not set',
                         periodLabel: 'Period',
@@ -9599,7 +9783,6 @@ const translations = {
                     7:  [1.9, 3.1, 2.3, 4.0, 2.8, 4.8, 3.5],
                     14: [1.3, 2.0, 1.6, 2.8, 2.4, 3.5, 1.9, 3.1, 2.3, 4.0, 2.8, 4.8, 3.5, 4.4]
                 };
-                let adChart = null;
                 const AD_THEME_COLORS = {
                     blue: '#9db4c8', green: '#a8c9a8', purple: '#b8a8c9', orange: '#d9b4a0',
                     pink: '#d9a8b4', teal: '#a0c9c9', white: '#b2b2b2'
@@ -9608,7 +9791,6 @@ const translations = {
                 function stopAboutDemos() {
                     if (adTimerInterval) { clearInterval(adTimerInterval); adTimerInterval = null; }
                     if (adMusicInterval) { clearInterval(adMusicInterval); adMusicInterval = null; }
-                    if (adChart) { adChart.destroy(); adChart = null; }
                     adTimerStart = null;
                     adTimerPausedAccum = 0;
                     adTimerIsPaused = false;
@@ -9619,12 +9801,15 @@ const translations = {
                 const ABOUT_PAGE_BUILDERS = [
                     // 1. どんなツール?
                     function() {
+                        const chips = ['menuTimer', 'menuStats', 'menuList', 'menuMusic', 'menuTodo']
+                            .map(function(k) { return '<span class="ad-chip">' + getText(k) + '</span>'; })
+                            .join('');
                         return '<div class="about-page">' +
-                            '<div><img src="1024,1024_icon.png" style="width: 3rem; height: 3rem; margin-bottom: -20px;" alt=""></div>' +
-                            '<div style="margin-top: 6px;"><img class="tsumiki-logo tsumiki-logo-about" src="' + (document.body.classList.contains('dark') ? 'tsumiki_logo_akarui.svg' : 'tsumiki_logo.svg') + '" alt="Tsumiki app"></div>' +
+                            '<div class="about-hero-logo"><img class="tsumiki-logo tsumiki-logo-about" src="' + (document.body.classList.contains('dark') ? 'tsumiki_logo_akarui.svg' : 'tsumiki_logo.svg') + '" alt="Tsumiki app"></div>' +
                             '<h3>' + getText('aboutPgWhatTitle') + '</h3>' +
                             '<div class="about-page-desc">' + getText('aboutPgWhatDesc') + '</div>' +
-                            '<div style="font-size: 0.78rem; opacity: 0.65;">' + getText('aboutCreditHtml') + '</div>' +
+                            '<div class="about-hero-chips">' + chips + '</div>' +
+                            '<div class="about-hero-credit">' + getText('aboutCreditHtml') + '</div>' +
                             '</div>';
                     },
                     // 2. どう使う?(タイマーデモ)
@@ -9818,7 +10003,7 @@ const translations = {
                     document.getElementById('adEndBtn').style.display = 'none';
                 }
 
-                // --- 統計デモ(実際に使用しているChart.jsグラフをそのまま利用) ---
+                // --- 統計デモ(本体と同じ自作グラフレンダラーを利用) ---
                 function aboutDemoStats(days) {
                     adStatsDays = days;
                     const canvas = document.getElementById('adChartCanvas');
@@ -9832,35 +10017,7 @@ const translations = {
                         return `${d.getMonth() + 1}/${d.getDate()}`;
                     });
 
-                    const isDark = document.body.classList.contains('dark');
-                    const textColor = isDark ? '#e8e8e8' : '#323232';
-                    const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
-                    const primaryColor = getPrimaryColor();
-
-                    if (adChart) { adChart.destroy(); adChart = null; }
-                    adChart = new Chart(canvas.getContext('2d'), {
-                        type: 'bar',
-                        data: {
-                            labels: labels,
-                            datasets: [{
-                                label: getText('totalStudyTime'),
-                                data: data,
-                                backgroundColor: primaryColor,
-                                borderColor: primaryColor,
-                                borderWidth: 2
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: true,
-                            animation: { duration: 400 },
-                            plugins: { legend: { labels: { color: textColor } } },
-                            scales: {
-                                y: { beginAtZero: true, ticks: { color: textColor }, grid: { color: gridColor } },
-                                x: { ticks: { color: textColor }, grid: { color: gridColor } }
-                            }
-                        }
-                    });
+                    renderCustomChart(canvas, { labels, values: data, type: 'bar' });
 
                     const p7 = document.getElementById('adPill7');
                     const p14 = document.getElementById('adPill14');
@@ -11182,33 +11339,82 @@ const translations = {
                     return title.normalize('NFC');
                 }
 
+                // 動画追加方法の選択ダイアログ('video' | 'audio' | null を返す)
+                let videoAddResolve = null;
+
+                function openVideoAddDialog() {
+                    return new Promise((resolve) => {
+                        const overlay = document.getElementById('videoAddOverlay');
+                        if (!overlay) { resolve('video'); return; }
+                        videoAddResolve = resolve;
+                        overlay.classList.add('show');
+                    });
+                }
+
+                function closeVideoAddDialog(result) {
+                    const overlay = document.getElementById('videoAddOverlay');
+                    if (overlay) overlay.classList.remove('show');
+                    if (videoAddResolve) {
+                        videoAddResolve(result);
+                        videoAddResolve = null;
+                    }
+                }
+
+                document.getElementById('videoAddAsVideoBtn')?.addEventListener('click', () => closeVideoAddDialog('video'));
+                document.getElementById('videoAddAsAudioBtn')?.addEventListener('click', () => closeVideoAddDialog('audio'));
+                document.getElementById('videoAddCancelBtn')?.addEventListener('click', () => closeVideoAddDialog(null));
+                document.getElementById('videoAddOverlay')?.addEventListener('click', (e) => {
+                    if (e.target === e.currentTarget) closeVideoAddDialog(null);
+                });
+
+                function isVideoMediaFile(f) {
+                    if (!f) return false;
+                    if (f.type && f.type.startsWith('video/')) return true;
+                    if (f.type && f.type.startsWith('audio/')) return false;
+                    return /\.(mp4|mov|m4v)$/i.test(f.name);
+                }
+
                 async function addMusicFile(event) {
                     const allFiles = Array.from(event.target.files || []);
+                    const videoFiles = allFiles.filter(isVideoMediaFile);
                     const audioFiles = allFiles.filter(f => {
-                        if (!f) return false;
+                        if (!f || isVideoMediaFile(f)) return false;
                         if (f.type && f.type.startsWith('audio/')) return true;
                         return /\.(mp3|wav|flac|m4a|aac|ogg|webm|opus)$/i.test(f.name);
                     });
-                    if (audioFiles.length === 0) {
+                    if (audioFiles.length === 0 && videoFiles.length === 0) {
                         return;
                     }
-                    for (let file of audioFiles) {
+
+                    // 動画が含まれる場合は追加方法を選択(音声のみ=映像を表示せず再生)
+                    let videoMode = null;
+                    if (videoFiles.length > 0) {
+                        videoMode = await openVideoAddDialog();
+                        if (!videoMode && audioFiles.length === 0) return;
+                    }
+
+                    const persistOne = async (file, asVideo) => {
                         const id = Date.now() + Math.random();
                         const safeTitle = normalizeMusicTitle(file.name);
+                        const entry = { title: safeTitle, id: id };
+                        if (asVideo) entry.isVideo = true;
                         try {
                             await saveFileBlobToDB(id, safeTitle, file);
                             const blob = await getFileBlobFromDB(id);
-                            if (blob) {
-                                const url = URL.createObjectURL(blob);
-                                musicFiles.push({ url: url, title: safeTitle, id: id });
-                            } else {
-                                const url = URL.createObjectURL(file);
-                                musicFiles.push({ url: url, title: safeTitle, id: id });
-                            }
+                            entry.url = URL.createObjectURL(blob || file);
                         } catch (e) {
                             console.error('Failed to persist file to DB, using in-memory URL', e);
-                            const url = URL.createObjectURL(file);
-                            musicFiles.push({ url: url, title: safeTitle, id: id });
+                            entry.url = URL.createObjectURL(file);
+                        }
+                        musicFiles.push(entry);
+                    };
+
+                    for (const file of audioFiles) {
+                        await persistOne(file, false);
+                    }
+                    if (videoMode) {
+                        for (const file of videoFiles) {
+                            await persistOne(file, videoMode === 'video');
                         }
                     }
                     savePlaylist();
@@ -11251,7 +11457,12 @@ const translations = {
                         playlists: musicPlaylists.map(p => ({
                             id: p.id,
                             name: p.name,
-                            tracks: Array.isArray(p.tracks) ? p.tracks.map(t => (t.youtubeId ? { id: t.id, title: t.title, youtubeId: t.youtubeId } : { id: t.id, title: t.title })) : []
+                            tracks: Array.isArray(p.tracks) ? p.tracks.map(t => {
+                                const meta = { id: t.id, title: t.title };
+                                if (t.youtubeId) meta.youtubeId = t.youtubeId;
+                                if (t.video || t.isVideo) meta.video = true;
+                                return meta;
+                            }) : []
                         }))
                     }));
                     if (!ok) {
@@ -11266,7 +11477,12 @@ const translations = {
                     ensurePlaylistsState();
                     const active = getActivePlaylistMeta();
                     if (!active) return;
-                    active.tracks = musicFiles.map(m => (m.youtubeId ? { id: m.id, title: m.title, youtubeId: m.youtubeId } : { id: m.id, title: m.title }));
+                    active.tracks = musicFiles.map(m => {
+                        const meta = { id: m.id, title: m.title };
+                        if (m.youtubeId) meta.youtubeId = m.youtubeId;
+                        if (m.isVideo) meta.video = true;
+                        return meta;
+                    });
                 }
 
                 async function loadActivePlaylistFilesFromMeta() {
@@ -11291,7 +11507,9 @@ const translations = {
                                 continue;
                             }
                             const url = URL.createObjectURL(blob);
-                            musicFiles.push({ url, title: normalizeMusicTitle(item.title || 'Unknown track'), id: item.id });
+                            const entry = { url, title: normalizeMusicTitle(item.title || 'Unknown track'), id: item.id };
+                            if (item.video) entry.isVideo = true;
+                            musicFiles.push(entry);
                         } catch (e) {
                             console.warn('Error loading track blob', item, e);
                             missingCount += 1;
@@ -11341,7 +11559,7 @@ const translations = {
                 ${playlistSelectMode ? `<input type="checkbox" class="playlist-item-checkbox" data-index="${index}" ${selectedMusicItems.has(index) ? 'checked' : ''} onclick="event.stopPropagation(); togglePlaylistItemSelection(${index}, this.checked)">` : ''}
                 <div class="playlist-item-info" style="flex:1; min-width:0;">
                     <div class="playlist-item-title">
-                        ${item.youtubeId ? '<svg class="yt-svg-badge" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid" viewBox="0 0 256 180" width="20" height="14" aria-label="YouTube"><path class="yt-path" d="M250.346 28.075A32.18 32.18 0 0 0 227.69 5.418C207.824 0 127.87 0 127.87 0S47.912.164 28.046 5.582A32.18 32.18 0 0 0 5.39 28.24c-6.009 35.298-8.34 89.084.165 122.97a32.18 32.18 0 0 0 22.656 22.657c19.866 5.418 99.822 5.418 99.822 5.418s79.955 0 99.82-5.418a32.18 32.18 0 0 0 22.657-22.657c6.338-35.348 8.291-89.1-.164-123.134Z"/><path class="yt-tri" d="m102.421 128.06 66.328-38.418-66.328-38.418z"/></svg>' : ''}<span class="title-text">${escapeHtml(item.title)}</span>
+                        ${item.youtubeId ? '<svg class="yt-svg-badge" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid" viewBox="0 0 256 180" width="20" height="14" aria-label="YouTube"><path class="yt-path" d="M250.346 28.075A32.18 32.18 0 0 0 227.69 5.418C207.824 0 127.87 0 127.87 0S47.912.164 28.046 5.582A32.18 32.18 0 0 0 5.39 28.24c-6.009 35.298-8.34 89.084.165 122.97a32.18 32.18 0 0 0 22.656 22.657c19.866 5.418 99.822 5.418 99.822 5.418s79.955 0 99.82-5.418a32.18 32.18 0 0 0 22.657-22.657c6.338-35.348 8.291-89.1-.164-123.134Z"/><path class="yt-tri" d="m102.421 128.06 66.328-38.418-66.328-38.418z"/></svg>' : ''}${item.isVideo ? '<svg class="video-svg-badge" xmlns="http://www.w3.org/2000/svg" width="20" height="15" viewBox="0 0 24 17" aria-label="Video"><rect x="0.75" y="0.75" width="22.5" height="15.5" rx="4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-opacity="0.55"/><path d="M9.5 4.8 16.2 8.5 9.5 12.2z" fill="currentColor" fill-opacity="0.65"/></svg>' : ''}<span class="title-text">${escapeHtml(item.title)}</span>
                     </div>
                 </div>
             </div>
@@ -12134,6 +12352,32 @@ const translations = {
                     if (!musicFiles[index]) return;
 
                     const track = musicFiles[index];
+
+                    if (track.youtubeId && !isYoutubeVideoEnabled()) {
+                        // YouTubeが無効な場合はこのトラックを再生せず、次の再生可能なトラックへスキップ
+                        const total = musicFiles.length;
+                        for (let i = 1; i <= total; i++) {
+                            const candidateIndex = (index + i) % total;
+                            if (candidateIndex === index) break;
+                            const candidate = musicFiles[candidateIndex];
+                            if (candidate && !candidate.youtubeId) {
+                                playMusic(candidateIndex);
+                                return;
+                            }
+                        }
+                        // 再生可能なトラックが無い
+                        currentMusicIndex = -1;
+                        const audioEl = document.getElementById('audioPlayer');
+                        if (audioEl) { audioEl.pause(); audioEl.removeAttribute('src'); }
+                        if (ytPlayer && ytPlayerIsPlaying) {
+                            try { ytPlayer.stopVideo(); } catch(e) {}
+                            ytPlayerIsPlaying = false;
+                        }
+                        updateMusicTitleDisplay();
+                        updatePlayPauseUI(false);
+                        return;
+                    }
+
                     userInitiatedPause = false;
                     currentMusicIndex = index;
 
@@ -14383,7 +14627,7 @@ const translations = {
                     }
                 }
 
-                const EXPORT_SCHEMA_VERSION = 2;
+                const EXPORT_SCHEMA_VERSION = 3;
                 const BACKUP_SETTING_KEYS = [
                     'theme',
                     'last_valid_theme',
@@ -14423,6 +14667,7 @@ const translations = {
                     'menu_mode',
                     'menu_display',
                     'menu_fixed',
+                    'menu_wide_overflow',
                     'menu_order',
                     'menu_visibility'
                 ];
@@ -14446,7 +14691,8 @@ const translations = {
                     'tutorial_completed',
                     'dev_mode_enabled',
                     'mini_player_enabled',
-                    'mini_player_hide_skip'
+                    'mini_player_hide_skip',
+                    'menu_wide_overflow'
                 ];
 
                 const EXPORT_SKIP_LOCALSTORAGE_KEYS = new Set([
@@ -14459,7 +14705,31 @@ const translations = {
                     'studyPauseStart',
                     'music_resume_pending',
                     'music_resume_index',
-                    'music_resume_time'
+                    'music_resume_time',
+                    // 音楽は settings ではなく music セクションとして別途エクスポートする
+                    'music_playlists_v2',
+                    'musicPlaylist',
+                    'music_current_playlist_id',
+                    'music_current_track_id'
+                ]);
+
+                // インポート時に settings 経由で上書きしてはいけないキー
+                // (音楽はマージ処理で扱い、タイマー実行状態はローカル固有のため)
+                const IMPORT_SKIP_SETTING_KEYS = new Set([
+                    'music_playlists_v2',
+                    'musicPlaylist',
+                    'music_current_playlist_id',
+                    'music_current_track_id',
+                    'music_resume_pending',
+                    'music_resume_index',
+                    'music_resume_time',
+                    'studyHistory',
+                    'todos',
+                    'studyStartTime',
+                    'studyPaused',
+                    'studyPausedAccum',
+                    'studyPauseHistory',
+                    'studyPauseStart'
                 ]);
 
                 function safeJsonParse(raw, fallback) {
@@ -14549,8 +14819,83 @@ const translations = {
                         studyHistory,
                         todos,
                         settings,
-                        legacy: parsedData
+                        legacy: parsedData,
+                        music: extractImportMusicPlaylists(parsedData, settings),
+                        hasHistory: Array.isArray(parsedData.studyHistory),
+                        hasTodos: Array.isArray(parsedData.todos),
+                        hasSettings: Object.keys(settings).length > 0 || hasLegacyShape
                     };
+                }
+
+                // インポートデータから YouTube トラックのみを抽出する
+                // (音声/動画ファイルの実体は JSON に含められないため、URLベースの YouTube のみ引き継ぐ)
+                function extractImportMusicPlaylists(parsedData, settings) {
+                    let source = null;
+                    if (parsedData.music && typeof parsedData.music === 'object' && Array.isArray(parsedData.music.playlists)) {
+                        source = parsedData.music.playlists;
+                    } else if (typeof settings.music_playlists_v2 === 'string') {
+                        // v2以前のエクスポートは音楽メタデータが settings に混入していた
+                        const parsed = safeJsonParse(settings.music_playlists_v2, null);
+                        if (parsed && Array.isArray(parsed.playlists)) source = parsed.playlists;
+                    }
+                    if (!source) return [];
+                    const result = [];
+                    for (const p of source) {
+                        if (!p || !Array.isArray(p.tracks)) continue;
+                        const ytTracks = p.tracks
+                            .filter(t => t && typeof t.youtubeId === 'string' && t.youtubeId)
+                            .map(t => ({ title: String(t.title || `YouTube: ${t.youtubeId}`), youtubeId: t.youtubeId }));
+                        if (ytTracks.length > 0) {
+                            result.push({ id: typeof p.id === 'string' ? p.id : '', name: String(p.name || ''), tracks: ytTracks });
+                        }
+                    }
+                    return result;
+                }
+
+                // 既存の音楽はそのまま残し、インポートされた YouTube トラックのみ追加する
+                function mergeImportedMusic(importedPlaylists) {
+                    if (!Array.isArray(importedPlaylists) || importedPlaylists.length === 0) return;
+                    const raw = safeJsonParse(getData('music_playlists_v2') || 'null', null);
+                    const current = (raw && Array.isArray(raw.playlists) && raw.playlists.length > 0)
+                        ? raw
+                        : { currentPlaylistId: 'default', playlists: [{ id: 'default', name: getText('playlist'), tracks: [] }] };
+
+                    for (const imp of importedPlaylists) {
+                        let target = null;
+                        if (imp.id) target = current.playlists.find(p => p && p.id === imp.id);
+                        if (!target && imp.name) target = current.playlists.find(p => p && p.name === imp.name);
+                        if (!target) {
+                            target = {
+                                id: imp.id && !current.playlists.some(p => p && p.id === imp.id) ? imp.id : createPlaylistId(),
+                                name: imp.name || getText('playlist'),
+                                tracks: []
+                            };
+                            current.playlists.push(target);
+                        }
+                        if (!Array.isArray(target.tracks)) target.tracks = [];
+                        const existingYt = new Set(target.tracks.filter(t => t && t.youtubeId).map(t => t.youtubeId));
+                        for (const t of imp.tracks) {
+                            if (existingYt.has(t.youtubeId)) continue;
+                            existingYt.add(t.youtubeId);
+                            target.tracks.push({ id: Date.now() + Math.random(), title: t.title, youtubeId: t.youtubeId });
+                        }
+                    }
+                    saveData('music_playlists_v2', JSON.stringify(current));
+                }
+
+                // エクスポート用: 現在のプレイリストから YouTube トラックのみ抽出
+                function collectExportMusic() {
+                    const raw = safeJsonParse(getData('music_playlists_v2') || 'null', null);
+                    const playlists = (raw && Array.isArray(raw.playlists)) ? raw.playlists : [];
+                    const result = [];
+                    for (const p of playlists) {
+                        if (!p || !Array.isArray(p.tracks)) continue;
+                        const ytTracks = p.tracks
+                            .filter(t => t && t.youtubeId)
+                            .map(t => ({ title: t.title, youtubeId: t.youtubeId }));
+                        if (ytTracks.length > 0) result.push({ id: p.id, name: p.name, tracks: ytTracks });
+                    }
+                    return { playlists: result };
                 }
 
                 function applyMode(mode) {
@@ -14571,20 +14916,82 @@ const translations = {
                     toggle.classList.toggle('active', isActive);
                 }
 
-                function exportData() {
+                // データ項目選択ダイアログ(エクスポート/インポート共用)
+                let dataSelectResolve = null;
+
+                function openDataSelectDialog({ titleKey, noteKey, items }) {
+                    return new Promise((resolve) => {
+                        const overlay = document.getElementById('dataSelectOverlay');
+                        const list = document.getElementById('dataSelectList');
+                        const titleEl = document.getElementById('dataSelectTitle');
+                        const noteEl = document.getElementById('dataSelectNote');
+                        const okBtn = document.getElementById('dataSelectOkBtn');
+                        const cancelBtn = document.getElementById('dataSelectCancelBtn');
+                        if (!overlay || !list) { resolve(null); return; }
+                        dataSelectResolve = resolve;
+                        if (titleEl) titleEl.textContent = getText(titleKey);
+                        if (noteEl) {
+                            noteEl.textContent = noteKey ? getText(noteKey) : '';
+                            noteEl.style.display = noteKey ? '' : 'none';
+                        }
+                        if (okBtn) okBtn.textContent = getText('okButton');
+                        if (cancelBtn) cancelBtn.textContent = getText('cancelButton');
+                        list.innerHTML = items.map(it => `
+                            <label class="data-select-row">
+                                <input type="checkbox" value="${it.key}" checked>
+                                <span>${escapeHtml(getText(it.labelKey))}${typeof it.count === 'number' ? ` (${it.count})` : ''}</span>
+                            </label>`).join('');
+                        overlay.classList.add('show');
+                    });
+                }
+
+                function closeDataSelectDialog(result) {
+                    const overlay = document.getElementById('dataSelectOverlay');
+                    if (overlay) overlay.classList.remove('show');
+                    if (dataSelectResolve) {
+                        dataSelectResolve(result);
+                        dataSelectResolve = null;
+                    }
+                }
+
+                document.getElementById('dataSelectOkBtn')?.addEventListener('click', () => {
+                    const checked = new Set(Array.from(document.querySelectorAll('#dataSelectList input:checked')).map(i => i.value));
+                    closeDataSelectDialog(checked);
+                });
+                document.getElementById('dataSelectCancelBtn')?.addEventListener('click', () => closeDataSelectDialog(null));
+                document.getElementById('dataSelectOverlay')?.addEventListener('click', (e) => {
+                    if (e.target === e.currentTarget) closeDataSelectDialog(null);
+                });
+
+                async function exportData() {
                     const studyHistory = safeJsonParse(getData('studyHistory') || '[]', []);
                     const todos = safeJsonParse(getData('todos') || '[]', []);
-                    const settings = collectExportSettings();
+                    const music = collectExportMusic();
+                    const ytCount = music.playlists.reduce((n, p) => n + p.tracks.length, 0);
+
+                    const selected = await openDataSelectDialog({
+                        titleKey: 'exportSelectTitle',
+                        noteKey: 'exportMusicNote',
+                        items: [
+                            { key: 'settings', labelKey: 'dataCatSettings' },
+                            { key: 'history', labelKey: 'dataCatHistory', count: Array.isArray(studyHistory) ? studyHistory.length : 0 },
+                            { key: 'todos', labelKey: 'dataCatTodos', count: Array.isArray(todos) ? todos.length : 0 },
+                            { key: 'music', labelKey: 'dataCatMusic', count: ytCount }
+                        ]
+                    });
+                    if (!selected || selected.size === 0) return;
 
                     const data = {
                         version: EXPORT_SCHEMA_VERSION,
                         app: 'tsumiki-study',
                         exportedAt: new Date().toISOString(),
-                        studyHistory: Array.isArray(studyHistory) ? studyHistory : [],
-                        todos: Array.isArray(todos) ? todos : [],
-                        settings,
-                        excludes: ['musicPlaylist', 'indexedDB:study_music_db']
+                        includes: Array.from(selected),
+                        excludes: ['indexedDB:study_music_db']
                     };
+                    if (selected.has('history')) data.studyHistory = Array.isArray(studyHistory) ? studyHistory : [];
+                    if (selected.has('todos')) data.todos = Array.isArray(todos) ? todos : [];
+                    if (selected.has('settings')) data.settings = collectExportSettings();
+                    if (selected.has('music')) data.music = music;
 
                     const json = JSON.stringify(data, null, 2);
                     const blob = new Blob([json], { type: 'application/json' });
@@ -14598,6 +15005,94 @@ const translations = {
                     URL.revokeObjectURL(url);
                 }
 
+                // インポートされた設定を localStorage に保存する(UI反映はリロードで行う)
+                function applyImportedSettings(settings, legacy) {
+                    const explicitlyHandledKeys = new Set([
+                        ...IMPORT_BOOLEAN_SETTING_KEYS,
+                        'focus_duration',
+                        'break_duration',
+                        'graph_type',
+                        'graph_period',
+                        'graph_location',
+                        'theme',
+                        'last_valid_theme',
+                        'mode',
+                        'app_language',
+                        'font_ja',
+                        'font_en'
+                    ]);
+
+                    Object.entries(settings).forEach(([key, value]) => {
+                        if (explicitlyHandledKeys.has(key)) return;
+                        if (IMPORT_SKIP_SETTING_KEYS.has(key)) return;
+                        if (value === null || typeof value === 'undefined') return;
+                        if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+                            saveData(key, String(value));
+                        }
+                    });
+
+                    for (const key of IMPORT_BOOLEAN_SETTING_KEYS) {
+                        const rawValue = settings[key] ?? legacy[key];
+                        if (typeof rawValue !== 'undefined') {
+                            saveData(key, normalizeBooleanString(rawValue));
+                        }
+                    }
+
+                    const importedFocusDuration = settings.focus_duration ?? legacy.focus_duration;
+                    if (typeof importedFocusDuration !== 'undefined') {
+                        saveData('focus_duration', normalizeRangedIntString(importedFocusDuration, FOCUS_DURATION_RANGE, '25'));
+                    }
+
+                    const importedBreakDuration = settings.break_duration ?? legacy.break_duration;
+                    if (typeof importedBreakDuration !== 'undefined') {
+                        saveData('break_duration', normalizeRangedIntString(importedBreakDuration, BREAK_DURATION_RANGE, '5'));
+                    }
+
+                    const importedGraphType = String(settings.graph_type ?? legacy.graph_type ?? '').trim();
+                    if (['bar', 'line', 'area'].includes(importedGraphType)) {
+                        saveData('graph_type', importedGraphType);
+                    }
+
+                    const importedGraphPeriod = String(settings.graph_period ?? legacy.graph_period ?? '').trim();
+                    if (['7', '14', '30', '90', '365', 'all'].includes(importedGraphPeriod)) {
+                        saveData('graph_period', importedGraphPeriod);
+                    }
+
+                    const importedGraphLocation = String(settings.graph_location ?? legacy.graph_location ?? '').trim();
+                    if (['list', 'stats', 'both'].includes(importedGraphLocation)) {
+                        saveData('graph_location', importedGraphLocation);
+                    }
+
+                    const importedThemeRaw = settings.theme ?? legacy.theme;
+                    if (typeof importedThemeRaw === 'string') {
+                        const importedTheme = normalizeThemeName(importedThemeRaw);
+                        if (importedTheme) {
+                            saveData('theme', importedTheme);
+                            saveData('last_valid_theme', importedTheme);
+                        }
+                    }
+
+                    const importedModeRaw = settings.mode ?? legacy.mode;
+                    if (typeof importedModeRaw === 'string') {
+                        saveData('mode', importedModeRaw.trim().toLowerCase() === 'dark' ? 'dark' : 'light');
+                    }
+
+                    const importedLanguage = String(settings.app_language ?? legacy.app_language ?? '').trim().toLowerCase();
+                    if (importedLanguage === 'ja' || importedLanguage === 'en') {
+                        saveData('app_language', importedLanguage);
+                    }
+
+                    const importedFontJa = settings.font_ja ?? legacy.font_ja;
+                    if (typeof importedFontJa === 'string' && importedFontJa.trim() !== '') {
+                        saveData('font_ja', importedFontJa.trim());
+                    }
+
+                    const importedFontEn = settings.font_en ?? legacy.font_en;
+                    if (typeof importedFontEn === 'string') {
+                        saveData('font_en', importedFontEn.trim());
+                    }
+                }
+
                 function importData(event) {
                     const file = event.target.files[0];
                     if (!file) return;
@@ -14607,171 +15102,31 @@ const translations = {
                         try {
                             const parsedData = JSON.parse(e.target.result);
                             const normalized = buildNormalizedImportData(parsedData);
-                            const { studyHistory, todos, settings, legacy } = normalized;
+                            const { studyHistory, todos, settings, legacy, music } = normalized;
 
-                            // 確認ダイアログを表示
-                            const confirmed = await customConfirm(
-                                getText('importConfirm').replace('{historyCount}', studyHistory.length || 0).replace('{todoCount}', todos.length || 0),
-                                getText('importDataTitle'),
-                                'warning.webp'
-                            );
+                            // ファイルに含まれる項目だけを選択肢として表示
+                            const items = [];
+                            if (normalized.hasSettings) items.push({ key: 'settings', labelKey: 'dataCatSettings' });
+                            if (normalized.hasHistory) items.push({ key: 'history', labelKey: 'dataCatHistory', count: studyHistory.length });
+                            if (normalized.hasTodos) items.push({ key: 'todos', labelKey: 'dataCatTodos', count: todos.length });
+                            if (music.length > 0) items.push({ key: 'music', labelKey: 'dataCatMusic', count: music.reduce((n, p) => n + p.tracks.length, 0) });
+                            if (items.length === 0) throw new Error(getText('invalidFileFormat'));
 
-                            if (confirmed) {
-                                // データを復元
-                                saveData('studyHistory', JSON.stringify(studyHistory));
-                                saveData('todos', JSON.stringify(todos));
+                            const selected = await openDataSelectDialog({
+                                titleKey: 'importSelectTitle',
+                                noteKey: 'importReloadNote',
+                                items
+                            });
+                            if (!selected || selected.size === 0) return;
 
-                                const explicitlyHandledKeys = new Set([
-                                    ...IMPORT_BOOLEAN_SETTING_KEYS,
-                                    'focus_duration',
-                                    'break_duration',
-                                    'graph_type',
-                                    'graph_period',
-                                    'graph_location',
-                                    'theme',
-                                    'last_valid_theme',
-                                    'mode',
-                                    'app_language',
-                                    'font_ja',
-                                    'font_en'
-                                ]);
+                            if (selected.has('history')) saveData('studyHistory', JSON.stringify(studyHistory));
+                            if (selected.has('todos')) saveData('todos', JSON.stringify(todos));
+                            if (selected.has('settings')) applyImportedSettings(settings, legacy);
+                            if (selected.has('music')) mergeImportedMusic(music);
 
-                                Object.entries(settings).forEach(([key, value]) => {
-                                    if (explicitlyHandledKeys.has(key)) return;
-                                    if (value === null || typeof value === 'undefined') return;
-                                    if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
-                                        saveData(key, String(value));
-                                    }
-                                });
-
-                                for (const key of IMPORT_BOOLEAN_SETTING_KEYS) {
-                                    const rawValue = settings[key] ?? legacy[key];
-                                    if (typeof rawValue !== 'undefined') {
-                                        saveData(key, normalizeBooleanString(rawValue));
-                                    }
-                                }
-
-                                const importedFocusDuration = settings.focus_duration ?? legacy.focus_duration;
-                                if (typeof importedFocusDuration !== 'undefined') {
-                                    saveData('focus_duration', normalizeRangedIntString(importedFocusDuration, FOCUS_DURATION_RANGE, '25'));
-                                }
-
-                                const importedBreakDuration = settings.break_duration ?? legacy.break_duration;
-                                if (typeof importedBreakDuration !== 'undefined') {
-                                    saveData('break_duration', normalizeRangedIntString(importedBreakDuration, BREAK_DURATION_RANGE, '5'));
-                                }
-
-                                const importedGraphType = String(settings.graph_type ?? legacy.graph_type ?? '').trim();
-                                if (['bar', 'line', 'area'].includes(importedGraphType)) {
-                                    saveData('graph_type', importedGraphType);
-                                }
-
-                                const importedGraphPeriod = String(settings.graph_period ?? legacy.graph_period ?? '').trim();
-                                if (['7', '14', '30', '90', '365', 'all'].includes(importedGraphPeriod)) {
-                                    saveData('graph_period', importedGraphPeriod);
-                                }
-
-                                const importedGraphLocation = String(settings.graph_location ?? legacy.graph_location ?? '').trim();
-                                if (['list', 'stats', 'both'].includes(importedGraphLocation)) {
-                                    saveData('graph_location', importedGraphLocation);
-                                }
-
-                                const importedThemeRaw = settings.theme ?? legacy.theme;
-                                if (typeof importedThemeRaw === 'string') {
-                                    const importedTheme = normalizeThemeName(importedThemeRaw);
-                                    if (importedTheme) {
-                                        saveData('theme', importedTheme);
-                                        saveData('last_valid_theme', importedTheme);
-                                        changeTheme(importedTheme);
-                                    }
-                                }
-
-                                const importedModeRaw = settings.mode ?? legacy.mode;
-                                if (typeof importedModeRaw === 'string') {
-                                    applyMode(importedModeRaw.trim().toLowerCase() === 'dark' ? 'dark' : 'light');
-                                }
-
-                                const importedLanguage = String(settings.app_language ?? legacy.app_language ?? '').trim().toLowerCase();
-                                if (importedLanguage === 'ja' || importedLanguage === 'en') {
-                                    saveData('app_language', importedLanguage);
-                                }
-
-                                const importedFontJa = settings.font_ja ?? legacy.font_ja;
-                                if (typeof importedFontJa === 'string' && importedFontJa.trim() !== '') {
-                                    saveData('font_ja', importedFontJa.trim());
-                                }
-
-                                const importedFontEn = settings.font_en ?? legacy.font_en;
-                                if (typeof importedFontEn === 'string') {
-                                    saveData('font_en', importedFontEn.trim());
-                                }
-
-                                const featureMusicEnabled = getData('feature_music') === 'true';
-                                setToggleActive('toggleMusic', featureMusicEnabled);
-                                if (featureMusicEnabled) addMenuButton('music');
-                                else removeMenuButton('music');
-
-                                const featureTodoEnabled = getData('feature_todo') === 'true';
-                                setToggleActive('toggleTodo', featureTodoEnabled);
-                                if (featureTodoEnabled) addMenuButton('todo');
-                                else removeMenuButton('todo');
-
-                                setToggleActive('toggleTitleTime', getData('feature_title_time') !== 'false');
-                                setToggleActive('toggleClock', getData('feature_clock') !== 'false');
-                                applyClockVisibility();
-                                setToggleActive('toggleHistoryTimeline', getData('feature_history_timeline') !== 'false');
-                                setToggleActive('toggleLoadingAnim', getData('feature_loading_anim') !== 'false');
-                                setToggleActive('toggleStopMusicOnTimerEnd', getData('feature_stop_music_on_timer_end') !== 'false');
-                                setToggleActive('toggleMusicResumeOnTap', getData('feature_music_resume_on_tap_after_reload') !== 'false');
-                                setToggleActive('toggleLockSettings', getData('lock_settings_during_timer') === 'true');
-                                setToggleActive('toggleFocusDisplay', getData('feature_focus_mode_display') !== 'false');
-
-                                const focusDisplayEnabled = getData('feature_focus_mode_display') !== 'false';
-                                const focusModeToggleContainer = document.getElementById('focusModeToggleContainer');
-                                if (focusModeToggleContainer) {
-                                    focusModeToggleContainer.style.display = focusDisplayEnabled ? 'block' : 'none';
-                                }
-
-                                const graphEnabled = getData('graph_enabled') === 'true';
-                                setToggleActive('toggleGraph', graphEnabled);
-                                const graphSettings = document.getElementById('graphSettings');
-                                if (graphSettings) {
-                                    graphSettings.style.display = graphEnabled ? 'block' : 'none';
-                                }
-
-                                const graphTypeEl = document.getElementById('graphType');
-                                if (graphTypeEl && getData('graph_type')) graphTypeEl.value = getData('graph_type');
-                                const graphPeriodEl = document.getElementById('graphPeriod');
-                                if (graphPeriodEl && getData('graph_period')) graphPeriodEl.value = getData('graph_period');
-                                const graphLocationEl = document.getElementById('graphLocation');
-                                if (graphLocationEl && getData('graph_location')) graphLocationEl.value = getData('graph_location');
-
-                                updateFocusStepperUI();
-
-                                applyFonts();
-                                applyTodoPriorityColors();
-
-                                const languageAfterImport = getData('app_language');
-                                if (languageAfterImport === 'ja' || languageAfterImport === 'en') {
-                                    currentLanguage = languageAfterImport;
-                                }
-                                applyTranslations();
-
-                                // 履歴をリロード
-                                if (document.getElementById('historyList')) loadHistory();
-                                if (document.getElementById('todoItems')) loadTodos();
-                                if (document.getElementById('statsContainer')) loadStats();
-                                if (getData('graph_enabled') === 'true') {
-                                    setTimeout(() => updateGraphs(), 80);
-                                } else {
-                                    hideGraphs();
-                                }
-                                toggleFocusModeMain(true);
-                                applySessionInfoVisibility();
-                                renderSessionIdleInfo();
-                                syncSessionInfoToggle();
-                                updateSettingsButtonState();
-                            }
+                            // 設定UIと実際の状態のズレ・言語混在を防ぐため、リロードで全体を再初期化する
+                            await customConfirm(getText('importDoneReload'), getText('importDataTitle'), 'import.webp');
+                            location.reload();
                         } catch (error) {
                             await customConfirm(`${getText('importFailed')}: ${error.message}`, getText('errorTitle'), 'warning.webp');
                         }
@@ -14964,6 +15319,8 @@ const translations = {
                     }
                     if (selector) selector.classList.remove('show');
                     if (tutorialOverlay) tutorialOverlay.classList.add('hidden');
+                    // 背後のページのスクロールバー分だけ中央からずれて見えるのを防ぐ
+                    document.body.classList.add('no-scroll');
                     document.getElementById('tutorialWelcome').classList.add('show');
                 }
 
@@ -14976,9 +15333,10 @@ const translations = {
                         overlay.classList.remove('tutorial-active');
                     }
                     if (tutorialOverlay) tutorialOverlay.classList.remove('hidden');
+                    document.body.classList.remove('no-scroll');
                     saveData('tutorial_completed', 'true');
                     saveData('tutorial_welcome_dismissed', 'true');
-                    
+
                     // アプリ初期化を実行
                     initializeRemainingApp();
                 }
@@ -14992,6 +15350,7 @@ const translations = {
                         overlay.classList.remove('tutorial-active');
                     }
                     if (tutorialOverlay) tutorialOverlay.classList.remove('hidden');
+                    document.body.classList.remove('no-scroll');
                     currentTutorialStep = 0;
                     saveData('tutorial_welcome_dismissed', 'true');
                     
@@ -15438,6 +15797,10 @@ const translations = {
                 }
 
                 function getMenuLabel(key) {
+                    // 音楽はYouTube動画モードに応じてラベルを切り替える(音楽 ⇔ 再生)
+                    if (key === 'music') {
+                        return getText(isYoutubeVideoEnabled() ? 'menuMusicYt' : 'menuMusic') || MENU_DEFAULT_LABELS[key];
+                    }
                     return getText(MENU_ITEM_I18N[key]) || MENU_DEFAULT_LABELS[key] || key;
                 }
 
@@ -15507,6 +15870,7 @@ const translations = {
                     setTimeout(attachEditorTargets, 50);
 
                     requestAnimationFrame(syncBottomMenuPadding);
+                    requestAnimationFrame(updateMenuFixedTopOffset);
                 }
 
                 // ===== メニューモード =====
@@ -15543,6 +15907,7 @@ const translations = {
                     }
                     applyMenuMode(newOn ? 'bottom' : 'normal');
                     updateMenuModeSettingsUI(newOn ? 'bottom' : 'normal');
+                    updateMenuFixedTopOffset();
                 }
 
                 function updateMenuModeSettingsUI(mode) {
@@ -15575,6 +15940,37 @@ const translations = {
                         document.body.classList.remove('menu-fixed-on');
                     }
                     updateMenuModeSettingsUI('normal');
+                    updateMenuFixedTopOffset();
+                }
+
+                function onMenuWideOverflowToggle() {
+                    const toggle = document.getElementById('toggleMenuWideOverflow');
+                    const newOn  = !toggle.classList.contains('active');
+                    toggle.classList.toggle('active', newOn);
+                    saveData('menu_wide_overflow', newOn ? 'true' : 'false');
+                    document.body.classList.toggle('menu-wide-overflow', newOn);
+                    updateMenuFixedTopOffset();
+                }
+
+                // 上部固定メニュー(menu-fixed-on)時、画面幅に余裕があってテーマ切替/設定ボタンや
+                // 現在時刻の時計と横方向に重ならない場合は、それらと同じ高さ(一番上)まで詰める
+                function updateMenuFixedTopOffset() {
+                    const menu = document.querySelector('.menu');
+                    if (!menu) return;
+                    if (!document.body.classList.contains('menu-fixed-on')) {
+                        menu.style.top = '';
+                        return;
+                    }
+                    const menuRect = menu.getBoundingClientRect();
+                    const gap = 16;
+                    let overlaps = false;
+                    [document.querySelector('.top-buttons'), document.getElementById('currentClock')].forEach(el => {
+                        if (!el || overlaps) return;
+                        const r = el.getBoundingClientRect();
+                        if (r.width < 2 || r.height < 2) return;
+                        if (menuRect.left - gap < r.right && menuRect.right + gap > r.left) overlaps = true;
+                    });
+                    menu.style.top = overlaps ? '' : '20px';
                 }
 
                 // ===== メニュー順序UI =====
@@ -15721,14 +16117,18 @@ const translations = {
                     const mode    = getData('menu_mode')    || 'normal';
                     const display = getData('menu_display') || 'text';
                     const fixed   = getData('menu_fixed')   === 'true';
+                    const wideOverflow = getData('menu_wide_overflow') === 'true';
 
                     const dispSelect    = document.getElementById('menuDisplaySelect');
                     const fixedToggle   = document.getElementById('toggleMenuFixed');
                     const bottomToggle  = document.getElementById('toggleMenuBottom');
+                    const wideToggle    = document.getElementById('toggleMenuWideOverflow');
 
                     if (dispSelect)   dispSelect.value  = display;
                     if (fixedToggle)  fixedToggle.classList.toggle('active', fixed);
                     if (bottomToggle) bottomToggle.classList.toggle('active', mode === 'bottom');
+                    if (wideToggle)   wideToggle.classList.toggle('active', wideOverflow);
+                    document.body.classList.toggle('menu-wide-overflow', wideOverflow);
 
                     applyMenuMode(mode);
                     updateMenuModeSettingsUI(mode);
@@ -15780,6 +16180,8 @@ const translations = {
                         overlay.classList.remove('tutorial-active');
                         overlay.classList.add('show');
                         selector.classList.add('show');
+                        // スクロールバー分のズレを防ぐ
+                        document.body.classList.add('no-scroll');
                     }
                     
                     // ローディング画面を終了
@@ -16231,7 +16633,7 @@ const translations = {
                         document.getElementById('toggleGraph').classList.add('active');
                         document.getElementById('graphSettings').style.display = 'block';
 
-                        const graphType = getData('graph_type') || 'bar';
+                        const graphType = normalizeGraphType(getData('graph_type'));
                         const graphPeriod = getData('graph_period') || '30';
                         const graphLocation = getData('graph_location') || 'list';
 
@@ -16349,9 +16751,6 @@ const translations = {
                 document.getElementById('calendarDayDialog')?.addEventListener('click', (e) => {
                     if (e.target === e.currentTarget) closeCalendarDayDialog();
                 });
-                let studyChart = null;
-                let statsChart = null;
-
                 function toggleLoadingAnim() {
                     const toggle = document.getElementById('toggleLoadingAnim');
                     const isActive = toggle.classList.contains('active');
@@ -16459,14 +16858,6 @@ const translations = {
                 function hideGraphs() {
                     document.getElementById('studyGraphContainer').style.display = 'none';
                     document.getElementById('statsGraphContainer').style.display = 'none';
-                    if (studyChart) {
-                        studyChart.destroy();
-                        studyChart = null;
-                    }
-                    if (statsChart) {
-                        statsChart.destroy();
-                        statsChart = null;
-                    }
                 }
 
                 function showGraphs() {
@@ -17074,11 +17465,15 @@ const translations = {
                     return colors[theme] || colors['blue'];
                 }
 
+                function normalizeGraphType(v) {
+                    return (v === 'bar' || v === 'line' || v === 'area') ? v : 'bar';
+                }
+
                 function renderGraph(canvasId, chartVar) {
                     const canvas = document.getElementById(canvasId);
                     if (!canvas) return;
 
-                    const type = getData('graph_type') || 'bar';
+                    const type = normalizeGraphType(getData('graph_type'));
                     const period = getData('graph_period') || '30';
 
                     let history = getData('studyHistory');
@@ -17126,72 +17521,363 @@ const translations = {
                     });
                     const data = sortedDates.map(date => dailyData[date] / (1000 * 60 * 60));
 
-                    if (chartVar === 'studyChart' && studyChart) {
-                        studyChart.destroy();
-                        studyChart = null;
-                    } else if (chartVar === 'statsChart' && statsChart) {
-                        statsChart.destroy();
-                        statsChart = null;
-                    }
+                    renderCustomChart(canvas, {
+                        labels,
+                        values: data,
+                        type
+                    });
+                }
 
+                // ========== 自作グラフレンダラー(Chart.js非依存) ==========
+                const customCharts = {};      // canvasId -> 描画状態
+                const customChartRafs = {};   // canvasId -> アニメーションフレームID
+
+                function chartColors() {
                     const isDark = document.body.classList.contains('dark');
-                    const textColor = isDark ? '#e8e8e8' : '#323232';
-                    const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
-                    const primaryColor = getPrimaryColor();
+                    return {
+                        isDark,
+                        text: isDark ? '#e8e8e8' : '#323232',
+                        muted: isDark ? 'rgba(232,232,232,0.6)' : 'rgba(50,50,50,0.6)',
+                        grid: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)',
+                        primary: getPrimaryColor(),
+                        tooltipBg: isDark ? 'rgba(38,40,48,0.96)' : 'rgba(255,255,255,0.97)'
+                    };
+                }
 
-                    const config = {
-                        type: type === 'area' ? 'line' : type,
-                        data: {
-                            labels: labels,
-                            datasets: [{
-                                label: '勉強時間(時間)',
-                                data: data,
-                                backgroundColor: type === 'area' ? primaryColor + '40' : primaryColor,
-                                borderColor: primaryColor,
-                                borderWidth: 2,
-                                fill: type === 'area',
-                                tension: type === 'line' || type === 'area' ? 0.4 : 0
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: true,
-                            plugins: {
-                                legend: {
-                                    labels: {
-                                        color: textColor
-                                    }
-                                }
-                            },
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    ticks: {
-                                        color: textColor
-                                    },
-                                    grid: {
-                                        color: gridColor
-                                    }
-                                },
-                                x: {
-                                    ticks: {
-                                        color: textColor
-                                    },
-                                    grid: {
-                                        color: gridColor
-                                    }
-                                }
-                            }
-                        }
+                function formatChartHours(hours) {
+                    const totalM = Math.round(hours * 60);
+                    const h = Math.floor(totalM / 60);
+                    const m = totalM % 60;
+                    if (currentLanguage === 'en') return h > 0 ? `${h}h ${m}m` : `${m}m`;
+                    return h > 0 ? `${h}時間${m}分` : `${m}分`;
+                }
+
+                function formatChartAxis(v) {
+                    if (v === 0) return '0';
+                    if (v < 1) return `${Math.round(v * 60)}m`;
+                    return `${parseFloat(v.toFixed(2))}h`;
+                }
+
+                function chartRoundRectPath(ctx, x, y, w, h, rTop) {
+                    const r = Math.max(0, Math.min(rTop, w / 2, h));
+                    ctx.beginPath();
+                    ctx.moveTo(x, y + h);
+                    ctx.lineTo(x, y + r);
+                    ctx.arcTo(x, y, x + r, y, r);
+                    ctx.lineTo(x + w - r, y);
+                    ctx.arcTo(x + w, y, x + w, y + r, r);
+                    ctx.lineTo(x + w, y + h);
+                    ctx.closePath();
+                }
+
+                function chartRoundRectPathAll(ctx, x, y, w, h, radius) {
+                    const r = Math.max(0, Math.min(radius, w / 2, h / 2));
+                    ctx.beginPath();
+                    ctx.moveTo(x + r, y);
+                    ctx.arcTo(x + w, y, x + w, y + h, r);
+                    ctx.arcTo(x + w, y + h, x, y + h, r);
+                    ctx.arcTo(x, y + h, x, y, r);
+                    ctx.arcTo(x, y, x + w, y, r);
+                    ctx.closePath();
+                }
+
+                function renderCustomChart(canvas, opts) {
+                    const id = canvas.id;
+                    const state = customCharts[id] = {
+                        canvas,
+                        labels: opts.labels,
+                        values: opts.values,
+                        type: opts.type,
+                        hoverIndex: (customCharts[id] && customCharts[id].hoverIndex) || -1
                     };
 
-                    const ctx = canvas.getContext('2d');
-                    if (chartVar === 'studyChart') {
-                        studyChart = new Chart(ctx, config);
+                    // ホバー処理は要素ごとに1回だけバインド
+                    if (!canvas.dataset.chartBound) {
+                        canvas.dataset.chartBound = '1';
+                        canvas.addEventListener('mousemove', (e) => {
+                            const st = customCharts[canvas.id];
+                            if (!st || !st.geom) return;
+                            const rect = canvas.getBoundingClientRect();
+                            const x = e.clientX - rect.left;
+                            let idx = -1;
+                            if (st.labels.length && x >= st.geom.plotX && x <= st.geom.plotX + st.geom.plotW) {
+                                idx = Math.min(st.labels.length - 1, Math.max(0,
+                                    Math.floor((x - st.geom.plotX) / (st.geom.plotW / st.labels.length))));
+                            }
+                            if (idx !== st.hoverIndex) {
+                                st.hoverIndex = idx;
+                                drawCustomChart(st, 1);
+                            }
+                        });
+                        canvas.addEventListener('mouseleave', () => {
+                            const st = customCharts[canvas.id];
+                            if (st && st.hoverIndex !== -1) {
+                                st.hoverIndex = -1;
+                                drawCustomChart(st, 1);
+                            }
+                        });
+                    }
+
+                    if (customChartRafs[id]) {
+                        cancelAnimationFrame(customChartRafs[id]);
+                        customChartRafs[id] = null;
+                    }
+                    if (opts.animate) {
+                        const start = performance.now();
+                        const dur = 550;
+                        const step = (now) => {
+                            const t = Math.min(1, (now - start) / dur);
+                            drawCustomChart(state, t);
+                            customChartRafs[id] = t < 1 ? requestAnimationFrame(step) : null;
+                        };
+                        customChartRafs[id] = requestAnimationFrame(step);
                     } else {
-                        statsChart = new Chart(ctx, config);
+                        drawCustomChart(state, 1);
                     }
                 }
+
+                // canvasをスクロール可能なラッパーで一度だけ包む(全項目分の日付ラベルを横スクロールで確保するため)
+                function ensureChartScrollWrap(canvas) {
+                    const parent = canvas.parentElement;
+                    if (parent && parent.classList && parent.classList.contains('chart-scroll-wrap')) {
+                        return parent.parentElement;
+                    }
+                    if (!parent) return null;
+                    const wrap = document.createElement('div');
+                    wrap.className = 'chart-scroll-wrap';
+                    parent.insertBefore(wrap, canvas);
+                    wrap.appendChild(canvas);
+                    return parent;
+                }
+
+                function drawCustomChart(state, animT = 1) {
+                    const canvas = state.canvas;
+                    if (!canvas || !canvas.isConnected) return;
+                    const outerHolder = ensureChartScrollWrap(canvas);
+                    let holderInnerWidth = 400;
+                    if (outerHolder) {
+                        const holderStyle = getComputedStyle(outerHolder);
+                        const padL0 = parseFloat(holderStyle.paddingLeft) || 0;
+                        const padR0 = parseFloat(holderStyle.paddingRight) || 0;
+                        holderInnerWidth = outerHolder.clientWidth - padL0 - padR0;
+                    }
+                    const fitCssW = Math.max(200, Math.min(holderInnerWidth, 900));
+                    const cssH = Math.max(150, Math.min(300, Math.round(fitCssW * 0.48)));
+                    const ctx = canvas.getContext('2d');
+
+                    const col = chartColors();
+                    const values = state.values;
+                    const labels = state.labels;
+                    const n = values.length;
+                    if (!n) return;
+                    const maxVal = Math.max(0.0001, ...values);
+
+                    // Yスケールと目盛り
+                    let yMax;
+                    const ticks = [];
+                    {
+                        const steps = [0.25, 0.5, 1, 2, 3, 4, 6, 12, 24, 48];
+                        let step = steps[steps.length - 1];
+                        for (const s of steps) { if (maxVal / s <= 5) { step = s; break; } }
+                        yMax = Math.max(step, Math.ceil(maxVal / step - 1e-9) * step);
+                        for (let v = 0; v <= yMax + 1e-9; v += step) ticks.push(v);
+                    }
+
+                    const fontFamily = getComputedStyle(document.body).fontFamily || 'sans-serif';
+                    ctx.font = `11px ${fontFamily}`;
+                    let yLabelW = 0;
+                    for (const t of ticks) yLabelW = Math.max(yLabelW, ctx.measureText(formatChartAxis(t)).width);
+                    const padL = Math.ceil(yLabelW) + 14;
+                    const padR = 10;
+                    const padT = 18;
+
+                    // 全項目に日付ラベルを付けるため、横に収まらない場合は斜めにし、
+                    // それでも収まらない場合はcanvas自体を横に広げてスクロールで見られるようにする
+                    let maxLabelW = 0;
+                    for (const l of labels) maxLabelW = Math.max(maxLabelW, ctx.measureText(l).width);
+                    const fitPlotW = fitCssW - padL - padR;
+                    const cellFit = fitPlotW / n;
+                    const horizontalNeed = maxLabelW + 8;
+                    const rotateAngle = 50 * Math.PI / 180;
+                    const rotatedNeed = maxLabelW * Math.cos(rotateAngle) + 11 * Math.sin(rotateAngle) + 6;
+
+                    let labelMode, cssW, padB;
+                    if (cellFit >= horizontalNeed) {
+                        labelMode = 'horizontal';
+                        cssW = fitCssW;
+                        padB = 24;
+                    } else if (cellFit >= rotatedNeed) {
+                        labelMode = 'rotated';
+                        cssW = fitCssW;
+                        padB = 34;
+                    } else {
+                        labelMode = 'rotated';
+                        cssW = Math.max(fitCssW, Math.ceil(n * rotatedNeed) + padL + padR);
+                        padB = 34;
+                    }
+
+                    const dpr = window.devicePixelRatio || 1;
+                    canvas.width = Math.round(cssW * dpr);
+                    canvas.height = Math.round(cssH * dpr);
+                    canvas.style.width = cssW + 'px';
+                    canvas.style.height = cssH + 'px';
+                    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                    ctx.clearRect(0, 0, cssW, cssH);
+                    ctx.font = `11px ${fontFamily}`;
+
+                    const plotX = padL;
+                    const plotY = padT;
+                    const plotW = cssW - padL - padR;
+                    const plotH = cssH - padT - padB;
+                    state.geom = { plotX, plotY, plotW, plotH };
+                    const xFor = i => plotX + (i + 0.5) * (plotW / n);
+                    const yFor = v => plotY + plotH - (v / yMax) * plotH;
+
+                    // グリッドとY軸ラベル(控えめに)
+                    ctx.lineWidth = 1;
+                    ctx.strokeStyle = col.grid;
+                    ctx.fillStyle = col.muted;
+                    ctx.textAlign = 'right';
+                    ctx.textBaseline = 'middle';
+                    for (const t of ticks) {
+                        const y = Math.round(yFor(t)) + 0.5;
+                        ctx.beginPath();
+                        ctx.moveTo(plotX, y);
+                        ctx.lineTo(plotX + plotW, y);
+                        ctx.stroke();
+                        ctx.fillText(formatChartAxis(t), plotX - 6, y);
+                    }
+
+                    // X軸ラベル(ホバーできない環境でも判別できるよう、全項目に付ける)
+                    ctx.fillStyle = col.muted;
+                    if (labelMode === 'horizontal') {
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'top';
+                        for (let i = 0; i < n; i++) {
+                            ctx.fillText(labels[i], xFor(i), plotY + plotH + 6);
+                        }
+                    } else {
+                        ctx.textAlign = 'right';
+                        ctx.textBaseline = 'middle';
+                        for (let i = 0; i < n; i++) {
+                            ctx.save();
+                            ctx.translate(xFor(i), plotY + plotH + 8);
+                            ctx.rotate(-rotateAngle);
+                            ctx.fillText(labels[i], 0, 0);
+                            ctx.restore();
+                        }
+                    }
+
+                    if (state.type === 'bar') {
+                        const bw = Math.max(2, Math.min(38, (plotW / n) * 0.62));
+                        for (let i = 0; i < n; i++) {
+                            const v = values[i];
+                            if (v <= 0) continue;
+                            const y = yFor(v);
+                            const h = plotY + plotH - y;
+                            chartRoundRectPath(ctx, xFor(i) - bw / 2, y, bw, h, 4);
+                            ctx.fillStyle = col.primary;
+                            ctx.fill();
+                            if (i === state.hoverIndex) {
+                                ctx.fillStyle = col.isDark ? 'rgba(255,255,255,0.18)' : 'rgba(255,255,255,0.35)';
+                                ctx.fill();
+                            }
+                        }
+                    } else if (state.type === 'line' || state.type === 'area') {
+                        const pts = values.map((v, i) => ({ x: xFor(i), y: yFor(v) }));
+                        const drawSmooth = () => {
+                            ctx.moveTo(pts[0].x, pts[0].y);
+                            for (let i = 0; i < pts.length - 1; i++) {
+                                const p0 = pts[i - 1] || pts[i];
+                                const p1 = pts[i];
+                                const p2 = pts[i + 1];
+                                const p3 = pts[i + 2] || p2;
+                                ctx.bezierCurveTo(
+                                    p1.x + (p2.x - p0.x) / 6, p1.y + (p2.y - p0.y) / 6,
+                                    p2.x - (p3.x - p1.x) / 6, p2.y - (p3.y - p1.y) / 6,
+                                    p2.x, p2.y
+                                );
+                            }
+                        };
+                        if (state.type === 'area') {
+                            ctx.beginPath();
+                            drawSmooth();
+                            ctx.lineTo(pts[pts.length - 1].x, plotY + plotH);
+                            ctx.lineTo(pts[0].x, plotY + plotH);
+                            ctx.closePath();
+                            ctx.fillStyle = col.primary + '38';
+                            ctx.fill();
+                        }
+                        ctx.beginPath();
+                        drawSmooth();
+                        ctx.strokeStyle = col.primary;
+                        ctx.lineWidth = 2;
+                        ctx.lineJoin = 'round';
+                        ctx.stroke();
+                        // 点は本数が少ないときだけ描く(多いとノイズになる)
+                        if (n <= 31) {
+                            ctx.fillStyle = col.primary;
+                            for (const p of pts) {
+                                ctx.beginPath();
+                                ctx.arc(p.x, p.y, 2.5, 0, Math.PI * 2);
+                                ctx.fill();
+                            }
+                        }
+                        // ホバー: クロスヘア+強調点
+                        if (state.hoverIndex >= 0 && state.hoverIndex < n) {
+                            const p = pts[state.hoverIndex];
+                            ctx.strokeStyle = col.isDark ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.2)';
+                            ctx.lineWidth = 1;
+                            ctx.beginPath();
+                            ctx.moveTo(Math.round(p.x) + 0.5, plotY);
+                            ctx.lineTo(Math.round(p.x) + 0.5, plotY + plotH);
+                            ctx.stroke();
+                            ctx.beginPath();
+                            ctx.arc(p.x, p.y, 4.5, 0, Math.PI * 2);
+                            ctx.fillStyle = col.tooltipBg;
+                            ctx.fill();
+                            ctx.beginPath();
+                            ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+                            ctx.fillStyle = col.primary;
+                            ctx.fill();
+                        }
+                    }
+
+                    // ツールチップ(アニメ完了後のみ)
+                    if (animT >= 1 && state.hoverIndex >= 0 && state.hoverIndex < n) {
+                        const i = state.hoverIndex;
+                        let valueText = formatChartHours(values[i]);
+                        ctx.font = `11px ${fontFamily}`;
+                        const w = Math.max(ctx.measureText(labels[i]).width, ctx.measureText(valueText).width) + 20;
+                        const hBox = 40;
+                        let bx = xFor(i) - w / 2;
+                        bx = Math.max(plotX, Math.min(plotX + plotW - w, bx));
+                        const topOfCol = yFor(Math.max(0, values[i]));
+                        let by = topOfCol - hBox - 8;
+                        if (by < 2) by = Math.min(plotY + plotH - hBox, topOfCol + 10);
+                        chartRoundRectPathAll(ctx, bx, by, w, hBox, 8);
+                        ctx.fillStyle = col.tooltipBg;
+                        ctx.fill();
+                        ctx.strokeStyle = col.grid;
+                        ctx.stroke();
+                        ctx.textAlign = 'left';
+                        ctx.textBaseline = 'top';
+                        ctx.fillStyle = col.muted;
+                        ctx.fillText(labels[i], bx + 10, by + 7);
+                        ctx.fillStyle = col.text;
+                        ctx.fillText(valueText, bx + 10, by + 22);
+                    }
+                }
+
+                // ウィンドウリサイズ時にグラフを再描画
+                let customChartResizeTimer = null;
+                window.addEventListener('resize', () => {
+                    clearTimeout(customChartResizeTimer);
+                    customChartResizeTimer = setTimeout(() => {
+                        if (getData('graph_enabled') === 'true') updateGraphs();
+                        if (document.getElementById('adChartCanvas')) aboutDemoStats(adStatsDays);
+                    }, 200);
+                });
 
                 const todoInput = document.getElementById("todoInput");
                 if (todoInput) {
@@ -18313,24 +18999,44 @@ const translations = {
                     return !!(track && track.youtubeId);
                 }
 
+                // ローカル動画トラック(映像表示あり)かどうか
+                function isCurrentTrackVideo() {
+                    const track = musicFiles[currentMusicIndex];
+                    return !!(track && track.isVideo && !track.youtubeId);
+                }
+
                 function updateMusicPlayerModeUI() {
                     const panel = document.querySelector('.music-display-panel');
                     const ytZone = document.getElementById('ytMusicZone');
                     const ytMini = document.getElementById('ytMiniZone');
                     const miniPopup = document.getElementById('miniPlayerPopup');
                     const isYt = isCurrentTrackYoutube();
-                    if (panel) { if (isYt) panel.classList.add('yt-mode'); else panel.classList.remove('yt-mode'); }
-                    if (ytZone) ytZone.style.display = isYt ? 'block' : 'none';
-                    if (ytMini) ytMini.style.display = isYt ? 'block' : 'none';
-                    if (miniPopup) { if (isYt) miniPopup.classList.add('yt-active'); else miniPopup.classList.remove('yt-active'); }
+                    const isVideo = isCurrentTrackVideo();
+                    const showZone = isYt || isVideo;
+                    if (panel) {
+                        panel.classList.toggle('yt-mode', isYt);
+                        panel.classList.toggle('video-mode', isVideo);
+                    }
+                    if (ytZone) ytZone.style.display = showZone ? 'block' : 'none';
+                    if (ytMini) ytMini.style.display = showZone ? 'block' : 'none';
+                    if (miniPopup) {
+                        // yt-active はワイドレイアウト用(ローカル動画も共用)、video-active は閉じるボタン表示用
+                        miniPopup.classList.toggle('yt-active', showZone);
+                        miniPopup.classList.toggle('video-active', isVideo);
+                    }
                     repositionYtPlayer();
                 }
 
+                // YouTube / ローカル動画のオーバーレイをゾーン位置に合わせて配置する
                 function repositionYtPlayer() {
-                    const container = document.getElementById('ytPlayerContainer');
-                    if (!container) return;
+                    const ytContainer = document.getElementById('ytPlayerContainer');
+                    const videoContainer = document.getElementById('videoPlayerContainer');
                     const isYt = isCurrentTrackYoutube();
-                    if (!isYt) { container.style.display = 'none'; return; }
+                    const isVideo = isCurrentTrackVideo();
+                    const container = isYt ? ytContainer : (isVideo ? videoContainer : null);
+                    if (ytContainer && ytContainer !== container) ytContainer.style.display = 'none';
+                    if (videoContainer && videoContainer !== container) videoContainer.style.display = 'none';
+                    if (!container) return;
                     const isMusic = isOnMusicPage();
                     const miniPopup = document.getElementById('miniPlayerPopup');
                     const miniVisible = miniPopup && miniPopup.classList.contains('visible');
@@ -18485,14 +19191,14 @@ const translations = {
                     if (!isMiniPlayerEnabled() || isOnMusicPage() || miniPlayerDismissed || !hasSrc) {
                         popup.classList.remove('visible');
                         clearMiniAutoHideTimer();
-                        if (isYt) repositionYtPlayer();
+                        repositionYtPlayer();
                         return;
                     }
 
                     if (isPlaying) {
                         popup.classList.add('visible');
                         clearMiniAutoHideTimer();
-                        if (isYt) setTimeout(repositionYtPlayer, 30);
+                        if (isYt || isCurrentTrackVideo()) setTimeout(repositionYtPlayer, 30);
                     } else {
                         if (popup.classList.contains('visible')) {
                             startMiniAutoHideTimer();
@@ -18553,23 +19259,73 @@ const translations = {
                     if (prevBtn) prevBtn.style.display = hideSkip ? 'none' : '';
                     if (nextBtn) nextBtn.style.display = hideSkip ? 'none' : '';
 
-                    // YouTubeミニゾーン
+                    // YouTube / ローカル動画のミニゾーン
+                    const isVideo = isCurrentTrackVideo();
+                    const showZone = isYt || isVideo;
                     const ytMini = document.getElementById('ytMiniZone');
                     const miniPopup = document.getElementById('miniPlayerPopup');
-                    if (ytMini) ytMini.style.display = isYt ? 'block' : 'none';
+                    if (ytMini) ytMini.style.display = showZone ? 'block' : 'none';
                     if (miniPopup) {
-                        if (isYt) miniPopup.classList.add('yt-active');
-                        else miniPopup.classList.remove('yt-active');
+                        miniPopup.classList.toggle('yt-active', showZone);
+                        miniPopup.classList.toggle('video-active', isVideo);
                     }
                 }
 
                 let miniPlayerFixed = false;
 
+                function isMenuBottomMode() {
+                    return document.body.classList.contains('menu-mode-bottom');
+                }
+
+                // 広い画面でコンテナ横に配置される(=上部メニューと横方向に重ならない)かどうか
+                function isMiniPlayerBesideContainer(popup) {
+                    if (window.innerWidth <= 760) return false;
+                    const container = document.querySelector('.container');
+                    if (!container || !popup) return false;
+                    const pw = popup.offsetWidth > 0 ? popup.offsetWidth : 130;
+                    const cr = container.getBoundingClientRect();
+                    return getMiniPlayerPosition().endsWith('right')
+                        ? (window.innerWidth - cr.right >= pw + 12)
+                        : (cr.left >= pw + 12);
+                }
+
                 function getMiniPlayerTopY() {
+                    // ボトムメニュー時は上部にメニューが無いため画面上端付近に配置
+                    if (isMenuBottomMode()) return 14;
+                    // コンテナ横に置ける広い画面ではメニューと重ならないため上端に配置
+                    const popup = document.getElementById('miniPlayerPopup');
+                    if (isMiniPlayerBesideContainer(popup)) return 14;
                     const menu = document.getElementById('mainMenu');
                     if (!menu) return 14;
                     const mb = menu.getBoundingClientRect().bottom;
                     return mb > 10 ? mb + 4 : 14;
+                }
+
+                // 下配置のY: ボトムメニュー時はメニューに重ならないようその上に載せる
+                function getMiniPlayerBottomY() {
+                    if (isMenuBottomMode()) {
+                        const menu = document.getElementById('mainMenu');
+                        if (menu) {
+                            const h = window.innerHeight - menu.getBoundingClientRect().top;
+                            if (h > 0 && h < window.innerHeight * 0.5) return h + 8;
+                        }
+                    }
+                    return 14;
+                }
+
+                // 画面上部に固定されている時計・テーマ/設定ボタンとの重なりを回避
+                function adjustMiniPlayerTopOverlap(popup) {
+                    const top = parseFloat(popup.style.top);
+                    if (!(top >= 0) || top > 70) return;
+                    const pr = popup.getBoundingClientRect();
+                    let maxBottom = 0;
+                    [document.querySelector('.top-buttons'), document.getElementById('currentClock')].forEach(el => {
+                        if (!el) return;
+                        const r = el.getBoundingClientRect();
+                        if (r.width < 2 || r.height < 2) return;
+                        if (pr.left < r.right && pr.right > r.left) maxBottom = Math.max(maxBottom, r.bottom);
+                    });
+                    if (maxBottom > 0 && pr.top < maxBottom + 8) popup.style.top = (maxBottom + 8) + 'px';
                 }
 
                 function applyMiniPlayerPosition() {
@@ -18586,14 +19342,16 @@ const translations = {
                     popup.style.left = 'auto';
                     popup.style.right = 'auto';
 
+                    // Xを先に確定させてから、X位置に応じたY(横並び判定・重なり回避)を計算する
+                    calcMiniPlayerFixedX();
                     if (pos.startsWith('top')) {
-                        popup.style.top = getMiniPlayerTopY() + 'px';
                         popup.style.bottom = 'auto';
+                        popup.style.top = getMiniPlayerTopY() + 'px';
+                        adjustMiniPlayerTopOverlap(popup);
                     } else {
                         popup.style.top = 'auto';
-                        popup.style.bottom = '14px';
+                        popup.style.bottom = getMiniPlayerBottomY() + 'px';
                     }
-                    calcMiniPlayerFixedX();
                 }
 
                 function updateMiniPlayerScroll() {
@@ -18604,6 +19362,7 @@ const translations = {
                     if (!pos.startsWith('top')) return;
                     // メニューがスクロールで消える際にY座標を更新
                     popup.style.top = getMiniPlayerTopY() + 'px';
+                    adjustMiniPlayerTopOverlap(popup);
                 }
 
                 function calcMiniPlayerFixedX() {
@@ -18656,6 +19415,7 @@ const translations = {
                     }
                     repositionYtPlayer();
                     syncBottomMenuPadding();
+                    updateMenuFixedTopOffset();
                 });
 
                 function initMiniPlayerDrag() {

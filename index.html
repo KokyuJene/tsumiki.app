@@ -2999,25 +2999,77 @@
         .tutorial-step-info {
             font-size: 0.8rem;
             opacity: 0.6;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
+        }
+
+        /* 進捗バー */
+        .tutorial-progress {
+            height: 4px;
+            border-radius: 999px;
+            background: rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 14px;
+        }
+        .dark .tutorial-progress {
+            background: rgba(255, 255, 255, 0.12);
+        }
+        .tutorial-progress-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 999px;
+            background: var(--primary-color);
+            transition: width 0.35s ease;
+        }
+        .dark .tutorial-progress-fill {
+            background: var(--primary-color-dark);
+        }
+
+        /* クリック待ちステップのヒント */
+        .tutorial-click-hint {
+            display: none;
+            align-items: center;
+            font-size: 0.8rem;
+            opacity: 0.65;
+            min-width: 0;
         }
 
         .tutorial-buttons {
             display: flex;
             gap: 10px;
             justify-content: space-between;
+            align-items: center;
+            flex-wrap: nowrap;
         }
 
         .tutorial-buttons button {
             padding: 10px 20px;
             font-size: 0.9rem;
             border-radius: 24px;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .tutorial-highlight {
             position: relative;
             z-index: 10001 !important;
             border-radius: 24px !important;
+            --tut-ring: var(--primary-color);
+            animation: tutorialRingPulse 1.8s ease-in-out infinite;
+        }
+
+        .dark .tutorial-highlight {
+            --tut-ring: var(--primary-color-dark);
+        }
+
+        @keyframes tutorialRingPulse {
+            0%, 100% {
+                box-shadow: 0 0 0 3px var(--tut-ring),
+                            0 0 0 7px color-mix(in srgb, var(--tut-ring) 25%, transparent);
+            }
+            50% {
+                box-shadow: 0 0 0 3px var(--tut-ring),
+                            0 0 0 13px color-mix(in srgb, var(--tut-ring) 12%, transparent);
+            }
         }
 
         .tutorial-click-area {
@@ -3027,8 +3079,17 @@
             border-radius: 24px;
         }
 
+        /* ハイライト対象が z-index 付き固定スタック(右上ボタン・固定/ボトムメニュー)の中にある場合、
+           子の z-index だけではオーバーレイの上に出られないため、親ごと持ち上げる */
+        .top-buttons:has(.tutorial-highlight),
+        .menu:has(.tutorial-highlight) {
+            z-index: 10001 !important;
+        }
+
         .tutorial-arrow {
-            position: absolute;
+            /* 座標は getBoundingClientRect (ビューポート基準) で計算するため fixed。
+               absolute だとページのスクロール分だけずれる */
+            position: fixed;
             width: 0;
             height: 0;
             z-index: 10002;
@@ -5264,35 +5325,68 @@ body.editor-mode .editor-add-btn { display: flex; }
 .light .editor-add-btn { background: var(--panel-light); color: #323232; }
 .dark .editor-add-btn { background: var(--panel-dark); color: #e8e8e8; }
 .editor-add-btn:hover { transform: scale(1.08); }
+/* 現在時刻の時計(左上固定)が表示されている場合は、その下へずらして重なりを防ぐ */
+body.clock-on .editor-add-btn { top: 76px; }
+body.clock-on .editor-add-dropdown { top: 128px; max-height: calc(100vh - 186px); }
+@media (max-width: 768px) {
+    body.clock-on .editor-add-btn { top: 64px; }
+    body.clock-on .editor-add-dropdown { top: 116px; max-height: calc(100vh - 174px); }
+}
 
+/* エディターモード中であることを示す兼終了ボタン(右下に浮く小さなピル。画面を圧迫しない) */
 .editor-exit-bar {
     position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    right: 20px;
+    bottom: 20px;
     z-index: 1001;
     display: none;
     align-items: center;
-    justify-content: center;
-    gap: 14px;
-    padding: 22px 20px;
-    font-size: 0.9rem;
-    transition: transform 0.25s ease;
+    gap: 10px;
+    padding: 8px 8px 8px 18px;
+    font-size: 0.85rem;
+    border-radius: 999px;
+    transition: bottom 0.25s ease;
 }
 body.editor-mode .editor-exit-bar { display: flex; }
+/* ボトムメニュー時は、固定メニューの上に浮かせて重なりを防ぐ */
+body.menu-mode-bottom .editor-exit-bar { bottom: calc(var(--bottom-menu-h, 56px) + 16px); }
 .light .editor-exit-bar { background: var(--panel-light); color: #323232; }
 .dark .editor-exit-bar { background: var(--panel-dark); color: #e8e8e8; }
-.editor-exit-bar span { opacity: 0.7; font-size: 0.85rem; }
+.editor-exit-bar span.eeb-label { opacity: 0.75; white-space: nowrap; }
+.editor-exit-bar .eeb-dot {
+    width: 8px;
+    height: 8px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--primary-color);
+    animation: editorExitDotPulse 1.6s ease-in-out infinite;
+}
+.dark .editor-exit-bar .eeb-dot { background: var(--primary-color-dark); }
+@keyframes editorExitDotPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+}
 .editor-exit-bar button {
-    padding: 10px 22px;
-    font-size: 0.9rem;
+    width: 30px;
+    height: 30px;
+    padding: 10px 10px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    line-height: 1;
     border: none;
-    border-radius: 24px;
+    border-radius: 9999px;
     cursor: pointer;
     transition: all 0.2s;
 }
 .light .editor-exit-bar button { background: var(--primary-color); color: white; }
 .dark .editor-exit-bar button { background: var(--primary-color-dark); color: white; }
+.editor-exit-bar button:hover { transform: scale(1.08); }
+@media (max-width: 768px) {
+    .editor-exit-bar { right: 15px; bottom: 15px; padding: 7px 7px 7px 14px; }
+}
 
 .editor-add-dropdown {
     position: fixed;
@@ -6904,6 +6998,12 @@ body.dark .fc-formula-popup input {
 
         /* ボトムメニューモード: 上部ロゴを非表示 */
         body.menu-mode-bottom h1 { display: none; }
+        /* h1を消した分、ページ最上部の項目が右上の設定/テーマボタンや左上の時計(共にposition:fixed)に
+           隠れてクリックできなくなるのを防ぐため、コンテナの上余白でその高さ分を確保する */
+        body.menu-mode-bottom .container { padding-top: 90px; }
+        @media (max-width: 768px) {
+            body.menu-mode-bottom .container { padding-top: 78px; }
+        }
 
         /* メニューアイコン */
         .menu button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
@@ -7194,10 +7294,12 @@ body.dark .fc-formula-popup input {
     </div>
     <div class="tutorial-box" id="tutorialBox" style="display: none;">
         <div class="tutorial-step-info" id="tutorialStepInfo"></div>
+        <div class="tutorial-progress"><div class="tutorial-progress-fill" id="tutorialProgressFill"></div></div>
         <h3 id="tutorialTitle" data-i18n="tutorialPlaceholderTitle">タイトル</h3>
         <p id="tutorialMessage" data-i18n="tutorialPlaceholderMessage">メッセージ</p>
         <div class="tutorial-buttons">
-            <button class="secondary" onclick="skipTutorial()" data-i18n="skipButton">スキップ</button>
+            <button class="secondary" id="tutorialSkipBtn" onclick="skipTutorial()" data-i18n="skipButton">スキップ</button>
+            <span class="tutorial-click-hint" id="tutorialClickHint" data-i18n="tutorialClickHint">光っている部分をクリック</span>
             <div style="display: flex; gap: 10px;">
                 <button class="secondary" id="tutorialPrevBtn" onclick="prevTutorialStep()"
                     data-i18n="tutorialPrev">戻る</button>
@@ -7224,8 +7326,9 @@ body.dark .fc-formula-popup input {
 
     <button class="editor-add-btn" id="editorAddBtn" onclick="toggleEditorAddDropdown()" aria-label="非表示の要素を再表示"><p style="margin-top: -4px">+</p></button>
     <div class="editor-exit-bar" id="editorExitBar">
-        <span data-i18n="editorModeActive">エディターモード</span>
-        <button onclick="exitEditorMode()" data-i18n="editorModeExit">終了</button>
+        <span class="eeb-dot" aria-hidden="true"></span>
+        <span class="eeb-label" data-i18n="editorModeActive">エディターモード</span>
+        <button onclick="exitEditorMode()" aria-label="終了" data-i18n-aria="editorModeExit">✕</button>
     </div>
     <div class="editor-add-dropdown" id="editorAddDropdown"></div>
     <div class="editor-mini-menu-backdrop" id="editorMiniMenuBackdrop" onclick="closeEditorMiniMenu()"></div>
@@ -7700,7 +7803,7 @@ body.dark .fc-formula-popup input {
                 <button class="primary" id="enterEditorModeBtn" onclick="enterEditorMode()" style="padding: 8px 20px; font-size: 0.9rem; border-radius: 24px;" data-i18n="editorModeEnter">開始</button>
             </div>
             <div class="setting-note" style="margin-top: -15px; margin-bottom: 25px;" data-i18n="editorModeContextHint">エディターモードを開始しなくても、各要素を右クリックするとクイック設定を開けます。</div>
-            <div class="settings-section">
+            <div class="settings-section" id="displaySettingsSection">
                 <h2 data-i18n="settingsDisplay">表示設定</h2>
                 <div class="toggle-item">
                     <span data-i18n="musicPlayer">音楽プレイヤー</span>
@@ -8056,7 +8159,7 @@ body.dark .fc-formula-popup input {
                 </div>
             </div>
 
-            <div class="settings-section">
+            <div class="settings-section" id="graphSettingsSection">
                 <h2 data-i18n="graphDisplay">グラフ表示</h2>
                 <div class="toggle-item">
                     <span data-i18n="studyGraph">勉強時間のグラフ表示</span>
@@ -8109,7 +8212,7 @@ body.dark .fc-formula-popup input {
                     </div>
                 </div>
             </div>
-            <div class="settings-section">
+            <div class="settings-section" id="dataManagementSection">
                 <h2 data-i18n="dataManagement">データ管理</h2>
                 <div class="data-management">
                     <button class="secondary" onclick="exportData()">
@@ -8763,6 +8866,9 @@ const translations = {
                         tutorialDataManagementMessage: 'データのエクスポート / インポート機能です。バックアップを取ったり、他のデバイスにデータを移行できます。',
                         tutorialCompletedTitle: 'チュートリアル完了!',
                         tutorialCompletedMessage: 'お疲れ様でした! これで基本的な使い方の説明は終了です。また分からなくなったら、設定画面の「使い方ガイドを再表示」からいつでも確認できます。',
+                        tutorialEditorModeTitle: 'エディターモード',
+                        tutorialEditorModeMessage: '「開始」を押すと、画面上の各要素をクリックして表示 / 非表示や細かい設定を直接変更できます。開始しなくても、要素を右クリック(スマホでは長押し)すればいつでもクイック設定を開けます。',
+                        tutorialClickHint: '光っている部分をクリック',
                         skipButton: 'スキップ',
                         step: 'ステップ',
 
@@ -9445,8 +9551,11 @@ const translations = {
                         tutorialDataManagementMessage: 'Export/Import data for backup or device migration.',
                         tutorialCompletedTitle: 'Tutorial Completed!',
                         tutorialCompletedMessage: "That's it! You can review this guide anytime from Settings.",
+                        tutorialEditorModeTitle: 'Editor Mode',
+                        tutorialEditorModeMessage: 'Press "Start" to click any element on the screen and directly change its visibility and settings. Even without starting it, you can right-click (long-press on mobile) an element to open its quick settings anytime.',
+                        tutorialClickHint: 'Click the glowing area',
                         skipButton: 'Skip',
-                        step: 'step',
+                        step: 'Step',
 
                         // General
                         confirmDefaultTitle: 'Confirm',
@@ -10520,6 +10629,8 @@ const translations = {
                     const fsClock = document.getElementById('fullscreenClock');
                     if (clock) clock.style.display = enabled ? 'flex' : 'none';
                     if (fsClock) fsClock.style.display = enabled ? 'block' : 'none';
+                    // エディターモードの[+]ボタン位置調整用(時計と同じ左上固定のため)
+                    document.body.classList.toggle('clock-on', enabled);
                     if (enabled) {
                         updateClockDisplay();
                         if (!clockInterval) clockInterval = setInterval(updateClockDisplay, 1000);
@@ -15200,7 +15311,7 @@ const translations = {
                     {
                         titleKey: 'tutorialStatsTitle',
                         messageKey: 'tutorialStatsMessage',
-                        target: '.menu button:nth-child(2)',
+                        target: '.menu button[data-page="stats"]',
                         position: 'bottom',
                         action: 'click',
                         page: 'timer'
@@ -15224,7 +15335,7 @@ const translations = {
                     {
                         titleKey: 'tutorialHistoryTitle',
                         messageKey: 'tutorialHistoryMessage',
-                        target: '.menu button:nth-child(3)',
+                        target: '.menu button[data-page="list"]',
                         position: 'bottom',
                         action: 'click',
                         page: 'stats'
@@ -15264,7 +15375,7 @@ const translations = {
                     {
                         titleKey: 'tutorialDisplaySettingsTitle',
                         messageKey: 'tutorialDisplaySettingsMessage',
-                        target: '.settings-section:nth-child(1)',
+                        target: '#displaySettingsSection',
                         position: 'bottom',
                         action: 'view',
                         page: 'settings'
@@ -15280,7 +15391,7 @@ const translations = {
                     {
                         titleKey: 'tutorialGraphDisplayTitle',
                         messageKey: 'tutorialGraphDisplayMessage',
-                        target: '.settings-section:nth-child(6)',
+                        target: '#graphSettingsSection',
                         position: 'top',
                         action: 'view',
                         page: 'settings'
@@ -15288,8 +15399,16 @@ const translations = {
                     {
                         titleKey: 'tutorialDataManagementTitle',
                         messageKey: 'tutorialDataManagementMessage',
-                        target: '.settings-section:nth-child(7)',
+                        target: '#dataManagementSection',
                         position: 'top',
+                        action: 'view',
+                        page: 'settings'
+                    },
+                    {
+                        titleKey: 'tutorialEditorModeTitle',
+                        messageKey: 'tutorialEditorModeMessage',
+                        target: '.editor-mode-toggle-section',
+                        position: 'bottom',
                         action: 'view',
                         page: 'settings'
                     },
@@ -15443,9 +15562,12 @@ const translations = {
                             arrow.style.display = 'none';
 
                             document.getElementById('tutorialStepInfo').textContent = '';
-                            document.getElementById('tutorialStepInfo').textContent = '';
+                            document.getElementById('tutorialProgressFill').style.width = '100%';
+                            document.getElementById('tutorialClickHint').style.display = 'none';
+                            document.getElementById('tutorialSkipBtn').style.display = 'none';
                             document.getElementById('tutorialTitle').textContent = getText(step.titleKey);
-                            document.getElementById('tutorialMessage').textContent = getText(step.messageKey);
+                            // 完了メッセージはホームページへのリンクを含むためHTMLとして描画
+                            document.getElementById('tutorialMessage').innerHTML = getText('tutorialCompleteMessage');
 
                             const prevBtn = document.getElementById('tutorialPrevBtn');
                             const nextBtn = document.getElementById('tutorialNextBtn');
@@ -15506,10 +15628,20 @@ const translations = {
                         }
                         step._retryCount = 0;
 
+                        // 対象が画面外(またはほぼ端)にある場合は中央へスクロールしてから位置計算する
+                        // (fixed要素はブラウザ側でスクロール不要と判定されるため実質no-op)
+                        const preRect = target.getBoundingClientRect();
+                        if (preRect.top < 70 || preRect.bottom > window.innerHeight - 70) {
+                            try { target.scrollIntoView({ block: 'center', behavior: 'instant' }); }
+                            catch (e) { target.scrollIntoView(); }
+                        }
+
                         overlay.classList.add('show');
                         box.style.display = 'block';
 
                         document.getElementById('tutorialStepInfo').textContent = `${getText('step')} ${currentTutorialStep + 1}/${tutorialSteps.length}`;
+                        document.getElementById('tutorialProgressFill').style.width = `${Math.round(((currentTutorialStep + 1) / tutorialSteps.length) * 100)}%`;
+                        document.getElementById('tutorialSkipBtn').style.display = '';
                         document.getElementById('tutorialTitle').textContent = getText(step.titleKey);
                         document.getElementById('tutorialMessage').textContent = getText(step.messageKey);
 
@@ -15519,12 +15651,15 @@ const translations = {
                         prevBtn.textContent = getText('backButton');
                         prevBtn.onclick = prevTutorialStep;
 
+                        const clickHint = document.getElementById('tutorialClickHint');
                         if (step.action === 'click') {
                             nextBtn.style.display = 'none';
+                            clickHint.style.display = 'flex';
                         } else {
                             nextBtn.style.display = 'block';
                             nextBtn.textContent = getText('nextButton');
                             nextBtn.onclick = nextTutorialStep;
+                            clickHint.style.display = 'none';
                         }
 
                         document.querySelectorAll('.tutorial-highlight').forEach(el => {
@@ -15565,89 +15700,73 @@ const translations = {
                         }
 
                         // 位置計算
+                        // ボックスの実高さを測ったうえで確定座標を直接計算する(後追いの画面外補正はしない)。
+                        // スペースが足りない側に置こうとした場合は自動で反対側へ反転し、矢印の向きも追従させる。
                         setTimeout(() => {
                             const targetRect = target.getBoundingClientRect();
-                            const boxWidth = Math.min(400, window.innerWidth - 40);
+                            const vw = window.innerWidth;
+                            const vh = window.innerHeight;
+                            const boxWidth = Math.min(400, vw - 40);
                             const boxPadding = 20;
+                            const gap = 20;
+                            const boxH = box.offsetHeight;
+
+                            // ステップ切替の位置ジャンプをフェードインで馴染ませる(opacityのみなので座標計算に影響しない)
+                            box.style.animation = 'none';
+                            void box.offsetWidth;
+                            box.style.animation = '';
 
                             arrow.className = 'tutorial-arrow';
                             box.style.transform = 'none';
+                            box.style.bottom = 'auto';
 
-                            if (step.position === 'top') {
-                                const leftPos = Math.max(boxPadding, Math.min(window.innerWidth - boxWidth - boxPadding, targetRect.left + targetRect.width / 2 - boxWidth / 2));
-                                box.style.left = leftPos + 'px';
-                                box.style.top = Math.max(boxPadding, targetRect.top - 20) + 'px';
-                                box.style.bottom = 'auto';
-                                box.style.transform = 'translateY(-100%)';
+                            function placeVertical(preferAbove) {
+                                const spaceAbove = targetRect.top - gap - boxPadding;
+                                const spaceBelow = vh - targetRect.bottom - gap - boxPadding;
+                                let above = preferAbove;
+                                if (above && spaceAbove < boxH && spaceBelow > spaceAbove) above = false;
+                                if (!above && spaceBelow < boxH && spaceAbove > spaceBelow) above = true;
 
-                                arrow.classList.add('tutorial-arrow-down');
+                                const left = Math.max(boxPadding, Math.min(vw - boxWidth - boxPadding, targetRect.left + targetRect.width / 2 - boxWidth / 2));
+                                let top = above ? targetRect.top - gap - boxH : targetRect.bottom + gap;
+                                top = Math.max(boxPadding, Math.min(vh - boxH - boxPadding, top));
+                                box.style.left = left + 'px';
+                                box.style.top = top + 'px';
+
+                                arrow.classList.add(above ? 'tutorial-arrow-down' : 'tutorial-arrow-up');
                                 arrow.style.left = (targetRect.left + targetRect.width / 2 - 10) + 'px';
-                                arrow.style.top = (targetRect.top - 10) + 'px';
+                                arrow.style.top = above ? (targetRect.top - 10) + 'px' : (targetRect.bottom + 10) + 'px';
                                 arrow.style.display = 'block';
-                            } else if (step.position === 'bottom') {
-                                const leftPos = Math.max(boxPadding, Math.min(window.innerWidth - boxWidth - boxPadding, targetRect.left + targetRect.width / 2 - boxWidth / 2));
-                                box.style.left = leftPos + 'px';
-                                box.style.top = (targetRect.bottom + 20) + 'px';
-                                box.style.bottom = 'auto';
-                                box.style.transform = 'none';
+                            }
 
-                                arrow.classList.add('tutorial-arrow-up');
-                                arrow.style.left = (targetRect.left + targetRect.width / 2 - 10) + 'px';
-                                arrow.style.top = (targetRect.bottom + 10) + 'px';
-                                arrow.style.display = 'block';
-                            } else if (step.position === 'left') {
-                                // スマホでは左配置は使いにくいので下に変更
-                                if (window.innerWidth <= 768) {
-                                    const leftPos = Math.max(boxPadding, Math.min(window.innerWidth - boxWidth - boxPadding, targetRect.left + targetRect.width / 2 - boxWidth / 2));
-                                    box.style.left = leftPos + 'px';
-                                    box.style.top = (targetRect.bottom + 20) + 'px';
-                                    box.style.bottom = 'auto';
-                                    box.style.transform = 'none';
-
-                                    arrow.classList.add('tutorial-arrow-up');
-                                    arrow.style.left = (targetRect.left + targetRect.width / 2 - 10) + 'px';
-                                    arrow.style.top = (targetRect.bottom + 10) + 'px';
-                                    arrow.style.display = 'block';
-                                } else {
-                                    box.style.left = Math.max(boxPadding, targetRect.left - boxWidth - 20) + 'px';
-                                    box.style.top = Math.max(boxPadding, targetRect.top + targetRect.height / 2 - 100) + 'px';
-                                    box.style.bottom = 'auto';
-                                    box.style.transform = 'none';
-
+                            function placeSide(side) {
+                                const top = Math.max(boxPadding, Math.min(vh - boxH - boxPadding, targetRect.top + targetRect.height / 2 - boxH / 2));
+                                box.style.top = top + 'px';
+                                if (side === 'left') {
+                                    box.style.left = (targetRect.left - boxWidth - gap) + 'px';
                                     arrow.classList.add('tutorial-arrow-right');
                                     arrow.style.left = (targetRect.left - 10) + 'px';
-                                    arrow.style.top = (targetRect.top + targetRect.height / 2 - 10) + 'px';
-                                    arrow.style.display = 'block';
+                                } else {
+                                    box.style.left = (targetRect.right + gap) + 'px';
+                                    arrow.classList.add('tutorial-arrow-left');
+                                    arrow.style.left = (targetRect.right + 10) + 'px';
                                 }
-                            } else if (step.position === 'right') {
-                                box.style.left = Math.min(window.innerWidth - boxWidth - boxPadding, targetRect.right + 20) + 'px';
-                                box.style.top = Math.max(boxPadding, targetRect.top + targetRect.height / 2 - 100) + 'px';
-                                box.style.bottom = 'auto';
-                                box.style.transform = 'none';
-
-                                arrow.classList.add('tutorial-arrow-left');
-                                arrow.style.left = (targetRect.right + 10) + 'px';
                                 arrow.style.top = (targetRect.top + targetRect.height / 2 - 10) + 'px';
                                 arrow.style.display = 'block';
                             }
 
-                            // 画面外チェック
-                            setTimeout(() => {
-                                const boxRect = box.getBoundingClientRect();
-                                if (boxRect.bottom > window.innerHeight - 20) {
-                                    const newTop = window.innerHeight - boxRect.height - 20;
-                                    box.style.top = newTop + 'px';
-                                    if (step.position === 'top') {
-                                        box.style.transform = 'none';
-                                    }
-                                }
-                                if (boxRect.right > window.innerWidth - 20) {
-                                    box.style.left = (window.innerWidth - boxRect.width - 20) + 'px';
-                                }
-                                if (boxRect.left < 20) {
-                                    box.style.left = '20px';
-                                }
-                            }, 10);
+                            if ((step.position === 'left' || step.position === 'right') && vw > 768) {
+                                const fitsLeft  = targetRect.left - boxWidth - gap >= boxPadding;
+                                const fitsRight = targetRect.right + boxWidth + gap <= vw - boxPadding;
+                                if (step.position === 'left' && fitsLeft)        placeSide('left');
+                                else if (step.position === 'right' && fitsRight) placeSide('right');
+                                else if (fitsLeft)                               placeSide('left');
+                                else if (fitsRight)                              placeSide('right');
+                                else placeVertical(false); // 横に置けない場合は縦配置(自動反転あり)
+                            } else {
+                                // スマホでは左右配置は使いにくいので縦配置に統一
+                                placeVertical(step.position === 'top');
+                            }
                         }, 150);
                     }
                 }
@@ -15889,7 +16008,11 @@ const translations = {
                 function syncBottomMenuPadding() {
                     if (!document.body.classList.contains('menu-mode-bottom')) return;
                     const menu = document.querySelector('.menu');
-                    if (menu) document.body.style.paddingBottom = menu.offsetHeight + 'px';
+                    if (!menu) return;
+                    const menuH = menu.offsetHeight;
+                    // エディターモードの終了バッジ(右下の小さなピル)をボトムメニューの上に浮かせるための高さ
+                    document.documentElement.style.setProperty('--bottom-menu-h', menuH + 'px');
+                    document.body.style.paddingBottom = menuH + 'px';
                 }
 
                 function onMenuBottomToggle() {
@@ -16903,6 +17026,7 @@ const translations = {
                     document.body.classList.add('editor-mode');
                     attachEditorTargets();
                     showPage('timer');
+                    requestAnimationFrame(syncBottomMenuPadding);
                 }
 
                 function exitEditorMode() {
@@ -16910,6 +17034,7 @@ const translations = {
                     document.body.classList.remove('editor-mode');
                     closeEditorMiniMenu();
                     closeEditorAddDropdown();
+                    requestAnimationFrame(syncBottomMenuPadding);
                 }
 
                 function initEditorMode() {

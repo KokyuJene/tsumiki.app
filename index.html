@@ -5044,10 +5044,6 @@
             opacity: 0.3;
         }
 
-        .date-picker-day.today {
-            
-        }
-
         .light .date-picker-day.today {
             background-color: var(--primary-color);
             color: white;
@@ -5056,10 +5052,6 @@
         .dark .date-picker-day.today {
             background-color: var(--primary-color-dark);
             color: white;
-        }
-
-        .date-picker-day.selected {
-            
         }
 
         .date-picker-day.range-selected {
@@ -7573,6 +7565,21 @@ body.dark .fc-formula-popup input {
         .mo-label { flex:1; font-size:0.92rem; }
         .mo-toggle { flex-shrink:0; }
         .mo-toggle .toggle-switch { margin:0; }
+        .menu-order-break-item { gap: 12px; }
+        .menu-order-break-item .mo-label { display:flex; align-items:center; gap:10px; }
+        .menu-order-break-line {
+            flex: 1;
+            height: 0;
+            border-top: 2px dashed rgba(127,127,127,0.55);
+            border-radius: 999px;
+        }
+        .menu-order-break-text { font-size: 0.84rem; opacity: 0.7; white-space: nowrap; }
+        .menu-break-marker {
+            flex-basis: 100%;
+            height: 0;
+            margin: 0;
+            padding: 0;
+        }
     </style>
 
 </head>
@@ -8432,18 +8439,7 @@ body.dark .fc-formula-popup input {
                 <div class="toggle-item">
                     <span data-i18n="musicResumeWindowLabel">タップ再開の有効時間</span>
                     <div class="toggle-controls">
-                        <div class="custom-select" style="width: 120px;">
-                            <select id="musicResumeWindowSelect" onchange="updateMusicResumeWindow()">
-                                <option value="1">1</option>
-                                <option value="3">3</option>
-                                <option value="5">5</option>
-                                <option value="10">10</option>
-                                <option value="30">30</option>
-                                <option value="60">60</option>
-                                <option value="120">120</option>
-                            </select>
-                            <div class="select-arrow">▾</div>
-                        </div>
+                        <input type="text" id="musicResumeWindowInput" class="auto-stop-presets-input" inputmode="numeric" placeholder="5" onchange="updateMusicResumeWindow()">
                         <span data-i18n="musicResumeWindowMinutes">分</span>
                     </div>
                 </div>
@@ -8474,17 +8470,7 @@ body.dark .fc-formula-popup input {
                 <div class="toggle-item">
                     <span data-i18n="miniPlayerAutoHideLabel">停止後の自動非表示時間</span>
                     <div class="toggle-controls">
-                        <div class="custom-select" style="width: 120px;">
-                            <select id="miniPlayerAutoHideSelect" onchange="updateMiniPlayerAutoHide()">
-                                <option value="30">30</option>
-                                <option value="60">60</option>
-                                <option value="120">120</option>
-                                <option value="180">180</option>
-                                <option value="300">300</option>
-                                <option value="0" data-i18n="miniPlayerNoAutoHide">なし</option>
-                            </select>
-                            <div class="select-arrow">▾</div>
-                        </div>
+                        <input type="text" id="miniPlayerAutoHideInput" class="auto-stop-presets-input" inputmode="numeric" placeholder="60" onchange="updateMiniPlayerAutoHide()">
                         <span data-i18n="seconds">秒</span>
                     </div>
                 </div>
@@ -8596,11 +8582,18 @@ body.dark .fc-formula-popup input {
                     </div>
                 </div>
                 <div class="setting-note" data-i18n="menuWideOverflowNote">ONにすると画面幅に余裕がある場合、メニューが枠からはみ出して1行で表示されます</div>
+                <div class="toggle-item">
+                    <span data-i18n="menuBreakLineLabel">メニュー内改行</span>
+                    <div class="toggle-switch" id="toggleMenuBreakLine" onclick="toggleMenuBreakLineSetting()">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <div class="setting-note" data-i18n="menuBreakLineNote">ONにすると、メニュー項目/順序の中に改行線を置いて折り返し位置を調整できます</div>
 
                 <!-- Menu item order and visibility -->
                 <div style="margin-top:15px;">
                     <label style="font-size:0.9rem;opacity:0.8;display:block;margin-bottom:4px;" data-i18n="menuOrderLabel">メニュー項目/順序</label>
-                    <div class="setting-note" style="margin-bottom:8px;margin-top:0;" data-i18n="menuOrderNote">ドラッグで並び替え、トグルで表示/非表示</div>
+                    <div class="setting-note" style="margin-bottom:8px;margin-top:0;" data-i18n="menuOrderNote">ドラッグで並び替え、トグルで表示/非表示。改行線もドラッグできます</div>
                     <div class="menu-order-list" id="menuOrderList"></div>
                 </div>
             </div>
@@ -9151,8 +9144,10 @@ const translations = {
                         menuFixedBottomLabel: 'メニューを下に固定',
                         menuWideOverflowLabel: '画面幅に余裕がある場合は2段にしない',
                         menuWideOverflowNote: 'ONにすると画面幅に余裕がある場合、メニューが枠からはみ出して1行で表示されます',
+                        menuBreakLineLabel: 'メニュー内改行',
+                        menuBreakLineNote: 'ONにすると、メニュー項目/順序の中に改行線を置いて折り返し位置を調整できます',
                         menuOrderLabel: 'メニュー項目/順序',
-                        menuOrderNote: 'ドラッグで並び替え、トグルで表示/非表示',
+                        menuOrderNote: 'ドラッグで並び替え、トグルで表示/非表示。改行線もドラッグできます',
 
                         // タイマーページ
                         groupPlaceholder: 'グループ名(任意)',
@@ -9228,6 +9223,12 @@ const translations = {
                         musicPlayerYt: '再生プレイヤー',
                         musicSelectPromptYt: '動画/楽曲を選択してください',
                         addMusicButtonYt: '動画/音楽を追加',
+                        musicSettingsTitleYt: '再生プレイヤー設定',
+                        stopMusicOnTimerEndYt: 'タイマー終了時に再生中のものを一時停止',
+                        musicResumeOnTapAfterReloadYt: 'ページ再読み込み後に画面タップで再生を自動再開',
+                        editorModeMusicPlayerYt: '再生プレイヤー',
+                        editorModeStopMusicYt: 'タイマー終了時に再生中のものを一時停止',
+                        editorModeResumeOnTapYt: 'タップで再生を自動再開',
                         miniPlayerFreePlace: 'ミニプレイヤーの自由設置',
                         previous: '前へ',
                         play: '再生',
@@ -9769,8 +9770,10 @@ const translations = {
                         menuFixedBottomLabel: 'Pin Menu to Bottom',
                         menuWideOverflowLabel: "Don't wrap to 2 rows when there's room",
                         menuWideOverflowNote: 'When ON, the menu will overflow outside its panel to stay on one line if the screen is wide enough',
+                        menuBreakLineLabel: 'Line break within the menu',
+                        menuBreakLineNote: 'When ON, you can place break lines in Menu Items & Order to control wrapping points',
                         menuOrderLabel: 'Menu Items & Order',
-                        menuOrderNote: 'Drag to reorder, toggle to show/hide',
+                        menuOrderNote: 'Drag to reorder, toggle to show/hide. Break lines can also be dragged',
 
                         // Timer Page
                         groupPlaceholder: 'Group name (optional)',
@@ -9841,6 +9844,12 @@ const translations = {
                         musicPlayerYt: 'Player',
                         musicSelectPromptYt: 'Select a video/track',
                         addMusicButtonYt: 'Add Video/Music',
+                        musicSettingsTitleYt: 'Playback Player Settings',
+                        stopMusicOnTimerEndYt: 'Pause the currently playing item when the timer ends',
+                        musicResumeOnTapAfterReloadYt: 'Resume playback on tap after reload',
+                        editorModeMusicPlayerYt: 'Player',
+                        editorModeStopMusicYt: 'Pause the currently playing item when the timer ends',
+                        editorModeResumeOnTapYt: 'Auto resume playback on tap',
                         miniPlayerFreePlace: 'Free Placement Mode',
                         previous: 'Previous',
                         play: 'Play',
@@ -10867,20 +10876,21 @@ const translations = {
                 }
 
                 function applyMusicResumeWindowSetting() {
-                    const select = document.getElementById('musicResumeWindowSelect');
-                    if (!select) return;
-                    select.value = String(getMusicResumeWindowMinutes());
+                    const input = document.getElementById('musicResumeWindowInput');
+                    if (!input) return;
+                    input.value = String(getMusicResumeWindowMinutes());
                 }
 
                 function updateMusicResumeWindow() {
-                    const select = document.getElementById('musicResumeWindowSelect');
-                    if (!select) return;
-                    const minutes = parseInt(select.value, 10);
+                    const input = document.getElementById('musicResumeWindowInput');
+                    if (!input) return;
+                    const minutes = parseInt(input.value, 10);
                     if (!Number.isFinite(minutes) || minutes <= 0) {
-                        select.value = '5';
+                        input.value = '5';
                         saveData('music_resume_window_min', '5');
                         return;
                     }
+                    input.value = String(minutes);
                     saveData('music_resume_window_min', String(minutes));
                     setupMusicResumeOnNextGesture();
                 }
@@ -16720,10 +16730,42 @@ const translations = {
                 };
 
                 const MENU_ITEM_KEYS = ['timer', 'stats', 'list', 'music', 'todo'];
+                const MENU_BREAK_KEY = '__menu_break__';
                 const MENU_ITEM_I18N = { timer:'menuTimer', stats:'menuStats', list:'menuList', music:'menuMusic', todo:'menuTodo' };
                 const MENU_PAGE_IDS  = { timer:'timerPage', stats:'statsPage', list:'listPage', music:'musicPage', todo:'todoPage' };
                 const MENU_DEFAULT_LABELS = { timer:'タイマー', stats:'統計', list:'リスト', music:'音楽', todo:'ToDo' };
                 const MENU_DEFAULT_ORDER  = ['timer', 'stats', 'list', 'music', 'todo'];
+
+                function isMenuBreakEnabled() {
+                    return getData('menu_break_enabled') === 'true';
+                }
+
+                function ensureMenuBreakItem() {
+                    const order = getMenuOrder();
+                    if (order.includes(MENU_BREAK_KEY)) return;
+                    const nextOrder = [...order];
+                    const insertAfter = nextOrder.indexOf('list');
+                    const insertIndex = insertAfter >= 0 ? insertAfter + 1 : Math.min(3, nextOrder.length);
+                    nextOrder.splice(insertIndex, 0, MENU_BREAK_KEY);
+                    saveMenuOrder(nextOrder);
+                }
+
+                function removeMenuBreakItems() {
+                    const nextOrder = getMenuOrder().filter((key) => key !== MENU_BREAK_KEY);
+                    saveMenuOrder(nextOrder);
+                }
+
+                function toggleMenuBreakLineSetting() {
+                    const toggle = document.getElementById('toggleMenuBreakLine');
+                    if (!toggle) return;
+                    const newOn = !toggle.classList.contains('active');
+                    toggle.classList.toggle('active', newOn);
+                    saveData('menu_break_enabled', newOn ? 'true' : 'false');
+                    if (newOn) ensureMenuBreakItem();
+                    else removeMenuBreakItems();
+                    buildMenuOrderList();
+                    rebuildMenu();
+                }
 
                 function getMenuOrder() {
                     const saved = getData('menu_order');
@@ -16765,6 +16807,7 @@ const translations = {
                 }
 
                 function getMenuLabel(key) {
+                    if (key === MENU_BREAK_KEY) return getText('menuBreakLineLabel') || '改行線';
                     // 音楽はYouTube動画モードに応じてラベルを切り替える(音楽 ⇔ 再生)
                     if (key === 'music') {
                         return getText(isYoutubeVideoEnabled() ? 'menuMusicYt' : 'menuMusic') || MENU_DEFAULT_LABELS[key];
@@ -16794,6 +16837,13 @@ const translations = {
                     menu.innerHTML = '';
 
                     for (const key of order) {
+                        if (key === MENU_BREAK_KEY) {
+                            if (!isMenuBreakEnabled()) continue;
+                            const breakEl = document.createElement('div');
+                            breakEl.className = 'menu-break-marker';
+                            menu.appendChild(breakEl);
+                            continue;
+                        }
                         if (!vis[key]) continue;
                         const btn = document.createElement('button');
                         btn.setAttribute('data-page-key', key);
@@ -17024,22 +17074,30 @@ const translations = {
 
                     for (let i = 0; i < order.length; i++) {
                         const key  = order[i];
+                        const isBreak = key === MENU_BREAK_KEY;
                         const isVis = vis[key];
                         const item = document.createElement('div');
-                        item.className = 'menu-order-item';
+                        item.className = 'menu-order-item' + (isBreak ? ' menu-order-break-item' : '');
                         item.setAttribute('data-mo-key', key);
                         item.setAttribute('data-mo-idx', i);
                         item.draggable = true;
 
-                        item.innerHTML = `
-                            <span class="mo-drag-handle">${dotsSvg}</span>
-                            <span class="mo-label">${getMenuLabel(key)}</span>
-                            <span class="mo-toggle">
-                                <div class="toggle-switch ${isVis ? 'active' : ''}" onclick="toggleMenuItemVisibility('${key}', this)">
-                                    <div class="toggle-slider"></div>
-                                </div>
-                            </span>
-                        `;
+                        if (isBreak) {
+                            item.innerHTML = `
+                                <span class="mo-drag-handle">${dotsSvg}</span>
+                                <span class="mo-label"><span class="menu-order-break-line"></span><span class="menu-order-break-text">${getMenuLabel(key)}</span><span class="menu-order-break-line"></span></span>
+                            `;
+                        } else {
+                            item.innerHTML = `
+                                <span class="mo-drag-handle">${dotsSvg}</span>
+                                <span class="mo-label">${getMenuLabel(key)}</span>
+                                <span class="mo-toggle">
+                                    <div class="toggle-switch ${isVis ? 'active' : ''}" onclick="toggleMenuItemVisibility('${key}', this)">
+                                        <div class="toggle-slider"></div>
+                                    </div>
+                                </span>
+                            `;
+                        }
 
                         item.addEventListener('dragstart', (e) => {
                             _moDragSrcIdx = parseInt(item.getAttribute('data-mo-idx'));
@@ -17054,16 +17112,19 @@ const translations = {
                         });
 
                         const handle = item.querySelector('.mo-drag-handle');
-                        handle.addEventListener('touchstart', () => {
-                            _moTouchState = { srcIdx: parseInt(item.getAttribute('data-mo-idx')), insertIdx: undefined };
-                            item.classList.add('mo-dragging');
-                        }, { passive: true });
+                        if (handle) {
+                            handle.addEventListener('touchstart', () => {
+                                _moTouchState = { srcIdx: parseInt(item.getAttribute('data-mo-idx')), insertIdx: undefined };
+                                item.classList.add('mo-dragging');
+                            }, { passive: true });
+                        }
 
                         container.appendChild(item);
                     }
                 }
 
                 function toggleMenuItemVisibility(key, toggleEl) {
+                    if (key === MENU_BREAK_KEY) return;
                     const vis   = getMenuVisibility();
                     vis[key]    = !vis[key];
                     saveMenuVisibility(vis);
@@ -17090,17 +17151,23 @@ const translations = {
                     const display = getData('menu_display') || 'text';
                     const fixed   = getData('menu_fixed')   === 'true';
                     const wideOverflow = getData('menu_wide_overflow') === 'true';
+                    const breakEnabled = isMenuBreakEnabled();
 
                     const dispSelect    = document.getElementById('menuDisplaySelect');
                     const fixedToggle   = document.getElementById('toggleMenuFixed');
                     const bottomToggle  = document.getElementById('toggleMenuBottom');
                     const wideToggle    = document.getElementById('toggleMenuWideOverflow');
+                    const breakToggle   = document.getElementById('toggleMenuBreakLine');
 
                     if (dispSelect)   dispSelect.value  = display;
                     if (fixedToggle)  fixedToggle.classList.toggle('active', fixed);
                     if (bottomToggle) bottomToggle.classList.toggle('active', mode === 'bottom');
                     if (wideToggle)   wideToggle.classList.toggle('active', wideOverflow);
+                    if (breakToggle)  breakToggle.classList.toggle('active', breakEnabled);
                     document.body.classList.toggle('menu-wide-overflow', wideOverflow);
+
+                    if (breakEnabled) ensureMenuBreakItem();
+                    else removeMenuBreakItems();
 
                     applyMenuMode(mode);
                     updateMenuModeSettingsUI(mode);
@@ -17972,26 +18039,22 @@ const translations = {
                 const editorMiniMenuDefs = {
                     music: function() {
                         return {
-                            title: getText('musicPlayer'),
+                            title: getText(isYoutubeVideoEnabled() ? 'musicPlayerYt' : 'musicPlayer'),
                             rows: [
                                 { type: 'toggle', label: getText('editorModeDisplay'), id: 'toggleMusic', key: 'feature_music', onToggle: function() { toggleFeature('music'); } },
-                                { type: 'toggle', label: getText('editorModeStopMusic'), id: 'toggleStopMusicOnTimerEnd', key: 'feature_stop_music_on_timer_end', onToggle: function() { toggleStopMusicOnTimerEnd(); } },
-                                { type: 'toggle', label: getText('editorModeResumeOnTap'), id: 'toggleMusicResumeOnTap', key: 'feature_music_resume_on_tap_after_reload', onToggle: function() { toggleMusicResumeOnTap(); } },
-                                { type: 'select', label: getText('editorModeResumeWindow'), options: [
-                                    {v:'1',t:'1分'},{v:'3',t:'3分'},{v:'5',t:'5分'},{v:'10',t:'10分'},{v:'30',t:'30分'},{v:'60',t:'60分'},{v:'120',t:'120分'}
-                                ], key: 'music_resume_window_min', onChange: function(val) { saveData('music_resume_window_min', val); var orig = document.getElementById('musicResumeWindowSelect'); if(orig) orig.value = val; } }
+                                { type: 'toggle', label: getText(isYoutubeVideoEnabled() ? 'editorModeStopMusicYt' : 'editorModeStopMusic'), id: 'toggleStopMusicOnTimerEnd', key: 'feature_stop_music_on_timer_end', onToggle: function() { toggleStopMusicOnTimerEnd(); } },
+                                { type: 'toggle', label: getText(isYoutubeVideoEnabled() ? 'editorModeResumeOnTapYt' : 'editorModeResumeOnTap'), id: 'toggleMusicResumeOnTap', key: 'feature_music_resume_on_tap_after_reload', onToggle: function() { toggleMusicResumeOnTap(); } },
+                                { type: 'input', label: getText('editorModeResumeWindow'), key: 'music_resume_window_min', placeholder: '5', onChange: function(val) { var n = parseInt(val, 10); var next = Number.isFinite(n) && n > 0 ? String(n) : '5'; saveData('music_resume_window_min', next); var orig = document.getElementById('musicResumeWindowInput'); if(orig) orig.value = next; setupMusicResumeOnNextGesture(); } }
                             ]
                         };
                     },
                     musicPlayer: function() {
                         return {
-                            title: getText('editorModeMusicPlayer'),
+                            title: getText(isYoutubeVideoEnabled() ? 'editorModeMusicPlayerYt' : 'editorModeMusicPlayer'),
                             rows: [
-                                { type: 'toggle', label: getText('editorModeStopMusic'), id: 'toggleStopMusicOnTimerEnd', key: 'feature_stop_music_on_timer_end', onToggle: function() { toggleStopMusicOnTimerEnd(); } },
-                                { type: 'toggle', label: getText('editorModeResumeOnTap'), id: 'toggleMusicResumeOnTap', key: 'feature_music_resume_on_tap_after_reload', onToggle: function() { toggleMusicResumeOnTap(); } },
-                                { type: 'select', label: getText('editorModeResumeWindow'), options: [
-                                    {v:'1',t:'1分'},{v:'3',t:'3分'},{v:'5',t:'5分'},{v:'10',t:'10分'},{v:'30',t:'30分'},{v:'60',t:'60分'},{v:'120',t:'120分'}
-                                ], key: 'music_resume_window_min', onChange: function(val) { saveData('music_resume_window_min', val); var orig = document.getElementById('musicResumeWindowSelect'); if(orig) orig.value = val; } }
+                                { type: 'toggle', label: getText(isYoutubeVideoEnabled() ? 'editorModeStopMusicYt' : 'editorModeStopMusic'), id: 'toggleStopMusicOnTimerEnd', key: 'feature_stop_music_on_timer_end', onToggle: function() { toggleStopMusicOnTimerEnd(); } },
+                                { type: 'toggle', label: getText(isYoutubeVideoEnabled() ? 'editorModeResumeOnTapYt' : 'editorModeResumeOnTap'), id: 'toggleMusicResumeOnTap', key: 'feature_music_resume_on_tap_after_reload', onToggle: function() { toggleMusicResumeOnTap(); } },
+                                { type: 'input', label: getText('editorModeResumeWindow'), key: 'music_resume_window_min', placeholder: '5', onChange: function(val) { var n = parseInt(val, 10); var next = Number.isFinite(n) && n > 0 ? String(n) : '5'; saveData('music_resume_window_min', next); var orig = document.getElementById('musicResumeWindowInput'); if(orig) orig.value = next; setupMusicResumeOnNextGesture(); } }
                             ]
                         };
                     },
@@ -18106,9 +18169,7 @@ const translations = {
                             rows: [
                                 { type: 'toggle', label: getText('miniPlayerEnabled'), id: 'toggleMiniPlayer', key: 'mini_player_enabled', onToggle: function() { toggleMiniPlayerSetting(); } },
                                 { type: 'toggle', label: getText('miniPlayerHideSkip'), id: 'toggleMiniPlayerHideSkip', key: 'mini_player_hide_skip', onToggle: function() { toggleMiniPlayerHideSkip(); } },
-                                { type: 'select', label: getText('miniPlayerAutoHideLabel'), options: [
-                                    {v:'30',t:'30'+getText('seconds')},{v:'60',t:'60'+getText('seconds')},{v:'120',t:'120'+getText('seconds')},{v:'180',t:'180'+getText('seconds')},{v:'300',t:'300'+getText('seconds')},{v:'0',t:getText('miniPlayerNoAutoHide')}
-                                ], key: 'mini_player_auto_hide', onChange: function(val) { var el=document.getElementById('miniPlayerAutoHideSelect'); if(el) el.value=val; updateMiniPlayerAutoHide(); } },
+                                { type: 'input', label: getText('miniPlayerAutoHideLabel'), key: 'mini_player_auto_hide', placeholder: '60', onChange: function(val) { var n = parseInt(val, 10); var next = Number.isFinite(n) && n >= 0 ? String(n) : '60'; saveData('mini_player_auto_hide', next); var el=document.getElementById('miniPlayerAutoHideInput'); if(el) el.value = next; updateMiniPlayerAutoHide(); } },
                                 { type: 'select', label: getText('miniPlayerPositionLabel'), options: [
                                     {v:'top-right',t:getText('posTopRight')},{v:'top-left',t:getText('posTopLeft')},{v:'bottom-right',t:getText('posBottomRight')},{v:'bottom-left',t:getText('posBottomLeft')}
                                 ], key: 'mini_player_position', onChange: function(val) { var el=document.getElementById('miniPlayerPositionSelect'); if(el) el.value=val; updateMiniPlayerPosition(); } },
@@ -18143,6 +18204,10 @@ const translations = {
                                 html += '<option value="' + opt.v + '"' + (opt.v === currentVal ? ' selected' : '') + '>' + opt.t + '</option>';
                             });
                             html += '</select><div class="select-arrow">▾</div></div>';
+                        } else if (row.type === 'input') {
+                            const inputDefaults = {music_resume_window_min:'5',mini_player_auto_hide:'60'};
+                            const currentVal = getData(row.key) || inputDefaults[row.key] || row.placeholder || '';
+                            html += '<input type="text" class="auto-stop-presets-input" inputmode="numeric" data-emm-input="' + i + '" placeholder="' + escapeHtml(row.placeholder || '') + '" value="' + escapeHtml(currentVal) + '" onchange="editorMiniMenuInput(' + i + ', this.value)">';
                         } else if (row.type === 'stepper') {
                             const unit = getText('musicResumeWindowMinutes');
                             const range = getFocusSettingRange(row.key);
@@ -18219,6 +18284,14 @@ const translations = {
                 }
 
                 function editorMiniMenuSelect(index, value) {
+                    const menu = document.getElementById('editorMiniMenu');
+                    if (!menu._config) return;
+                    const row = menu._config.rows[index];
+                    if (!row) return;
+                    if (row.onChange) row.onChange(value);
+                }
+
+                function editorMiniMenuInput(index, value) {
                     const menu = document.getElementById('editorMiniMenu');
                     if (!menu._config) return;
                     const row = menu._config.rows[index];
@@ -20058,6 +20131,15 @@ const translations = {
 
                 function updateMusicPageLabels() {
                     const isYt = isYoutubeVideoEnabled();
+                    document.querySelectorAll('[data-i18n="musicSettingsTitle"]').forEach(el => {
+                        el.textContent = getText(isYt ? 'musicSettingsTitleYt' : 'musicSettingsTitle');
+                    });
+                    document.querySelectorAll('[data-i18n="stopMusicOnTimerEnd"]').forEach(el => {
+                        el.textContent = getText(isYt ? 'stopMusicOnTimerEndYt' : 'stopMusicOnTimerEnd');
+                    });
+                    document.querySelectorAll('[data-i18n="musicResumeOnTapAfterReload"]').forEach(el => {
+                        el.textContent = getText(isYt ? 'musicResumeOnTapAfterReloadYt' : 'musicResumeOnTapAfterReload');
+                    });
                     document.querySelectorAll('[data-i18n="menuMusic"]').forEach(el => {
                         el.textContent = getText(isYt ? 'menuMusicYt' : 'menuMusic');
                     });
@@ -20342,6 +20424,12 @@ const translations = {
                 function getMiniPlayerAutoHide() {
                     const v = parseInt(getData('mini_player_auto_hide') || '60', 10);
                     return isNaN(v) ? 60 : v;
+                }
+
+                function applyMiniPlayerAutoHideSetting() {
+                    const input = document.getElementById('miniPlayerAutoHideInput');
+                    if (!input) return;
+                    input.value = String(getMiniPlayerAutoHide());
                 }
 
                 function getMiniPlayerPosition() {
@@ -20710,9 +20798,15 @@ const translations = {
                 }
 
                 function updateMiniPlayerAutoHide() {
-                    const select = document.getElementById('miniPlayerAutoHideSelect');
-                    if (!select) return;
-                    saveData('mini_player_auto_hide', select.value);
+                    const input = document.getElementById('miniPlayerAutoHideInput');
+                    if (!input) return;
+                    const seconds = parseInt(input.value, 10);
+                    if (!Number.isFinite(seconds) || seconds < 0) {
+                        input.value = String(getMiniPlayerAutoHide());
+                        return;
+                    }
+                    input.value = String(seconds);
+                    saveData('mini_player_auto_hide', String(seconds));
                 }
 
                 function updateMiniPlayerPosition() {
@@ -20775,16 +20869,7 @@ const translations = {
                         setToggleActive('toggleMiniPlayerFreePlace', isMiniPlayerFreePlace());
                         updateMiniPlayerPositionSettingVisibility();
 
-                        const autoHideSelect = document.getElementById('miniPlayerAutoHideSelect');
-                        if (autoHideSelect) {
-                            const val = getData('mini_player_auto_hide') || '60';
-                            for (let i = 0; i < autoHideSelect.options.length; i++) {
-                                if (autoHideSelect.options[i].value === val) {
-                                    autoHideSelect.value = val;
-                                    break;
-                                }
-                            }
-                        }
+                        applyMiniPlayerAutoHideSetting();
                         const posSelect = document.getElementById('miniPlayerPositionSelect');
                         if (posSelect) {
                             posSelect.value = getMiniPlayerPosition();

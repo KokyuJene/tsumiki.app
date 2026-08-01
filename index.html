@@ -377,7 +377,7 @@
             position: relative;
             transition: all 0.2s;
             border: 2px solid transparent;
-            
+            transition: border-color 0.2s ease, background-color 0.2s ease;
         }
 
         .history-item.selected {
@@ -392,6 +392,11 @@
         .dark .history-item.selected {
             border-color: var(--primary-color-dark);
             background-color: var(--panel-dark-2);
+        }
+
+        @keyframes historyItemFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .history-item-checkbox {
@@ -1078,14 +1083,15 @@
         }
 
         .group-input {
-            display: flex;
-            gap: 10px;
+            position: relative;
             margin-bottom: 25px;
         }
 
         .group-input input {
-            flex: 1;
+            width: 100%;
+            box-sizing: border-box;
             padding: 12px 15px;
+            padding-right: 48px;
             border: 2px solid transparent;
             border-radius: 24px;
             font-size: 0.95rem;
@@ -1118,6 +1124,15 @@
 
         .dark .group-input input:focus {
             border-color: var(--primary-color-dark);
+        }
+
+        .group-input .inline-clear-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 30px;
+            height: 30px;
         }
 
         .group-badge {
@@ -1622,6 +1637,33 @@
             font-size: 0.95rem;
             color: inherit;
             font-family: inherit;
+        }
+
+        .inline-clear-btn {
+            width: 26px;
+            height: 26px;
+            flex-shrink: 0;
+            border: none;
+            border-radius: 50%;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: transparent;
+            color: inherit;
+            opacity: 0.55;
+            transition: opacity 0.2s ease, background-color 0.2s ease;
+        }
+
+        .inline-clear-btn:hover {
+            opacity: 1;
+            background-color: rgba(128, 128, 128, 0.15);
+        }
+
+        .inline-clear-btn svg {
+            width: 14px;
+            height: 14px;
         }
 
         .settings-search-hidden {
@@ -2612,16 +2654,12 @@
         }
 
         @media (max-width: 768px) {
-            /* body に overflow を付けると、body 自身が独立したスクロールコンテナになってしまい
-               position:sticky なメニューがビューポートではなく body 基準になって効かなくなる。
-               html だけに付けることで横スクロール防止としての効果は保ちつつ sticky を壊さない */
             html {
                 overflow-x: hidden;
             }
 
             .container {
                 padding: 15px 12px;
-                max-width: 100%;
                 box-sizing: border-box;
             }
 
@@ -5493,7 +5531,8 @@ body.dark .footer-credit-label { color:#676767; }
 body.editor-mode [data-editor-target],
 body.editor-mode .menu button[data-feature],
 body.editor-mode .menu button[data-page="stats"],
-body.editor-mode .menu button[data-page="timer"] {
+body.editor-mode .menu button[data-page="timer"],
+body.editor-mode .menu button[data-page="list"] {
     position: relative;
     cursor: pointer;
     outline: 2px dashed color-mix(in srgb, var(--primary-color) 20%, transparent);
@@ -5504,19 +5543,22 @@ body.editor-mode .menu button[data-page="timer"] {
 body.editor-mode [data-editor-target]:hover,
 body.editor-mode .menu button[data-feature]:hover,
 body.editor-mode .menu button[data-page="stats"]:hover,
-body.editor-mode .menu button[data-page="timer"]:hover {
+body.editor-mode .menu button[data-page="timer"]:hover,
+body.editor-mode .menu button[data-page="list"]:hover {
     outline-color: var(--primary-color);
 }
 body.dark.editor-mode [data-editor-target],
 body.dark.editor-mode .menu button[data-feature],
 body.dark.editor-mode .menu button[data-page="stats"],
-body.dark.editor-mode .menu button[data-page="timer"] {
+body.dark.editor-mode .menu button[data-page="timer"],
+body.dark.editor-mode .menu button[data-page="list"] {
     outline-color: color-mix(in srgb, var(--primary-color-dark) 20%, transparent);
 }
 body.dark.editor-mode [data-editor-target]:hover,
 body.dark.editor-mode .menu button[data-feature]:hover,
 body.dark.editor-mode .menu button[data-page="stats"]:hover,
-body.dark.editor-mode .menu button[data-page="timer"]:hover {
+body.dark.editor-mode .menu button[data-page="timer"]:hover,
+body.dark.editor-mode .menu button[data-page="list"]:hover {
     outline-color: var(--primary-color-dark);
 }
 
@@ -7845,7 +7887,7 @@ body.dark .fc-formula-popup input {
     <div class="quick-nav-menu-backdrop" id="quickNavMenuBackdrop" onclick="closeQuickNavMenu()" oncontextmenu="event.preventDefault(); closeQuickNavMenu();"></div>
     <div class="quick-nav-menu" id="quickNavMenu"></div>
 
-    <!-- YouTube fixed overlay player -->
+    <!-- YouTube overlay player -->
     <div id="ytPlayerContainer"></div>
 
     <!-- 音楽/動画共用プレイヤー(ページ切替で消えないよう body 直下に配置)
@@ -8021,8 +8063,11 @@ body.dark .fc-formula-popup input {
             <div class="focus-progress-bar" id="mainFocusProgressBar">
                 <div class="focus-progress-fill" id="mainFocusProgressFill"></div>
             </div>
-            <div class="group-input">
+            <div class="group-input" data-editor-target="groupInput">
                 <input type="text" id="groupInput" placeholder="グループ名(任意)" data-i18n="groupPlaceholder">
+                <button type="button" class="inline-clear-btn" onclick="clearGroupInput()" aria-label="入力を消去" data-i18n-aria="clearInput">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
             </div>
             <div class="session-info-wrap" id="sessionInfoWrap" data-editor-target="sessionInfo">
                 <div class="session-info" id="sessionInfo" data-i18n="sessionStart">開始ボタンを押して学習を始めましょう</div>
@@ -8347,6 +8392,9 @@ body.dark .fc-formula-popup input {
             <div class="settings-search">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="20" y1="20" x2="16.2" y2="16.2"/></svg>
                 <input type="text" id="settingsSearchInput" placeholder="設定を検索" data-i18n="settingsSearchPlaceholder" oninput="filterSettings(this.value)">
+                <button type="button" class="inline-clear-btn" onclick="clearSettingsSearch()" aria-label="検索をクリア" data-i18n-aria="clearSearch">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
             </div>
             <div class="setting-note" id="settingsSearchEmpty" style="display:none;" data-i18n="settingsSearchEmpty">一致する設定がありません</div>
             <div class="editor-mode-toggle-section">
@@ -8371,6 +8419,12 @@ body.dark .fc-formula-popup input {
                 <div class="toggle-item">
                     <span data-i18n="sessionInfoShowSetting">セッション情報(前回の学習)を表示</span>
                     <div class="toggle-switch" id="toggleSessionInfo" onclick="toggleSessionInfoVisible()">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <div class="toggle-item">
+                    <span data-i18n="groupInputShowSetting">グループ名入力欄を表示</span>
+                    <div class="toggle-switch" id="toggleGroupInput" onclick="toggleGroupInputVisible()">
                         <div class="toggle-slider"></div>
                     </div>
                 </div>
@@ -9148,6 +9202,8 @@ const translations = {
                         menuBreakLineNote: 'ONにすると、メニュー項目/順序の中に改行線を置いて折り返し位置を調整できます',
                         menuOrderLabel: 'メニュー項目/順序',
                         menuOrderNote: 'ドラッグで並び替え、トグルで表示/非表示。改行線もドラッグできます',
+                        clearSearch: '検索をクリア',
+                        clearInput: '入力を消去',
 
                         // タイマーページ
                         groupPlaceholder: 'グループ名(任意)',
@@ -9368,6 +9424,7 @@ const translations = {
                         editorModePriorityColor: '優先度カラー設定',
                         editorModeControls: 'タイマー操作',
                         editorModeSessionInfo: 'セッション情報',
+                        editorModeGroupInput: 'グループ名入力',
                         editorModeDailyTimeline: '日別タイムライン',
                         editorModeHistoryList: '履歴リスト',
                         editorModeMusicPlayer: '音楽プレイヤー',
@@ -9706,6 +9763,7 @@ const translations = {
                         focusSegmentFocus: 'フォーカス',
                         sessionInfoEditLabel: 'テキストを編集',
                         sessionInfoShowSetting: 'セッション情報(前回の学習)を表示',
+                        groupInputShowSetting: 'グループ名入力欄を表示',
                         sessionInfoPlaceholder: '自由なメッセージを入力(空欄で保存するとデフォルト表示に戻ります)',
                         editorModeContextHint: 'エディターモードを開始しなくても、各要素を右クリックするとクイック設定を開けます。',
                         focusModeSettings: 'フォーカスモード設定',
@@ -9774,6 +9832,8 @@ const translations = {
                         menuBreakLineNote: 'When ON, you can place break lines in Menu Items & Order to control wrapping points',
                         menuOrderLabel: 'Menu Items & Order',
                         menuOrderNote: 'Drag to reorder, toggle to show/hide. Break lines can also be dragged',
+                        clearSearch: 'Clear search',
+                        clearInput: 'Clear input',
 
                         // Timer Page
                         groupPlaceholder: 'Group name (optional)',
@@ -9957,6 +10017,7 @@ const translations = {
                         editorModePriorityColor: 'Priority Colors',
                         editorModeControls: 'Timer Controls',
                         editorModeSessionInfo: 'Session Info',
+                        editorModeGroupInput: 'Group Name Field',
                         editorModeDailyTimeline: 'Daily Timeline',
                         editorModeHistoryList: 'History List',
                         editorModeMusicPlayer: 'Music Player',
@@ -10207,6 +10268,7 @@ const translations = {
                         focusSegmentFocus: 'Focus',
                         sessionInfoEditLabel: 'Edit text',
                         sessionInfoShowSetting: 'Show session info (previous session)',
+                        groupInputShowSetting: 'Show group name field',
                         sessionInfoPlaceholder: 'Write your own message (save empty to restore the default)',
                         editorModeContextHint: 'You can also right-click any element to open its quick settings without starting Editor Mode.',
                         focusModeSettings: 'Focus Mode Settings',
@@ -11119,6 +11181,21 @@ const translations = {
                     if (q && settingsPageEl) highlightSettingsMatches(settingsPageEl, q);
                 }
 
+                function clearSettingsSearch() {
+                    const input = document.getElementById('settingsSearchInput');
+                    if (!input) return;
+                    input.value = '';
+                    filterSettings('');
+                    input.focus();
+                }
+
+                function clearGroupInput() {
+                    const input = document.getElementById('groupInput');
+                    if (!input) return;
+                    input.value = '';
+                    input.focus();
+                }
+
                 function toggleFeature(feature) {
                     const toggle = document.getElementById(`toggle${feature.charAt(0).toUpperCase() + feature.slice(1)}`);
                     const isActive = toggle.classList.contains('active');
@@ -11383,6 +11460,46 @@ const translations = {
                     saveData('session_info_visible', isSessionInfoVisible() ? 'false' : 'true');
                     applySessionInfoVisibility();
                     syncSessionInfoToggle();
+                }
+
+                function isGroupInputVisible() {
+                    return getData('group_input_visible') !== 'false';
+                }
+
+                function applyGroupInputVisibility() {
+                    const wrap = document.querySelector('.group-input');
+                    if (wrap) wrap.style.display = isGroupInputVisible() ? '' : 'none';
+                }
+
+                function syncGroupInputToggle() {
+                    const t = document.getElementById('toggleGroupInput');
+                    if (t) t.classList.toggle('active', isGroupInputVisible());
+                }
+
+                function toggleGroupInputVisible() {
+                    saveData('group_input_visible', isGroupInputVisible() ? 'false' : 'true');
+                    applyGroupInputVisibility();
+                    syncGroupInputToggle();
+                }
+
+                function isHistoryListVisible() {
+                    return getData('history_list_visible') !== 'false';
+                }
+
+                function applyHistoryListVisibility() {
+                    const list = document.getElementById('historyList');
+                    if (list) list.style.display = isHistoryListVisible() ? '' : 'none';
+                }
+
+                function syncHistoryListToggle() {
+                    const t = document.getElementById('toggleHistoryList');
+                    if (t) t.classList.toggle('active', isHistoryListVisible());
+                }
+
+                function toggleHistoryListVisible() {
+                    saveData('history_list_visible', isHistoryListVisible() ? 'false' : 'true');
+                    applyHistoryListVisibility();
+                    syncHistoryListToggle();
                 }
 
                 function syncSessionInfoToggle() {
@@ -15476,6 +15593,8 @@ const translations = {
                     'break_duration',
                     'session_info_visible',
                     'session_info_custom_text',
+                    'group_input_visible',
+                    'history_list_visible',
                     'graph_enabled',
                     'graph_type',
                     'graph_period',
@@ -15512,6 +15631,8 @@ const translations = {
                     'feature_focus_mode_display',
                     'focus_mode_enabled',
                     'session_info_visible',
+                    'group_input_visible',
+                    'history_list_visible',
                     'graph_enabled',
                     'todo_v2_enabled',
                     'todo_v2_prompt_shown',
@@ -17371,6 +17492,10 @@ const translations = {
                     renderSessionIdleInfo();
                     applySessionInfoVisibility();
                     syncSessionInfoToggle();
+                    applyGroupInputVisibility();
+                    syncGroupInputToggle();
+                    applyHistoryListVisibility();
+                    syncHistoryListToggle();
 
                     // ホバーできない端末では鉛筆ボタンの代わりにテキストのタップで編集を開く
                     if (window.matchMedia && window.matchMedia('(hover: none)').matches) {
@@ -17986,7 +18111,7 @@ const translations = {
                             if (!editorModeActive) return;
                             var t = e.target;
                             if (t.closest('.toggle-switch') && !t.closest('.editor-mini-menu')) return;
-                            if (t.closest('input, select, textarea')) return;
+                            if (t.closest('input, select, textarea') && this.dataset.editorTarget !== 'groupInput') return;
                             var closestTarget = t.closest('[data-editor-target]');
                             if (closestTarget && closestTarget !== this) return;
                             var passthrough = t !== this && t.closest('.history-item, .todo-item, .playlist-item');
@@ -18139,7 +18264,19 @@ const translations = {
                         return {
                             title: getText('editorModeHistoryList'),
                             rows: [
+                                { type: 'toggle', label: getText('editorModeDisplay'), id: 'toggleHistoryList', key: 'history_list_visible', onToggle: function() { toggleHistoryListVisible(); } },
                                 { type: 'toggle', label: getText('editorModeTimeline'), id: 'toggleHistoryTimeline', key: 'feature_history_timeline', onToggle: function() { toggleHistoryTimeline(); } }
+                            ]
+                        };
+                    },
+                    list: function() {
+                        return editorMiniMenuDefs.historyList();
+                    },
+                    groupInput: function() {
+                        return {
+                            title: getText('editorModeGroupInput'),
+                            rows: [
+                                { type: 'toggle', label: getText('editorModeDisplay'), id: 'toggleGroupInput', key: 'group_input_visible', onToggle: function() { toggleGroupInputVisible(); } }
                             ]
                         };
                     },
@@ -18438,7 +18575,7 @@ const translations = {
 
                 function isSettingActive(key) {
                     var val = getData(key);
-                    var defaultOnKeys = ['feature_title_time','feature_clock','feature_theme_toggle_btn','feature_history_timeline','feature_loading_anim','feature_focus_mode_display','feature_stop_music_on_timer_end','feature_music_resume_on_tap_after_reload','mini_player_enabled','session_info_visible'];
+                    var defaultOnKeys = ['feature_title_time','feature_clock','feature_theme_toggle_btn','feature_history_timeline','feature_loading_anim','feature_focus_mode_display','feature_stop_music_on_timer_end','feature_music_resume_on_tap_after_reload','mini_player_enabled','session_info_visible','group_input_visible','history_list_visible'];
                     if (val === null || val === undefined) return defaultOnKeys.indexOf(key) !== -1;
                     return val === 'true';
                 }
@@ -18456,6 +18593,8 @@ const translations = {
                         { label: getText('studyGraph'), key: 'graph_enabled', toggleFn: function() { toggleGraph(); } },
                         { label: getText('editorModeFocusToggle'), key: 'feature_focus_mode_display', toggleFn: function() { toggleFocusDisplaySetting(); } },
                         { label: getText('editorModeSessionInfo'), key: 'session_info_visible', toggleFn: function() { toggleSessionInfoVisible(); } },
+                        { label: getText('editorModeGroupInput'), key: 'group_input_visible', toggleFn: function() { toggleGroupInputVisible(); } },
+                        { label: getText('editorModeHistoryList'), key: 'history_list_visible', toggleFn: function() { toggleHistoryListVisible(); } },
                         { label: getText('editorModeTitleTime'), key: 'feature_title_time', toggleFn: function() { toggleTitleTime(); } },
                         { label: getText('showClock'), key: 'feature_clock', toggleFn: function() { toggleClockSetting(); } },
                         { label: getText('themeToggleBtnSetting'), key: 'feature_theme_toggle_btn', toggleFn: function() { toggleThemeToggleBtnSetting(); } },
@@ -18543,6 +18682,16 @@ const translations = {
                         'white': '#ededed'
                     };
                     return colors[theme] || colors['blue'];
+                }
+
+                function hexToRgba(hex, alpha) {
+                    const value = String(hex || '').trim().replace('#', '');
+                    if (value.length !== 6) return `rgba(0, 0, 0, ${alpha})`;
+                    const r = parseInt(value.slice(0, 2), 16);
+                    const g = parseInt(value.slice(2, 4), 16);
+                    const b = parseInt(value.slice(4, 6), 16);
+                    if ([r, g, b].some(v => Number.isNaN(v))) return `rgba(0, 0, 0, ${alpha})`;
+                    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
                 }
 
                 function normalizeGraphType(v) {
@@ -18762,7 +18911,7 @@ const translations = {
                         type: opts.type,
                         tipLabels: opts.tipLabels || opts.labels,
                         todayIndex: (opts.todayIndex != null) ? opts.todayIndex : -1,
-                        avgValue: opts.avgValue || 0,
+                        avgValue: Number.isFinite(opts.avgValue) ? opts.avgValue : 0,
                         hoverIndex: (customCharts[id] && customCharts[id].hoverIndex) || -1,
                         pendingScrollRight: true // 描画後、最新(右端)が見える位置までスクロールする
                     };
@@ -18979,7 +19128,7 @@ const translations = {
                             if (v <= 0) continue;
                             const y = yFor(v);
                             const h = plotY + plotH - y;
-                            chartRoundRectPath(ctx, xFor(i) - bw / 2, y, bw, h, 4);
+                            chartRoundRectPath(ctx, xFor(i) - bw / 2, y, bw, h, 8);
                             ctx.fillStyle = col.primary;
                             ctx.fill();
                             if (i === state.hoverIndex) {
@@ -19048,23 +19197,25 @@ const translations = {
                     }
 
                     // 平均の破線(1本だけ/控えめに)
-                    if (state.avgValue > 0 && state.avgValue <= yMax) {
+                    if (Number.isFinite(state.avgValue) && state.avgValue > 0 && state.avgValue <= yMax) {
                         const yAvg = Math.round(yFor(state.avgValue)) + 0.5;
                         ctx.save();
-                        ctx.setLineDash([4, 4]);
-                        ctx.strokeStyle = col.isDark ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.3)';
-                        ctx.lineWidth = 1;
+                        ctx.setLineDash([7, 5]);
+                        ctx.lineCap = 'round';
+                        ctx.lineJoin = 'round';
+                        ctx.strokeStyle = hexToRgba(col.primary, col.isDark ? 0.42 : 0.38);
+                        ctx.lineWidth = 1.8;
                         ctx.beginPath();
                         ctx.moveTo(plotX, yAvg);
                         ctx.lineTo(plotX + plotW, yAvg);
                         ctx.stroke();
                         ctx.restore();
-                        // ラベルは左端に置く(右端はY軸ラベルと最新データがあるため)
+                        // ラベルは右側に寄せて、線の右端に合わせて見せる
                         ctx.font = `10px ${fontFamily}`;
-                        ctx.textAlign = 'left';
+                        ctx.textAlign = 'right';
                         ctx.textBaseline = 'bottom';
-                        ctx.fillStyle = col.muted;
-                        ctx.fillText(`${getText('chartAvgLine')} ${formatChartAxis(state.avgValue)}`, plotX + 4, yAvg - 3);
+                        ctx.fillStyle = hexToRgba(col.primary, col.isDark ? 0.78 : 0.7);
+                        ctx.fillText(`${getText('chartAvgLine')} ${formatChartAxis(state.avgValue)}`, plotX + plotW - 4, yAvg - 3);
                         ctx.font = `11px ${fontFamily}`;
                     }
 

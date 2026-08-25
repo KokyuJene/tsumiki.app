@@ -12842,12 +12842,11 @@
             }
 
             function isHistoryListVisible() {
-                return getData('history_list_visible') !== 'false';
+                return getMenuVisibility().list;
             }
 
             function applyHistoryListVisibility() {
-                const list = document.getElementById('historyList');
-                if (list) list.style.display = isHistoryListVisible() ? '' : 'none';
+                rebuildMenu();
             }
 
             function syncHistoryListToggle() {
@@ -12856,7 +12855,9 @@
             }
 
             function toggleHistoryListVisible() {
-                saveData('history_list_visible', isHistoryListVisible() ? 'false' : 'true');
+                const vis = getMenuVisibility();
+                vis.list = !vis.list;
+                saveMenuVisibility(vis);
                 applyHistoryListVisibility();
                 syncHistoryListToggle();
             }
@@ -19714,7 +19715,7 @@
                     return {
                         title: getText('editorModeHistoryList'),
                         rows: [
-                            { type: 'toggle', label: getText('editorModeDisplay'), id: 'toggleHistoryList', key: 'history_list_visible', onToggle: function () { toggleHistoryListVisible(); } },
+                            { type: 'toggle', label: getText('editorModeDisplay'), id: 'toggleHistoryList', key: 'menu_list_visible', onToggle: function () { toggleHistoryListVisible(); } },
                             { type: 'toggle', label: getText('editorModeTimeline'), id: 'toggleHistoryTimeline', key: 'feature_history_timeline', onToggle: function () { toggleHistoryTimeline(); } }
                         ]
                     };
@@ -20034,6 +20035,7 @@
             });
 
             function isSettingActive(key) {
+                if (key === 'menu_list_visible') return getMenuVisibility().list;
                 var val = getData(key);
                 var defaultOnKeys = ['feature_title_time', 'feature_clock', 'feature_theme_toggle_btn', 'feature_history_timeline', 'feature_loading_anim', 'feature_focus_mode_display', 'feature_stop_music_on_timer_end', 'feature_music_resume_on_tap_after_reload', 'mini_player_enabled', 'session_info_visible', 'group_input_visible', 'history_list_visible'];
                 if (val === null || val === undefined) return defaultOnKeys.indexOf(key) !== -1;
@@ -20054,7 +20056,7 @@
                     { label: getText('editorModeFocusToggle'), key: 'feature_focus_mode_display', toggleFn: function () { toggleFocusDisplaySetting(); } },
                     { label: getText('editorModeSessionInfo'), key: 'session_info_visible', toggleFn: function () { toggleSessionInfoVisible(); } },
                     { label: getText('editorModeGroupInput'), key: 'group_input_visible', toggleFn: function () { toggleGroupInputVisible(); } },
-                    { label: getText('editorModeHistoryList'), key: 'history_list_visible', toggleFn: function () { toggleHistoryListVisible(); } },
+                    { label: getText('editorModeHistoryList'), key: 'menu_list_visible', toggleFn: function () { toggleHistoryListVisible(); } },
                     { label: getText('editorModeTitleTime'), key: 'feature_title_time', toggleFn: function () { toggleTitleTime(); } },
                     { label: getText('showClock'), key: 'feature_clock', toggleFn: function () { toggleClockSetting(); } },
                     { label: getText('themeToggleBtnSetting'), key: 'feature_theme_toggle_btn', toggleFn: function () { toggleThemeToggleBtnSetting(); } },

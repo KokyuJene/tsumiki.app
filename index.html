@@ -12862,6 +12862,14 @@
                 syncHistoryListToggle();
             }
 
+            function toggleMenuPageVisibility(key) {
+                if (key !== 'timer' && key !== 'stats') return;
+                const vis = getMenuVisibility();
+                vis[key] = !vis[key];
+                saveMenuVisibility(vis);
+                rebuildMenu();
+            }
+
             function syncSessionInfoToggle() {
                 const t = document.getElementById('toggleSessionInfo');
                 if (t) t.classList.toggle('active', isSessionInfoVisible());
@@ -19695,6 +19703,7 @@
                     return {
                         title: getText('menuTimer'),
                         rows: [
+                            { type: 'toggle', label: getText('editorModeDisplay'), key: 'menu_timer_visible', onToggle: function () { toggleMenuPageVisibility('timer'); } },
                             { type: 'toggle', label: getText('editorModeTitleTime'), id: 'toggleTitleTime', key: 'feature_title_time', onToggle: function () { toggleTitleTime(); } },
                             { type: 'toggle', label: getText('showClock'), id: 'toggleClock', key: 'feature_clock', onToggle: function () { toggleClockSetting(); } },
                             { type: 'toggle', label: getText('editorModeTimeline'), id: 'toggleHistoryTimeline', key: 'feature_history_timeline', onToggle: function () { toggleHistoryTimeline(); } },
@@ -19735,6 +19744,7 @@
                     return {
                         title: getText('editorModeStatsContainer'),
                         rows: [
+                            { type: 'toggle', label: getText('editorModeDisplay'), key: 'menu_stats_visible', onToggle: function () { toggleMenuPageVisibility('stats'); } },
                             { type: 'toggle', label: getText('graphDisplay'), id: 'toggleGraph', key: 'graph_enabled', onToggle: function () { toggleGraph(); } },
                             {
                                 type: 'select', label: getText('editorModeGraphType'), options: [
@@ -20036,6 +20046,8 @@
 
             function isSettingActive(key) {
                 if (key === 'menu_list_visible') return getMenuVisibility().list;
+                if (key === 'menu_timer_visible') return getMenuVisibility().timer;
+                if (key === 'menu_stats_visible') return getMenuVisibility().stats;
                 var val = getData(key);
                 var defaultOnKeys = ['feature_title_time', 'feature_clock', 'feature_theme_toggle_btn', 'feature_history_timeline', 'feature_loading_anim', 'feature_focus_mode_display', 'feature_stop_music_on_timer_end', 'feature_music_resume_on_tap_after_reload', 'mini_player_enabled', 'session_info_visible', 'group_input_visible', 'history_list_visible'];
                 if (val === null || val === undefined) return defaultOnKeys.indexOf(key) !== -1;
@@ -20050,6 +20062,8 @@
                     return;
                 }
                 const allItems = [
+                    { label: getText('menuTimer'), key: 'menu_timer_visible', toggleFn: function () { toggleMenuPageVisibility('timer'); } },
+                    { label: getText('menuStats'), key: 'menu_stats_visible', toggleFn: function () { toggleMenuPageVisibility('stats'); } },
                     { label: getText('musicPlayer'), key: 'feature_music', toggleFn: function () { toggleFeature('music'); } },
                     { label: getText('todoList'), key: 'feature_todo', toggleFn: function () { toggleFeature('todo'); } },
                     { label: getText('studyGraph'), key: 'graph_enabled', toggleFn: function () { toggleGraph(); } },

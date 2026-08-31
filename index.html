@@ -868,8 +868,10 @@
         }
 
         .list-toolbar-row.move-row.active {
-            max-height: 60px;
+            max-height: 80px;
             opacity: 1;
+            overflow: visible;
+            z-index: 100;
         }
 
         .list-toolbar-row.move-row .custom-select {
@@ -1157,6 +1159,214 @@
         .dark .group-badge {
             background-color: var(--primary-color-dark);
             color: white;
+        }
+
+        .group-badges-wrap {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 8px;
+            align-items: center;
+        }
+
+        .group-badges-wrap .group-badge {
+            margin-top: 0;
+        }
+
+        .timer-group-select-container {
+            margin-bottom: 25px;
+            position: relative;
+            width: 100%;
+        }
+
+        .timer-group-dropdown-wrap,
+        .move-group-dropdown-wrap {
+            position: relative;
+            width: 100%;
+        }
+
+        .timer-group-select-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            width: 100%;
+            padding: 12px 20px;
+            border-radius: 24px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+            text-align: center;
+            background: var(--panel-light);
+            font-weight: 400;
+            min-height: 46px;
+            box-sizing: border-box;
+        }
+
+        .move-group-select-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 999px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+            text-align: center;
+            background: var(--panel-light);
+            font-weight: 400;
+            min-height: 38px;
+            box-sizing: border-box;
+        }
+
+        .dark .timer-group-select-btn,
+        .dark .move-group-select-btn {
+            background: var(--panel-dark);
+            color: #e8e8e8;
+        }
+
+        .timer-group-select-btn:hover,
+        .move-group-select-btn:hover {
+            opacity: 0.88;
+        }
+
+        .timer-group-select-text,
+        .move-group-select-text {
+            display: inline-block;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        .timer-group-dropdown-menu,
+        .move-group-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            min-width: 200px;
+            max-height: 280px;
+            overflow-y: auto;
+            background: var(--panel-light);
+            color: #323232;
+            border-radius: 20px;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.95) translateY(-6px);
+            transform-origin: top center;
+            transition: opacity 0.18s ease, transform 0.18s ease;
+            padding: 6px 0;
+        }
+
+        .dark .timer-group-dropdown-menu,
+        .dark .move-group-dropdown-menu {
+            background: var(--panel-dark);
+            color: #e8e8e8;
+        }
+
+        .timer-group-dropdown-menu.open,
+        .move-group-dropdown-menu.open {
+            opacity: 1;
+            pointer-events: auto;
+            transform: scale(1) translateY(0);
+        }
+
+        .timer-group-dropdown-list,
+        .move-group-dropdown-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .timer-group-dropdown-item,
+        .move-group-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.15s;
+            user-select: none;
+        }
+
+        .timer-group-dropdown-item:hover,
+        .move-group-dropdown-item:hover {
+            background: var(--panel-light-hover);
+        }
+
+        .dark .timer-group-dropdown-item:hover,
+        .dark .move-group-dropdown-item:hover {
+            background: var(--panel-dark-2);
+        }
+
+        .timer-group-dropdown-item input[type="checkbox"],
+        .move-group-dropdown-item input[type="checkbox"] {
+            cursor: pointer;
+            accent-color: var(--checkbox-accent);
+            width: 16px;
+            height: 16px;
+        }
+
+        .timer-group-dropdown-item span,
+        .move-group-dropdown-item span {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            text-align: left;
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            margin: 4px 0;
+            background: rgba(128, 128, 128, 0.2);
+        }
+
+        .timer-group-add-btn,
+        .move-group-add-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px 16px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: var(--primary-color);
+            transition: background 0.15s;
+            font-weight: 500;
+        }
+
+        .dark .timer-group-add-btn,
+        .dark .move-group-add-btn {
+            color: var(--primary-color-dark);
+        }
+
+        .timer-group-add-btn:hover,
+        .move-group-add-btn:hover {
+            background: var(--panel-light-hover);
+        }
+
+        .dark .timer-group-add-btn:hover,
+        .dark .move-group-add-btn:hover {
+            background: var(--panel-dark-2);
+        }
+
+        .timer-group-empty-hint {
+            padding: 12px 16px;
+            text-align: center;
+            font-size: 0.85rem;
+            opacity: 0.6;
+        }
+
+        body.hide-auto-stop-menu-btn .auto-stop-menu-wrap {
+            display: none !important;
         }
 
 
@@ -2504,6 +2714,32 @@
         #playlistRenameOverlay,
         #youtubeUrlOverlay {
             z-index: 10020;
+        }
+
+        #addGroupOverlay {
+            z-index: 10030;
+        }
+
+        #addGroupOverlay .add-group-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 24px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        .light #addGroupOverlay .add-group-input {
+            background: var(--bg-light);
+            color: #323232;
+        }
+
+        .dark #addGroupOverlay .add-group-input {
+            background: var(--bg-dark);
+            color: #e8e8e8;
         }
 
         @keyframes fadeIn {
@@ -8724,6 +8960,18 @@
         </div>
     </div>
 
+    <div class="custom-confirm-overlay" id="addGroupOverlay" onclick="if(event.target===this)closeAddGroupModal()">
+        <div class="custom-confirm-dialog">
+            <div class="custom-confirm-title" data-i18n="addGroupTitle">グループを追加</div>
+            <input type="text" id="newGroupNameInput" class="add-group-input" placeholder="新しいグループ名を入力" data-i18n-placeholder="newGroupPlaceholder"
+                onkeydown="if(event.key==='Enter')submitAddGroupModal()">
+            <div class="custom-confirm-buttons">
+                <button class="custom-confirm-cancel" id="addGroupCancelBtn" onclick="closeAddGroupModal()" data-i18n="cancelButton">キャンセル</button>
+                <button class="custom-confirm-ok" id="addGroupOkBtn" onclick="submitAddGroupModal()" data-i18n="addButton">追加</button>
+            </div>
+        </div>
+    </div>
+
     <div class="custom-confirm-overlay" id="playlistManagerOverlay">
         <div class="custom-confirm-dialog" style="max-width: 520px; width: min(92vw, 520px);">
             <div class="custom-confirm-title" data-i18n="playlistManagerTitle">プレイリスト管理</div>
@@ -9204,16 +9452,36 @@
             <div class="focus-progress-bar" id="mainFocusProgressBar">
                 <div class="focus-progress-fill" id="mainFocusProgressFill"></div>
             </div>
-            <div class="group-input" data-editor-target="groupInput">
-                <input type="text" id="groupInput" placeholder="グループ名(任意)" data-i18n="groupPlaceholder">
-                <button type="button" class="inline-clear-btn" onclick="clearGroupInput()" aria-label="入力を消去"
-                    data-i18n-aria="clearInput">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <line x1="18" y1="6" x2="6" y2="18" />
-                        <line x1="6" y1="6" x2="18" y2="18" />
-                    </svg>
-                </button>
+            <div class="group-input-wrapper" id="timerGroupInputWrapper" data-editor-target="groupInput">
+                <!-- カスタムselect / ドロップダウン方式 -->
+                <div class="timer-group-select-container" id="timerGroupSelectContainer">
+                    <div class="timer-group-dropdown-wrap">
+                        <div class="timer-group-select-btn" id="timerGroupSelectBtn" tabindex="0" role="button"
+                            aria-haspopup="true" onclick="toggleTimerGroupDropdown(event)">
+                            <span class="timer-group-select-text" id="timerGroupSelectText" data-i18n="selectGroup">グループを選択</span>
+                        </div>
+                        <div class="timer-group-dropdown-menu" id="timerGroupDropdownMenu" role="menu" aria-hidden="true">
+                            <div class="timer-group-dropdown-list" id="timerGroupDropdownList"></div>
+                            <div class="dropdown-divider"></div>
+                            <div class="timer-group-add-btn" onclick="openAddGroupModal('timer')">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                                <span data-i18n="addGroup">グループを追加</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 従来のテキスト入力方式 (設定で切り替え可能) -->
+                <div class="group-input" id="timerGroupTextInputWrap" style="display:none;">
+                    <input type="text" id="groupInput" placeholder="グループ名(任意)" data-i18n="groupPlaceholder">
+                    <button type="button" class="inline-clear-btn" onclick="clearGroupInput()" aria-label="入力を消去"
+                        data-i18n-aria="clearInput">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18" />
+                            <line x1="6" y1="6" x2="18" y2="18" />
+                        </svg>
+                    </button>
+                </div>
             </div>
             <div class="session-info-wrap" id="sessionInfoWrap" data-editor-target="sessionInfo">
                 <div class="session-info" id="sessionInfo" data-i18n="sessionStart">開始ボタンを押して学習を始めましょう</div>
@@ -9358,11 +9626,19 @@
                 </div>
 
                 <div class="list-toolbar-row move-row" id="moveGroupRow">
-                    <div class="custom-select">
-                        <select id="moveGroupSelect" aria-label="移動先のグループを選択" data-i18n-aria="moveDestination">
-                            <option value="" data-i18n="moveDestination">移動先を選択</option>
-                        </select>
-                        <div class="select-arrow">▾</div>
+                    <div class="move-group-dropdown-wrap" style="flex: 1; min-width: 30px;">
+                        <div class="move-group-select-btn" id="moveGroupSelectBtn" tabindex="0" role="button"
+                            aria-haspopup="true" onclick="toggleMoveGroupDropdown(event)">
+                            <span class="move-group-select-text" id="moveGroupSelectText" data-i18n="moveDestination">移動先を選択</span>
+                        </div>
+                        <div class="move-group-dropdown-menu" id="moveGroupDropdownMenu" role="menu" aria-hidden="true">
+                            <div class="move-group-dropdown-list" id="moveGroupDropdownList"></div>
+                            <div class="dropdown-divider"></div>
+                            <div class="move-group-add-btn" onclick="openAddGroupModal('move')">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                                <span data-i18n="addGroup">グループを追加</span>
+                            </div>
+                        </div>
                     </div>
                     <button class="primary list-action-btn" onclick="moveSelectedToGroup()"
                         data-i18n="moveButton">移動</button>
@@ -9649,6 +9925,16 @@
                         <div class="toggle-slider"></div>
                     </div>
                 </div>
+                <div class="toggle-item" id="groupInputModeItem">
+                    <span data-i18n="groupInputModeSetting">グループの入力方式</span>
+                    <div class="custom-select" style="width: 170px;">
+                        <select id="groupInputModeSelect" onchange="changeGroupInputMode()">
+                            <option value="select" data-i18n="groupInputModeSelect">選択 (複数選択)</option>
+                            <option value="text" data-i18n="groupInputModeText">テキスト入力 (従来)</option>
+                        </select>
+                        <div class="select-arrow">▾</div>
+                    </div>
+                </div>
                 <div class="toggle-item">
                     <span data-i18n="titleTimeDisplay">タイトルの時間表示</span>
                     <div class="toggle-switch" id="toggleTitleTime" onclick="toggleTitleTime()">
@@ -9786,6 +10072,12 @@
 
             <div class="settings-section" id="autoStopSettingsSection">
                 <h2 data-i18n="autoStopSettingsTitle">タイマーと自動停止</h2>
+                <div class="toggle-item">
+                    <span data-i18n="autoStopMenuBtnSetting">自動停止</span>
+                    <div class="toggle-switch active" id="toggleAutoStopMenuBtn" onclick="toggleAutoStopMenuBtnSetting()">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
                 <div class="toggle-item">
                     <span data-i18n="endConfirmSetting">長いセッション終了時に確認</span>
                     <div class="toggle-switch" id="toggleEndConfirm" onclick="toggleEndConfirmSetting()">
@@ -10471,6 +10763,12 @@
 
                     // タイマーページ
                     groupPlaceholder: 'グループ名(任意)',
+                    addGroup: 'グループを追加',
+                    addGroupTitle: 'グループを追加',
+                    newGroupPlaceholder: '新しいグループ名を入力',
+                    groupInputModeSetting: 'グループの入力方式',
+                    groupInputModeSelect: '選択 (複数選択)',
+                    groupInputModeText: 'テキスト入力 (従来)',
                     sessionStart: '開始ボタンを押して学習を始めましょう',
                     startButton: '勉強開始',
                     pauseButton: '一時停止',
@@ -10583,6 +10881,7 @@
                     autoStopActionLabel: '停止時の動作',
                     autoStopRemainingLabel: 'あと{time}で停止',
                     autoStopSettingsTitle: 'タイマーと自動停止',
+                    autoStopMenuBtnSetting: '自動停止',
                     endConfirmSetting: '長いセッション終了時に確認',
                     endConfirmThresholdLabel: '確認するしきい値(分)',
                     endConfirmThresholdNote: 'この時間以上のセッションを終了する際に確認ダイアログを表示します',
@@ -11111,6 +11410,12 @@
 
                     // Timer Page
                     groupPlaceholder: 'Group name (optional)',
+                    addGroup: 'Add Group',
+                    addGroupTitle: 'Add Group',
+                    newGroupPlaceholder: 'Enter group name',
+                    groupInputModeSetting: 'Group input method',
+                    groupInputModeSelect: 'Select (Multi-select)',
+                    groupInputModeText: 'Text Input (Legacy)',
                     sessionStart: 'Press the start button to begin studying',
                     startButton: 'Start Study',
                     pauseButton: 'Pause',
@@ -11218,6 +11523,7 @@
                     autoStopActionLabel: 'On auto-stop',
                     autoStopRemainingLabel: 'Stops in {time}',
                     autoStopSettingsTitle: 'Timer & Auto-stop',
+                    autoStopMenuBtnSetting: 'Auto-stop',
                     endConfirmSetting: 'Confirm before ending long sessions',
                     endConfirmThresholdLabel: 'Confirm threshold (minutes)',
                     endConfirmThresholdNote: 'Shows a confirmation dialog when ending a session longer than this',
@@ -11978,7 +12284,7 @@
                 document.body.classList.remove('no-scroll');
             }
 
-            // クリックでオーバーレイ閉じる
+            // クリックでオーバーレイやドロップダウンを閉じる
             document.addEventListener('click', (e) => {
                 const aboutOverlay = document.getElementById('aboutOverlay');
                 const qaOverlay = document.getElementById('qaOverlay');
@@ -11989,6 +12295,10 @@
 
                 if (qaOverlay && qaOverlay.classList.contains('show') && e.target === qaOverlay) {
                     hideQAModal();
+                }
+
+                if (!e.target.closest('.timer-group-dropdown-wrap') && !e.target.closest('.move-group-dropdown-wrap')) {
+                    if (typeof closeAllGroupDropdowns === 'function') closeAllGroupDropdowns();
                 }
             });
 
@@ -12821,13 +13131,50 @@
                 syncSessionInfoToggle();
             }
 
+            // ── グループの複数選択 & 入力方式ヘルパー ──
+            let selectedTimerGroups = new Set();
+            let selectedMoveGroups = new Set();
+            let currentAddGroupContext = 'timer'; // 'timer' | 'move'
+
+            function getItemGroups(item) {
+                if (!item) return [];
+                if (Array.isArray(item.groups)) return item.groups.filter(g => typeof g === 'string' && g.trim());
+                if (typeof item.group === 'string' && item.group.trim()) {
+                    return item.group.split(/[,、]/).map(s => s.trim()).filter(Boolean);
+                }
+                return [];
+            }
+
             function isGroupInputVisible() {
                 return getData('group_input_visible') !== 'false';
             }
 
+            function isGroupInputModeSelect() {
+                return (getData('group_input_mode') || 'select') === 'select';
+            }
+
+            function applyGroupInputMode() {
+                const isSelect = isGroupInputModeSelect();
+                const container = document.getElementById('timerGroupSelectContainer');
+                const textWrap = document.getElementById('timerGroupTextInputWrap');
+                const sel = document.getElementById('groupInputModeSelect');
+                if (container) container.style.display = isSelect ? '' : 'none';
+                if (textWrap) textWrap.style.display = isSelect ? 'none' : '';
+                if (sel) sel.value = isSelect ? 'select' : 'text';
+                if (isSelect) updateTimerGroupSelectUI();
+            }
+
+            function changeGroupInputMode() {
+                const sel = document.getElementById('groupInputModeSelect');
+                const mode = sel ? sel.value : 'select';
+                saveData('group_input_mode', mode);
+                applyGroupInputMode();
+            }
+
             function applyGroupInputVisibility() {
-                const wrap = document.querySelector('.group-input');
+                const wrap = document.getElementById('timerGroupInputWrapper') || document.querySelector('.group-input');
                 if (wrap) wrap.style.display = isGroupInputVisible() ? '' : 'none';
+                applyGroupInputMode();
             }
 
             function syncGroupInputToggle() {
@@ -12839,6 +13186,176 @@
                 saveData('group_input_visible', isGroupInputVisible() ? 'false' : 'true');
                 applyGroupInputVisibility();
                 syncGroupInputToggle();
+            }
+
+            // ── タイマー画面のグループドロップダウン ──
+            function renderTimerGroupDropdown() {
+                const listEl = document.getElementById('timerGroupDropdownList');
+                if (!listEl) return;
+                const groups = getAllKnownGroups();
+                if (groups.length === 0) {
+                    listEl.innerHTML = `<div class="timer-group-empty-hint">${getText('groupManagementNoGroups')}</div>`;
+                    return;
+                }
+                listEl.innerHTML = groups.map(group => {
+                    const checked = selectedTimerGroups.has(group) ? 'checked' : '';
+                    return `<label class="timer-group-dropdown-item" onclick="event.stopPropagation();">
+                        <input type="checkbox" ${checked} onchange="toggleTimerGroupItem('${escapeHtml(group)}', this.checked)">
+                        <span>${escapeHtml(group)}</span>
+                    </label>`;
+                }).join('');
+            }
+
+            function toggleTimerGroupDropdown(e) {
+                if (e) e.stopPropagation();
+                const menu = document.getElementById('timerGroupDropdownMenu');
+                if (!menu) return;
+                const isOpen = menu.classList.contains('open');
+                closeAllGroupDropdowns();
+                if (!isOpen) {
+                    renderTimerGroupDropdown();
+                    menu.classList.add('open');
+                }
+            }
+
+            function toggleTimerGroupItem(group, checked) {
+                if (checked) {
+                    selectedTimerGroups.add(group);
+                } else {
+                    selectedTimerGroups.delete(group);
+                }
+                updateTimerGroupSelectUI();
+            }
+
+            function updateTimerGroupSelectUI() {
+                const textEl = document.getElementById('timerGroupSelectText');
+                if (!textEl) return;
+                if (selectedTimerGroups.size === 0) {
+                    textEl.textContent = getText('selectGroup');
+                    textEl.style.opacity = '0.7';
+                } else {
+                    textEl.textContent = Array.from(selectedTimerGroups).join(', ');
+                    textEl.style.opacity = '1';
+                }
+            }
+
+            // ── リスト画面のグループ移動ドロップダウン ──
+            function renderMoveGroupDropdown() {
+                const listEl = document.getElementById('moveGroupDropdownList');
+                if (!listEl) return;
+                const groups = getAllKnownGroups();
+                if (groups.length === 0) {
+                    listEl.innerHTML = `<div class="timer-group-empty-hint">${getText('groupManagementNoGroups')}</div>`;
+                    return;
+                }
+                listEl.innerHTML = groups.map(group => {
+                    const checked = selectedMoveGroups.has(group) ? 'checked' : '';
+                    return `<label class="move-group-dropdown-item" onclick="event.stopPropagation();">
+                        <input type="checkbox" ${checked} onchange="toggleMoveGroupItem('${escapeHtml(group)}', this.checked)">
+                        <span>${escapeHtml(group)}</span>
+                    </label>`;
+                }).join('');
+            }
+
+            function toggleMoveGroupDropdown(e) {
+                if (e) e.stopPropagation();
+                const menu = document.getElementById('moveGroupDropdownMenu');
+                if (!menu) return;
+                const isOpen = menu.classList.contains('open');
+                closeAllGroupDropdowns();
+                if (!isOpen) {
+                    renderMoveGroupDropdown();
+                    menu.classList.add('open');
+                }
+            }
+
+            function toggleMoveGroupItem(group, checked) {
+                if (checked) {
+                    selectedMoveGroups.add(group);
+                } else {
+                    selectedMoveGroups.delete(group);
+                }
+                updateMoveGroupSelectUI();
+            }
+
+            function updateMoveGroupSelectUI() {
+                const textEl = document.getElementById('moveGroupSelectText');
+                if (!textEl) return;
+                if (selectedMoveGroups.size === 0) {
+                    textEl.textContent = getText('moveDestination');
+                    textEl.style.opacity = '0.7';
+                } else {
+                    textEl.textContent = Array.from(selectedMoveGroups).join(', ');
+                    textEl.style.opacity = '1';
+                }
+            }
+
+            function closeAllGroupDropdowns() {
+                const tMenu = document.getElementById('timerGroupDropdownMenu');
+                const mMenu = document.getElementById('moveGroupDropdownMenu');
+                if (tMenu) tMenu.classList.remove('open');
+                if (mMenu) mMenu.classList.remove('open');
+            }
+
+            // ── グループ追加モーダル ──
+            function openAddGroupModal(context = 'timer') {
+                currentAddGroupContext = context;
+                closeAllGroupDropdowns();
+                const overlay = document.getElementById('addGroupOverlay');
+                const input = document.getElementById('newGroupNameInput');
+                if (overlay) {
+                    overlay.classList.add('show');
+                    if (input) {
+                        input.value = '';
+                        setTimeout(() => input.focus(), 80);
+                    }
+                }
+            }
+
+            function closeAddGroupModal() {
+                const overlay = document.getElementById('addGroupOverlay');
+                if (overlay) overlay.classList.remove('show');
+                const input = document.getElementById('newGroupNameInput');
+                if (input) input.value = '';
+            }
+
+            function submitAddGroupModal() {
+                const input = document.getElementById('newGroupNameInput');
+                const name = (input?.value || '').trim();
+                if (!name) {
+                    closeAddGroupModal();
+                    return;
+                }
+                rememberCustomGroup(name);
+                if (currentAddGroupContext === 'timer') {
+                    selectedTimerGroups.add(name);
+                    updateTimerGroupSelectUI();
+                    renderTimerGroupDropdown();
+                } else if (currentAddGroupContext === 'move') {
+                    selectedMoveGroups.add(name);
+                    updateMoveGroupSelectUI();
+                    renderMoveGroupDropdown();
+                }
+                updateGroupFilter();
+                closeAddGroupModal();
+            }
+
+            // ── 自動停止三点ボタン設定 ──
+            function isAutoStopMenuBtnVisible() {
+                return getData('feature_auto_stop_menu_btn') !== 'false';
+            }
+
+            function applyAutoStopMenuBtnVisibility() {
+                const visible = isAutoStopMenuBtnVisible();
+                document.body.classList.toggle('hide-auto-stop-menu-btn', !visible);
+                const t = document.getElementById('toggleAutoStopMenuBtn');
+                if (t) t.classList.toggle('active', visible);
+            }
+
+            function toggleAutoStopMenuBtnSetting() {
+                const newState = !isAutoStopMenuBtnVisible();
+                saveData('feature_auto_stop_menu_btn', newState ? 'true' : 'false');
+                applyAutoStopMenuBtnVisibility();
             }
 
             function isHistoryListVisible() {
@@ -13455,7 +13972,9 @@
                 }
                 const startCookie = getData('studyStartTime');
                 const groupInput = document.getElementById('groupInput');
-                const groupName = groupInput.value.trim() || '';
+                const groupName = isGroupInputModeSelect()
+                    ? Array.from(selectedTimerGroups).join(', ')
+                    : (groupInput ? groupInput.value.trim() : '');
                 if (startCookie) {
                     const start = new Date(startCookie);
                     if (isNaN(start.getTime())) {
@@ -13482,7 +14001,9 @@
                             }))
                         });
                         saveData('studyHistory', JSON.stringify(history));
-                        rememberCustomGroup(groupName);
+                        if (groupName) {
+                            getItemGroups({ group: groupName }).forEach(g => rememberCustomGroup(g));
+                        }
                         updateGroupFilter();
                         loadHistory();
                         loadStats();
@@ -13513,7 +14034,9 @@
                 document.getElementById('endBtn').classList.add('hidden');
                 document.getElementById('pauseBtn').textContent = getText('pauseButton');
                 document.body.classList.remove('session-running');
-                groupInput.value = '';
+                if (groupInput) groupInput.value = '';
+                selectedTimerGroups.clear();
+                updateTimerGroupSelectUI();
                 startTime = null;
                 pausedTime = 0;
                 isPaused = false;
@@ -16241,7 +16764,7 @@
                 history = history ? JSON.parse(history) : [];
                 allHistoryItems = [...history];
                 updateHistoryTimelineLegacyNotice(allHistoryItems);
-                if (selectedGroup) history = history.filter(item => item.group === selectedGroup);
+                if (selectedGroup) history = history.filter(item => getItemGroups(item).includes(selectedGroup));
                 history = filterBySearch(history, searchTerm);
                 // ソート処理
                 if (currentSort === 'date-desc') {
@@ -16269,7 +16792,10 @@
                     const actualIndex = allHistoryItems.indexOf(item);
                     const start = new Date(item.start);
                     const end = new Date(item.end);
-                    const groupBadge = item.group ? `<div class="group-badge">${item.group}</div>` : '';
+                    const itemGroups = getItemGroups(item);
+                    const groupBadge = itemGroups.length > 0
+                        ? `<div class="group-badges-wrap">${itemGroups.map(g => `<div class="group-badge">${escapeHtml(g)}</div>`).join('')}</div>`
+                        : '';
                     const isSelected = selectedItems.has(actualIndex);
                     const dateDisplay = (formatDate(start) === formatDate(end)) ? formatDate(start) : `${formatDate(start)}<br><small>→ ${formatDate(end)}</small>`;
                     const startDisplay = formatDateTime(start);
@@ -16405,7 +16931,7 @@
                 const searchTerm = searchInput ? searchInput.value : '';
                 const selectedGroup = groupFilter ? groupFilter.value : '';
                 let history = [...allHistoryItems];
-                if (selectedGroup) history = history.filter(item => item.group === selectedGroup);
+                if (selectedGroup) history = history.filter(item => getItemGroups(item).includes(selectedGroup));
                 history = filterBySearch(history, searchTerm);
                 const visibleIndices = history.map(item => allHistoryItems.indexOf(item));
                 const allSelected = visibleIndices.every(i => selectedItems.has(i));
@@ -16452,14 +16978,13 @@
 
             function hideMoveGroup() {
                 selectedItems.clear();
-                const sel = document.getElementById('moveGroupSelect');
-                if (sel) sel.selectedIndex = 0;
+                selectedMoveGroups.clear();
+                updateMoveGroupSelectUI();
                 loadHistory();
             }
 
             function moveSelectedToGroup() {
-                const sel = document.getElementById('moveGroupSelect');
-                const newGroup = sel ? sel.value.trim() : '';
+                const newGroup = Array.from(selectedMoveGroups).join(', ');
                 if (selectedItems.size === 0) return;
                 let history = getData('studyHistory');
                 history = history ? JSON.parse(history) : [];
@@ -16468,7 +16993,8 @@
                 });
                 saveData('studyHistory', JSON.stringify(history));
                 selectedItems.clear();
-                if (sel) sel.selectedIndex = 0;
+                selectedMoveGroups.clear();
+                updateMoveGroupSelectUI();
                 updateGroupFilter();
                 loadHistory();
             }
@@ -16476,27 +17002,26 @@
             function updateGroupFilter() {
                 let history = getData('studyHistory');
                 history = history ? JSON.parse(history) : [];
-                const groups = [...new Set(history.map(item => item.group).filter(g => g))];
-                const groupFilter = document.getElementById('groupFilter');
-                if (!groupFilter) return;
-                const prevGroup = groupFilter.value;
-                groupFilter.innerHTML = `<option value="">${getText('allGroupsFilter')}</option>`;
-                groups.forEach(group => {
-                    groupFilter.innerHTML += `<option value="${group}">${group}</option>`;
-                });
-                if (prevGroup && groups.includes(prevGroup)) {
-                    groupFilter.value = prevGroup;
-                }
-                // 移動先セレクトは記録のない保存済みグループも選べるようにする
-                const moveSel = document.getElementById('moveGroupSelect');
-                if (moveSel) {
-                    const prev = moveSel.value;
-                    moveSel.innerHTML = `<option value="">${getText('selectDestinationGroup')}</option>`;
-                    getAllKnownGroups().forEach(group => {
-                        moveSel.innerHTML += `<option value="${group}">${group}</option>`;
+                const allGroupsFromHistory = [];
+                history.forEach(item => {
+                    getItemGroups(item).forEach(g => {
+                        if (g && !allGroupsFromHistory.includes(g)) allGroupsFromHistory.push(g);
                     });
-                    try { moveSel.value = prev; } catch (e) { }
+                });
+                const groups = [...new Set(allGroupsFromHistory)];
+                const groupFilter = document.getElementById('groupFilter');
+                if (groupFilter) {
+                    const prevGroup = groupFilter.value;
+                    groupFilter.innerHTML = `<option value="">${getText('allGroupsFilter')}</option>`;
+                    groups.forEach(group => {
+                        groupFilter.innerHTML += `<option value="${group}">${group}</option>`;
+                    });
+                    if (prevGroup && groups.includes(prevGroup)) {
+                        groupFilter.value = prevGroup;
+                    }
                 }
+                renderTimerGroupDropdown();
+                renderMoveGroupDropdown();
                 renderGroupManagement();
             }
 
@@ -16754,7 +17279,12 @@
             function getAllKnownGroups() {
                 let history = getData('studyHistory');
                 history = history ? JSON.parse(history) : [];
-                const fromHistory = history.map(item => item.group).filter(g => g);
+                const fromHistory = [];
+                history.forEach(item => {
+                    getItemGroups(item).forEach(g => {
+                        if (g && !fromHistory.includes(g)) fromHistory.push(g);
+                    });
+                });
                 return [...new Set([...getStoredGroups(), ...fromHistory])].sort((a, b) => a.localeCompare(b, 'ja'));
             }
 
@@ -16830,7 +17360,18 @@
                 let history = getData('studyHistory');
                 history = history ? JSON.parse(history) : [];
                 history.forEach(item => {
-                    if (selected.includes(item.group)) item.group = newName;
+                    const groups = getItemGroups(item);
+                    let changed = false;
+                    const updated = groups.map(g => {
+                        if (selected.includes(g)) {
+                            changed = true;
+                            return newName;
+                        }
+                        return g;
+                    });
+                    if (changed) {
+                        item.group = [...new Set(updated)].join(', ');
+                    }
                 });
                 saveData('studyHistory', JSON.stringify(history));
 
@@ -16860,7 +17401,11 @@
                 let history = getData('studyHistory');
                 history = history ? JSON.parse(history) : [];
                 history.forEach(item => {
-                    if (groups.includes(item.group)) item.group = '';
+                    const currentGroups = getItemGroups(item);
+                    const remaining = currentGroups.filter(g => !groups.includes(g));
+                    if (remaining.length !== currentGroups.length) {
+                        item.group = remaining.join(', ');
+                    }
                 });
                 saveData('studyHistory', JSON.stringify(history));
 
@@ -16990,15 +17535,24 @@
                 statsContainer.innerHTML = `<div class="stat-card"><div class="stat-label">${getText('totalTime')}</div><div class="stat-value">${formatTime(totalTime)}</div></div><div class="stat-card"><div class="stat-label">${getText('consecutiveDays')}</div><div class="stat-value">${streak}${getText('days')}</div></div><div class="stat-card"><div class="stat-label">${getText('totalSessions')}</div><div class="stat-value">${totalSessions}</div></div><div class="stat-card flashcard-stat-btn" onclick="openFlashcardMenu()"><div class="stat-label">${getText('flashcards')}</div><div class="stat-value" style="font-size:1.4rem;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="3"/><line x1="7" y1="10" x2="17" y2="10"/><line x1="7" y1="14" x2="13" y2="14"/></svg></div></div><div class="stat-card flashcard-stat-btn" onclick="openTsumikiPage()"><div class="stat-label">${getText('statTsumiki')}</div><div class="stat-value" style="font-size:1.4rem;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5 20.5 7v10L12 21.5 3.5 17V7L12 2.5z"/><path d="M3.5 7 12 11.5 20.5 7"/><path d="M12 11.5V21.5"/></svg></div></div>`;
                 const groups = {};
                 history.forEach(item => {
-                    const group = item.group || getText('uncategorized');
-                    if (!groups[group]) groups[group] = 0;
-                    groups[group] += item.duration;
+                    const itemGroups = getItemGroups(item);
+                    if (itemGroups.length === 0) {
+                        const uncat = getText('uncategorized');
+                        groups[uncat] = (groups[uncat] || 0) + item.duration;
+                    } else {
+                        itemGroups.forEach(group => {
+                            groups[group] = (groups[group] || 0) + item.duration;
+                        });
+                    }
                 });
                 const groupStatsSelector = document.getElementById('groupStatsSelector');
                 const groupStats = document.getElementById('groupStats');
                 if (Object.keys(groups).length > 0) {
                     groupStatsSelector.innerHTML = `<h2>${getText('groupStats')}</h2>`;
                     groupStats.innerHTML = Object.entries(groups).sort((a, b) => b[1] - a[1]).map(([group, duration]) => `<div class="stat-card" style="margin-bottom: 15px;"><div class="stat-label">${group}</div><div class="stat-value">${formatTime(duration)}</div></div>`).join('');
+                } else {
+                    if (groupStatsSelector) groupStatsSelector.innerHTML = '';
+                    if (groupStats) groupStats.innerHTML = '';
                 }
                 renderDailyTimeline();
             }
@@ -17042,6 +17596,8 @@
                 'session_info_visible',
                 'session_info_custom_text',
                 'group_input_visible',
+                'group_input_mode',
+                'feature_auto_stop_menu_btn',
                 'history_list_visible',
                 'graph_enabled',
                 'graph_type',
@@ -17075,6 +17631,7 @@
                 'feature_loading_anim',
                 'feature_stop_music_on_timer_end',
                 'feature_music_resume_on_tap_after_reload',
+                'feature_auto_stop_menu_btn',
                 'lock_settings_during_timer',
                 'feature_focus_mode_display',
                 'focus_mode_enabled',
@@ -18942,6 +19499,7 @@
                 syncSessionInfoToggle();
                 applyGroupInputVisibility();
                 syncGroupInputToggle();
+                applyAutoStopMenuBtnVisibility();
                 applyHistoryListVisibility();
                 syncHistoryListToggle();
 
